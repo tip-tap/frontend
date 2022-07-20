@@ -1,0 +1,14 @@
+@import "../main.module.scss";
+
+.title {
+    @include typo-style(700, 40px, 60px, 0.5px);
+    color: $main;
+}
+
+.desc {
+    @include typo-style(700, 24px, 24px, -0.5px);
+    color: $lightgray;
+    
+    @include text-ellipsis;
+    width: 500px;
+}

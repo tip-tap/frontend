@@ -1,0 +1,11 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+$main-font: "Noto Sans KR", sans-serif;
+
+@mixin typo-style($weight, $size, $line-height, $letter) {
+    font-family: $main-font;
+    font-size: $size;
+    font-weight: $weight;
+    line-height: $line-height;
+    letter-spacing: $letter;
+}
