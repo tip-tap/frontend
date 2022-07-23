@@ -1,3 +1,6 @@
+$vw: 100vw;
+$vh: 100vh;
+
 @mixin text-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
