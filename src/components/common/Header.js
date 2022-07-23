@@ -7,30 +7,36 @@ import { ReactComponent as Heart } from "../../assets/heart.svg";
 import { ReactComponent as Checklist } from "../../assets/checklist.svg";
 import { ReactComponent as Mypage } from "../../assets/mypage.svg";
 
-const Header = () => {
+const Header = ({ withToggle, active }) => {
     return (
         <div className={styles.wrapper}>
             <section>
                 <Logo />
             </section>
+            {withToggle &&
             <section className={styles.middle}>
-                <article>
-                    <Map />
+                <article className={active === "map" ? styles.active : styles.inactive}>
+                    <Map fill={active === "map" ? "#0040BD" : "#CACACA"}/>
                     <span>지도로 매물보기</span>
                 </article>
-                <article>
-                    <List />
+                <article className={active === "list" ? styles.active : styles.inactive}>
+                    <List fill={active === "list" ? "#0040BD" : "#CACACA"} />
                     <span>리스트로 매물보기</span>
                 </article>
             </section>
+            }
             <section className={styles.right}>
                 <article>
                     <Heart />
-                    <span>관심매물</span>
+                    <span>관심 매물</span>
                 </article>
                 <article>
                     <Checklist />
                     <span>체크리스트</span>
+                </article>
+                <article>
+                    <Checklist />
+                    <span>확정 매물</span>
                 </article>
                 <article>
                     <Mypage />

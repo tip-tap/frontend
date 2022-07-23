@@ -3,21 +3,39 @@
 .wrapper {
     @include flex-box(row, center);
     width: 100vw;
-    height: 80px;
+    height: (100vh*80px/$vh);
 
     .middle {
         @include flex-box(row, center);
-        width: 23vw;
+        width: (100vw*448px/$vw);
 
         article {
+            padding: (100vh*8px/$vh) (100vh*16px/$vh);
+            border-bottom: 1px solid;
+
+            &.active {
+                border-color: $main;
+                
+                span {
+                    color: $main;
+                }
+            }
+
+            &.inactive {
+                border-color: $gray;
+
+                span {
+                    color: $gray;
+                }
+            }
+
             &:hover {
                 cursor: pointer;
-            }
+            } 
             
             span {
                 @include typo-style(700, 20px, 26px, -0.5px);
-                color: $main;
-                margin-left: 7px;
+                margin-left: (100vw*7px/$vw);
             }
         }
         
@@ -25,12 +43,12 @@
 
     .right {
         @include flex-box(row, center);
-        width: 11vw;
-        margin-right: 3.125vw;
+        width: (100vw*288px/$vw);
+        margin-right: (100vw*66px/$vw);
 
         article {
             @include flex-box(column, center);
-            height: 54px;
+            height: (100vh*54px/$vh);
 
             &:hover {
                 cursor: pointer;

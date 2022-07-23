@@ -1,3 +1,6 @@
+$vw: 1920px;
+$vh: 1080px;
+
 @mixin text-ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
