@@ -1,0 +1,44 @@
+@import "../main.module.scss";
+
+.wrapper {
+    overflow-x: hidden;
+
+    .slider {
+        .slide {
+            @include setHeight(440px);
+            width: getHeight(400px);
+    
+            object-fit: cover;
+        }
+    }
+    
+    .btn {
+        margin: getHeight(48px) 0;
+    }
+
+    .info {
+        @include flexBox(column, center, center);
+
+        .header {
+            span {
+                @include typo-style(500, 24px, 36px, -0.5px);
+                color: $darkgray;
+                margin: 0 getWidth(40px);
+
+                &.active {
+                    color: $main;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+        }
+
+        .body {
+            @include setWidth(1200px);
+            border-top: 1px solid $main;
+            margin-top: getHeight(28px);
+        }
+    }
+}

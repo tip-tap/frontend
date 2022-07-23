@@ -4,7 +4,7 @@ div {
     width: 100vw;
 
     section {
-        @include flex-box(row, center, center);
+        @include flexBox(row, center, center);
     }    
 
     .upper {

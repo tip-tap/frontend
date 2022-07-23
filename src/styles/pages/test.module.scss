@@ -9,6 +9,6 @@
     @include typo-style(700, 24px, 24px, -0.5px);
     color: $lightgray;
     
-    @include text-ellipsis;
+    @include textEllipsis;
     width: 500px;
 }
