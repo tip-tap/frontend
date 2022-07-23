@@ -1,20 +1,41 @@
 @import "../main.module.scss";
 
 div {
-    width: 100vw;
+    overflow-x: hidden;
 
-    section {
-        @include flex-box(row, center, center);
-    }    
+    .greeting {
+        @include flexBox(row, center, space-between);
 
-    .upper {
-        color: $white;
-        height: 560px;
-        background-color: $main;
-    }
+        article {
+            @include setWidth(941px);
+            @include setHeight(1000px);
 
-    .lower {
-        color: $main;
-        padding: 20px;
+            p {
+                @include typo-style(700, 32px, 48px, -0.5px);
+                margin-top: getHeight(200px);
+            }
+
+            &.left {
+                background-color: #F0F0F0;
+
+                p {
+                    color: $main;
+                    text-align: right;
+                    margin-right: getWidth(40px);
+                }
+            }
+    
+            &.right {
+                background: linear-gradient(90deg, #0040BD -20.24%, rgba(95, 0, 189, 0.7) 135.79%);
+                
+                p {
+                    color: $white;
+                    text-align: left;
+                    margin-left: getWidth(40px);
+                }
+            }
+        }
+
+        
     }
 }

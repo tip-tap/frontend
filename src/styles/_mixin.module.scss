@@ -1,12 +1,35 @@
-@mixin text-ellipsis {
+$vw: 1920px;
+$vh: 1080px;
+
+@mixin textEllipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-@mixin flex-box($flex-direction, $align-items, $justify-content: space-between) {
+@mixin flexBox($flex-direction, $align-items, $justify-content: space-between) {
     display: flex;
     flex-direction: $flex-direction;
     align-items: $align-items;
     justify-content: $justify-content;
+}
+
+@mixin setBoxShadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+@mixin setWidth($width) {
+    width: 100vw*$width/$vw;
+}
+
+@mixin setHeight($height) {
+    height: 100vh*$height/$vh;
+}
+
+@function getWidth($width) {
+    @return 100vw*$width/$vw;
+}
+
+@function getHeight($height) {
+    @return 100vh*$height/$vh;
 }

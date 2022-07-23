@@ -1,12 +1,12 @@
 @import "../../main.module.scss";
 
 .wrapper {
-    @include flex-box(row, center);
+    @include flexBox(row, center);
     width: 100vw;
     height: 80px;
 
     .middle {
-        @include flex-box(row, center);
+        @include flexBox(row, center);
         width: 23vw;
 
         article {
@@ -24,12 +24,12 @@
     }
 
     .right {
-        @include flex-box(row, center);
+        @include flexBox(row, center);
         width: 11vw;
         margin-right: 3.125vw;
 
         article {
-            @include flex-box(column, center);
+            @include flexBox(column, center);
             height: 54px;
 
             &:hover {

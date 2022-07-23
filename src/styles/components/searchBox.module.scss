@@ -1,0 +1,27 @@
+@import "../main.module.scss";
+
+.box {
+    @include setWidth(400px);
+    @include setHeight(72px);
+    @include setBoxShadow();
+    @include flexBox(row, center, center);
+
+    background-color: $white;
+    padding-left: getWidth(40px);
+
+    input {
+        @include typo-style(700, 24px, 24px, -0.5px);
+        @include setWidth(250px);
+        color: $lightgray;
+        border: none;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &.main {
+        margin-top: getHeight(200px);
+        margin-left: getWidth(40px);
+    }
+}
