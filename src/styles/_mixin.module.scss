@@ -1,12 +1,16 @@
-@mixin text-ellipsis {
+@mixin textEllipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-@mixin flex-box($flex-direction, $align-items, $justify-content: space-between) {
+@mixin flexBox($flex-direction, $align-items, $justify-content: space-between) {
     display: flex;
     flex-direction: $flex-direction;
     align-items: $align-items;
     justify-content: $justify-content;
+}
+
+@mixin setBoxShadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
