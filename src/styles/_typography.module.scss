@@ -4,9 +4,9 @@ $main-font: "Noto Sans KR", sans-serif;
 
 @mixin typoStyle($weight, $size, $line-height, $letter, $color: $main) {
     font-family: $main-font;
-    font-size: $size;
+    font-size: toRem($size);
     font-weight: $weight;
-    line-height: $line-height;
-    letter-spacing: $letter;
+    line-height: toRem($line-height);
+    letter-spacing: toRem($letter);
     color: $color;
 }
