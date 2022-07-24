@@ -1,0 +1,19 @@
+@function removeUnit($value) {
+    @return ($value / ($value * 0 + 1));
+}
+
+@function toRem($px, $base: 16px) {
+    @return removeUnit($px / $base) * 1rem;
+}
+
+@function toEm($px, $base) {
+    @return removeUnit($px / $base) * 1em;
+}
+
+@function toVw($px, $vw: 1920px) {
+    @return removeUnit($px / $vw) * 100vw;
+}
+
+@function toVh($px, $vh: 1080px) {
+    @return removeUnit($px / $vh) * 100vh;
+}
