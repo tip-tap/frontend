@@ -2,10 +2,11 @@
 
 $main-font: "Noto Sans KR", sans-serif;
 
-@mixin typo-style($weight, $size, $line-height, $letter) {
+@mixin typoStyle($weight, $size, $line-height, $letter, $color: $main) {
     font-family: $main-font;
     font-size: $size;
     font-weight: $weight;
     line-height: $line-height;
     letter-spacing: $letter;
+    color: $color;
 }
