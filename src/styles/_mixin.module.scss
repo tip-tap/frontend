@@ -1,6 +1,3 @@
-$vw: 1920px;
-$vh: 1080px;
-
 @mixin textEllipsis {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -16,20 +13,4 @@ $vh: 1080px;
 
 @mixin setBoxShadow {
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-@mixin setWidth($width) {
-    width: 100vw*$width/$vw;
-}
-
-@mixin setHeight($height) {
-    height: 100vh*$height/$vh;
-}
-
-@function getWidth($width) {
-    @return 100vw*$width/$vw;
-}
-
-@function getHeight($height) {
-    @return 100vh*$height/$vh;
 }
