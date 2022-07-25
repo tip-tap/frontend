@@ -1,7 +1,7 @@
 @import "../../main.module.scss";
 
 .wrapper {
-    width: toRem(1920px);
+    width: 100vw;
     height: toRem(80px);
 
     display: grid; 
@@ -21,7 +21,7 @@
             padding: toRem(8px) 0;
 
             &.active {
-                border-bottom: 1px solid;
+                border-bottom: toRem(1px) solid;
                 border-color: $main;
                 
                 span {
@@ -43,7 +43,7 @@
             
             span {
                 @include typoStyle(700, 16px, 24px, -0.5px, $main);
-                margin-left: 7px;
+                margin-left: toRem(7px);
             }
         }   
     }
