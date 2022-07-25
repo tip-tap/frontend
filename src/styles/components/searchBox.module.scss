@@ -1,27 +1,61 @@
 @import "../main.module.scss";
 
 .box {
-    @include setWidth(400px);
-    @include setHeight(72px);
-    @include setBoxShadow();
     @include flexBox(row, center, center);
-
+    @include setBoxShadow();
+    border-radius: toRem(4px);
     background-color: $white;
-    padding-left: getWidth(40px);
 
     input {
-        @include typo-style(700, 24px, 24px, -0.5px);
-        @include setWidth(250px);
-        color: $lightgray;
+        margin-left: toRem(20px);
         border: none;
 
         &:focus {
             outline: none;
         }
+
+        &::placeholder {
+            color: #B7B7B7;
+        }        
     }
 
-    &.main {
-        margin-top: getHeight(200px);
-        margin-left: getWidth(40px);
+    &.shortBox {
+        width: toRem(400px);
+        height: toRem(72px);
+
+        input {
+            @include typoStyle(700, 24px, 36px, -0.5px, $main);
+            width: toRem(250px);    
+        }
+    }
+
+    &.longBox {
+        width: toRem(995px);
+        height: toRem(64px);
+
+        input {
+            @include typoStyle(500, 16px, 16px, -0.5px, #B7B7B7);
+            width: toRem(850px);
+        }
+
+    }
+}
+
+.list {
+    position: relative;
+    top: toRem(10px);
+
+    height: toRem(280px);
+    padding: toRem(20px) toRem(50px);
+    background-color: $white;
+    @include setBoxShadow();
+    border-radius: toRem(4px);
+
+    &.shortList {
+        width: toRem(400px);
+    }
+
+    &.longList {
+        width: toRem(995px);
     }
 }

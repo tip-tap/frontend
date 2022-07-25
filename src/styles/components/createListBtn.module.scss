@@ -2,20 +2,61 @@
 
 .btn {
     @include flexBox(row, center, center);
-    @include setWidth(226px);
-    @include setHeight(62px);
+
     @include setBoxShadow();
-    
-    background-color: $main;
-    border-radius: 999px;
-    border: none;
+    border-radius: toRem(4px);
 
-    @include typo-style(700, 20px, 30px, -0.5px);
-    color: $white;
-    text-align: right; 
-
-    &.main {
-        margin-top: getHeight(200px);
-        margin-left: getWidth(674px);
+    &:hover {
+        cursor: pointer;
     }
+
+    &.primaryXl {
+        width: toRem(400px);
+        height: toRem(72px);
+
+        background-color: $main;        
+        border: none;
+
+        span {
+            @include typoStyle(700, 20px, 30px, -0.5px, $white);
+            margin-left: toRem(8px);
+        }
+    }
+
+    &.primaryL {
+        width: toRem(300px);
+        height: toRem(48px);
+        
+        background-color: $main;
+        border: none;
+
+        span {
+            @include typoStyle(500, 16px, 16px, -0.5px, $white);
+        }
+    }
+
+    &.secondaryM {
+        width: toRem(160px);
+        height: toRem(48px);
+
+        background-color: $white;
+        border: toRem(2px) solid $main;
+
+        span {
+            @include typoStyle(500, 16px, 16px, -0.5px, $main);
+        }
+    }
+
+    &.defaultXl {
+        width: toRem(400px);
+        height: toRem(72px);
+
+        background-color: #D7D7D7;
+        border: none;
+
+        span {
+            @include typoStyle(700, 24px, 36px, -0.5px, $white);
+        }
+    }
+    
 }

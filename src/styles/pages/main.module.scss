@@ -1,41 +1,53 @@
 @import "../main.module.scss";
 
-div {
-    overflow-x: hidden;
+.wrapper {
+    width: 100vw;
 
     .greeting {
         @include flexBox(row, center, space-between);
-
+        
         article {
-            @include setWidth(941px);
-            @include setHeight(1000px);
-
-            p {
-                @include typo-style(700, 32px, 48px, -0.5px);
-                margin-top: getHeight(200px);
-            }
-
+            width: 50vw;
+            height: toRem(800px);
+            
             &.left {
+                @include flexBox(column, flex-end);
                 background-color: #F0F0F0;
+                padding-right: toVw(50px);
 
-                p {
-                    color: $main;
-                    text-align: right;
-                    margin-right: getWidth(40px);
+                .content {
+
+                    .text {
+                        color: $main;
+                        text-align: right;
+                    }
                 }
             }
     
             &.right {
+                @include flexBox(column, flex-start);
                 background: linear-gradient(90deg, #0040BD -20.24%, rgba(95, 0, 189, 0.7) 135.79%);
+                padding-left: toVw(50px);
                 
-                p {
-                    color: $white;
-                    text-align: left;
-                    margin-left: getWidth(40px);
+                .content {
+
+                    .text {
+                        color: $white;
+                        text-align: left;
+                    }
                 }
             }
-        }
 
-        
+            .content {
+                width: toRem(400px);
+                height: toRem(368px);
+                margin-top: 200px;
+
+                .text {
+                    @include typoStyle(700, 32px, 48px, -0.5px);
+                    margin-bottom: 200px;
+                }                
+            }
+        }
     }
 }

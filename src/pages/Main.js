@@ -7,25 +7,30 @@ import styles from "../styles/pages/main.module.scss";
 const Main = () => {
     return (
         <Layout>
-            <div>
+            <div className={styles.wrapper}>
                 <section className={styles.greeting}>
                     <article className={styles.left}>
-                        <p>
-                            내가 방문한 매물을
-                            <br/>
-                            보다 자세히 체크하고 싶다면?
-                        </p>
-                        <CreateListBtn pos="main" />
+                        <div className={styles.content}>
+                            <p className={styles.text}>
+                                내가 방문한 매물을
+                                <br/>
+                                보다 자세히 체크하고 싶다면?
+                            </p>
+                            <CreateListBtn type="primary-xl" />
+                        </div>
                     </article>
                     <article className={styles.right}>
-                        <p>
-                            검색을 통해서
-                            <br/>
-                            매물을 확인해 보세요
-                        </p>
-                        <SearchBox pos="main" />
+                        <div className={styles.content}>
+                            <p className={styles.text}>
+                                검색을 통해서
+                                <br/>
+                                매물을 확인해 보세요
+                            </p>
+                            <SearchBox type="short" />
+                        </div>
                     </article>
                 </section>
+                {/* Service Guideline Section */}
             </div>
         </Layout>
     );
