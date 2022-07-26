@@ -1,6 +1,8 @@
 @import "../../main.module.scss";
 
 .wrapper {
+    @include setBoxShadow();
+
     width: 100vw;
     height: toRem(80px);
 
