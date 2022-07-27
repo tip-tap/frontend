@@ -2,14 +2,14 @@
 
 .btn {
     @include flexBox(row, center, center);
-    @include setWidth(380px);
-    @include setHeight(64px);
+    width: toRem(380px);
+    height: toRem(64px);
 
     background: $white;
     border: 2px solid $main;
     border-radius: 999px;
     margin: 0 auto;
 
-    @include typo-style(500, 24px, 24px, 0.5px);
+    @include typoStyle(500, 24px, 24px, 0.5px);
     color: $main;
 }

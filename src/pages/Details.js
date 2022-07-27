@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Layout from "../components/common/Layout";
 import Slider from "react-slick";
-import GetListBtn from "../components/GetListBtn";
+// import GetListBtn from "../components/GetListBtn";
+import CreateListBtn from "../components/CreateListBtn";
 import styles from "../styles/pages/details.module.scss";
 import img1 from "../dummy/1.jpg";
 import img2 from "../dummy/2.jpg";
@@ -13,7 +14,27 @@ import img7 from "../dummy/7.jpg";
 
 
 const imgArr = [img1, img2, img3, img4, img5, img6, img7];
-const headers = ["기본정보", "옵션", "주변시설", "공인중개사"];
+const headers = ["기본정보", "옵션", "주변시설"];
+const basics = {
+    "매물 위치": "서울특별시 성동구 사근동 9가길 6",
+    "공인중개사": "인공인중개사",
+    "입주가능일": "즉시 입주 가능",
+    "연락처": "010-6855-1999",
+    "계약 형태": "반전세",
+    "보증금": "8,900만원",
+    "월세": "10만원",
+    "관리비": "5만원",
+    "해당층": "3층",
+    "평 수": "5평",
+    "방 수": "1개",
+    "내부 구조": "베란다분리형"
+};
+const options = {
+    "가스레인지": 0, "인덕션": 1, "전자레인지": 1, "냉장고": 1,
+    "세탁기": 1, "에어컨": 1, "인터넷": 1, "TV": 1,
+    "와이파이": 1, "옷장": 1, "수납장": 1, "신발장": 1,
+    "침대": 1, "책상": 1, "의자": 1, "건조대": 1
+};
 
 const Details = () => {
     const [isActive, setIsActive] = useState(0);
@@ -23,9 +44,10 @@ const Details = () => {
             <div className={styles.wrapper}>
                 <section className={styles.slider}>
                     <Slider
-                        infinite={false}
+                        infinite={true}
                         swipeToSlide={true}
                         slidesToShow={5}
+                        centerMode={true}
                     >
                         {imgArr.map((v, i) =>
                             <div key={i}>
@@ -35,7 +57,7 @@ const Details = () => {
                     </Slider>
                 </section>
                 <section className={styles.btn}>
-                    <GetListBtn />
+                    <CreateListBtn type="primary-xl-white-bg" />
                 </section>
                 <section className={styles.info}>
                     <article className={styles.header}>
@@ -44,7 +66,35 @@ const Details = () => {
                         )}
                     </article>
                     <article className={styles.body}>
-                        
+                        <section className={styles.basics}>
+                            <article className={styles.title}>기본 정보</article>
+                            <article className={styles.basicsGrid}>
+                                {Object.keys(basics).map((key, index) => (
+                                    <div className={styles.basicsItem}>
+                                        <div key={index} className={styles.itemTitle}>
+                                            {key}
+                                        </div>
+                                        <div className={styles.itemContent}>
+                                            {basics[key]}
+                                        </div>
+                                    </div>
+                                ))}
+                            </article>
+                        </section>
+                        <section className={styles.options}>
+                            <article className={styles.title}>옵션</article>
+                            <article className={styles.optionsGrid}>
+                                {Object.keys(options).map((key, index) => (
+                                    <div key={index} className={`${styles.optionsItem} ${options[key] ? styles.positive : styles.negative}`}>
+                                        {key}
+                                    </div>
+                                ))}
+                            </article>
+                        </section>
+                        <section className={styles.facilities}>
+                            <article className={styles.title}>주변 시설</article>
+                            
+                        </section>
                     </article>
                 </section>
             </div>

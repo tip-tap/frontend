@@ -1,44 +1,131 @@
 @import "../main.module.scss";
 
-.wrapper {
-    overflow-x: hidden;
+body {
+    overflow-x: hidden !important;
 
-    .slider {
-        .slide {
-            @include setHeight(440px);
-            width: getHeight(400px);
-    
-            object-fit: cover;
-        }
-    }
-    
-    .btn {
-        margin: getHeight(48px) 0;
-    }
+    .wrapper {
+        overflow-x: hidden;
+        overflow-y: hidden;
 
-    .info {
-        @include flexBox(column, center, center);
+        .slider {
 
-        .header {
-            span {
-                @include typo-style(500, 24px, 36px, -0.5px);
-                color: $darkgray;
-                margin: 0 getWidth(40px);
-
-                &.active {
-                    color: $main;
-                }
-
-                &:hover {
-                    cursor: pointer;
-                }
+            .slide {
+                height: toRem(440px);
+                width: toRem(400px);
+        
+                object-fit: cover;
             }
         }
+        
+        .btn {
+            margin: toRem(48px) 0;
+        }
 
-        .body {
-            @include setWidth(1200px);
-            border-top: 1px solid $main;
-            margin-top: getHeight(28px);
+        .info {
+            @include flexBox(column, center, center);
+
+            .header {
+                span {
+                    @include typoStyle(500, 24px, 36px, -0.5px);
+                    color: $darkgray;
+                    margin: 0 toRem(40px);
+
+                    &.active {
+                        color: $main;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+            .body {
+                width: 100%;
+                border-top: 1px solid $main;
+                margin-top: toRem(28px);
+
+                section {
+                    @include flexBox(column, flex-start, space-around);
+                    width: toRem(1200px);
+                    min-height: toRem(360px);
+                    padding: 0 toRem(170px);
+                    margin: toRem(20px) auto;
+
+                    .title {
+                        @include typoStyle(500, 24px, 24px, -0.5px, $main);
+                    }
+
+                    &.basics {
+
+                        .basicsGrid {
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            grid-gap: toRem(20px) toRem(20px);
+
+                            .basicsItem {
+                                @include setBoxShadow();
+
+                                display: grid;
+                                grid-template-columns: toRem(100px) 1fr;
+                                align-items: center;
+
+                                width: toRem(200px);
+                                height: toRem(54px);
+                                padding: toRem(16px) toRem(19px);
+                                background-color: $white;
+                                border-radius: 4px;
+
+                                &:nth-child(-n+4) {
+                                    width: toRem(420px) !important;
+                                    grid-column: span 2;
+                                }
+                                
+                                .itemTitle {
+                                    @include typoStyle(700, 16px, 16px, -0.5px, $main);
+                                }
+
+                                .itemContent {
+                                    @include typoStyle(500, 14px, 14px, -0.5px, #3F3D56);
+                                }
+                            }
+                        }
+                    }
+        
+                    &.options {
+                        .optionsGrid {
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            grid-gap: toRem(20px) toRem(20px);
+
+                            .optionsItem {
+                                @include typoStyle(500, 14px, 14px, -0.5px);
+                                @include flexBox(row, center, center);
+                                @include setBoxShadow();
+
+                                width: toRem(200px);
+                                height: toRem(54px);
+                                padding: toRem(8px);
+                                background-color: $white;
+                                
+                                &.positive {
+                                    color: $main;
+                                }
+
+                                &.negative {
+                                    color: #3F3D56;
+                                }
+                            }   
+                        }
+                    }
+        
+                    &.facilities {
+        
+                    }
+                }
+
+                
+            }
         }
     }
 }

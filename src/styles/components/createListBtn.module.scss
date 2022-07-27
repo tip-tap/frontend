@@ -23,6 +23,13 @@
         }
     }
 
+    &.whiteBg {
+        background-color: $white !important;
+        span {
+            color: $main !important;
+        }
+    }
+
     &.primaryL {
         width: toRem(300px);
         height: toRem(48px);
