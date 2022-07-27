@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Layout from "../components/common/Layout";
 import Slider from "react-slick";
 // import GetListBtn from "../components/GetListBtn";
 import CreateListBtn from "../components/CreateListBtn";
+import Map from "../components/Map";
 import styles from "../styles/pages/details.module.scss";
 import img1 from "../dummy/1.jpg";
 import img2 from "../dummy/2.jpg";
@@ -38,7 +39,38 @@ const options = {
 
 const Details = () => {
     const [isActive, setIsActive] = useState(0);
+    const [isFixed, setIsFixed] = useState(false);
+
+    const basicsRef = useRef();
+    const optionsRef = useRef();
+    const facilitiesRef = useRef();
     
+    const handleMiniHeader = (i) => {
+        setIsActive(i);
+
+        if (i === 0) {
+            basicsRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
+        } else if (i === 1) {
+            optionsRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
+        } else {
+            facilitiesRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
+        }
+    }
+
+    const handleScroll = () => {
+        console.log(window.scrollY);
+
+        if (window.scrollY > 680) {
+            setIsFixed(true);
+        } else {
+            setIsFixed(false);
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+    }, [])
+
     return (
         <Layout>
             <div className={styles.wrapper}>
@@ -60,13 +92,13 @@ const Details = () => {
                     <CreateListBtn type="primary-xl-white-bg" />
                 </section>
                 <section className={styles.info}>
-                    <article className={styles.header}>
+                    <article className={`${styles.header} ${isFixed && styles.fixedHeader}`}>
                         {headers.map((value, i) => 
-                            <span key={i} className={isActive === i && styles.active} onClick={() => { setIsActive(i); }}>{value}</span>
+                            <span key={i} className={isActive === i && styles.active} onClick={() => handleMiniHeader(i)}>{value}</span>
                         )}
                     </article>
                     <article className={styles.body}>
-                        <section className={styles.basics}>
+                        <section className={styles.basics} ref={basicsRef}>
                             <article className={styles.title}>기본 정보</article>
                             <article className={styles.basicsGrid}>
                                 {Object.keys(basics).map((key, index) => (
@@ -81,7 +113,7 @@ const Details = () => {
                                 ))}
                             </article>
                         </section>
-                        <section className={styles.options}>
+                        <section className={styles.options} ref={optionsRef}>
                             <article className={styles.title}>옵션</article>
                             <article className={styles.optionsGrid}>
                                 {Object.keys(options).map((key, index) => (
@@ -91,9 +123,11 @@ const Details = () => {
                                 ))}
                             </article>
                         </section>
-                        <section className={styles.facilities}>
+                        <section className={styles.facilities} ref={facilitiesRef}>
                             <article className={styles.title}>주변 시설</article>
-                            
+                        </section>
+                        <section className={styles.facilitiesMap}>
+                            <Map />
                         </section>
                     </article>
                 </section>

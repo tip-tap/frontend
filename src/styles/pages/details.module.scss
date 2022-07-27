@@ -18,13 +18,19 @@ body {
         }
         
         .btn {
-            margin: toRem(48px) 0;
+            margin: toRem(40px) 0 toRem(32px) 0;
         }
 
         .info {
             @include flexBox(column, center, center);
 
             .header {
+                @include setBoxShadow();
+                width: 100%;
+                padding: toRem(8px);
+                text-align: center;
+                background-color: $white;
+
                 span {
                     @include typoStyle(500, 24px, 36px, -0.5px);
                     color: $darkgray;
@@ -38,22 +44,26 @@ body {
                         cursor: pointer;
                     }
                 }
+
+                &.fixedHeader {
+                    position: fixed;
+                    top: 0;
+                }
             }
 
             .body {
                 width: 100%;
-                border-top: 1px solid $main;
-                margin-top: toRem(28px);
 
                 section {
                     @include flexBox(column, flex-start, space-around);
                     width: toRem(1200px);
-                    min-height: toRem(360px);
-                    padding: 0 toRem(170px);
-                    margin: toRem(20px) auto;
+                    min-height: toRem(62px);
+                    padding: toRem(20px) toRem(170px);
+                    margin: toRem(20px) auto toRem(10px) auto;
 
                     .title {
                         @include typoStyle(500, 24px, 24px, -0.5px, $main);
+                        margin-bottom: toRem(20px);
                     }
 
                     &.basics {
@@ -86,7 +96,7 @@ body {
                                 }
 
                                 .itemContent {
-                                    @include typoStyle(500, 14px, 14px, -0.5px, #3F3D56);
+                                    @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
                                 }
                             }
                         }
@@ -113,18 +123,24 @@ body {
                                 }
 
                                 &.negative {
-                                    color: #3F3D56;
+                                    color: $darkgray;
                                 }
                             }   
                         }
                     }
         
                     &.facilities {
-        
+                        padding-bottom: 0 !important;
+                        margin-bottom: 0 !important;
+                    }
+
+                    &.facilitiesMap {
+                        padding: 0 !important;
+                        width: 100vw;
+                        height: toRem(777px);
+                        background-color: $main;
                     }
                 }
-
-                
             }
         }
     }
