@@ -66,7 +66,6 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     }
 
     const handleKeyEvent = (e) => {
-        console.log(e);
         if (e.key === "ArrowDown") {
             setRefIdx(refIdx+1);
         } else if (e.key === "ArrowUp") {
@@ -91,18 +90,20 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     const handleDeposit = (value) => {
         let str = "";
         for (let i=0; i<2; i++) {
-            if (value[i] === 30000) {
-                str += "무제한";
-            } else if (value[i] > 9999) {
-                str += Math.floor(value[i] / 10000) + "억" + value[i] % 10000 + "만 원";
-            } else if (value[i] > 0) {
-                str += value[i] + "만 원";
+            if (value[i] <= 10) { // 100만 ~ 1000만 (100만 단위 10스텝)
+                str += value[i] * 100 + "만 원";
+            } else if (value[i] <= 34) { // 2000만 ~ 2억5천 (1000만 단위 24스텝)
+                str += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) + "억" : "";
+                str += (value[i] - 9) % 10 * 1000 + "만 원";
+            } else if (value[i] <= 47) { // 3억 ~ 9억 (5000만 단위 13스텝)
+                str += value[i] % 2 ? (value[i] - 29) / 2 + "억" : (value[i] - 30) / 2 + "억";
+                str += value[i] % 2 ? "" : "5000만 원";
             } else {
-                str += value[i] + "원";
+                str += "무제한";
             }
 
             if (value[0] === value[1]) { break; }
-            if (i === 0) { str += " ~ "; }
+            if (i === 0) {str += " ~ "; }
         }
         setDeposit(str);
     }
@@ -110,12 +111,14 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     const handleMonthly = (value) => {
         let str = "";
         for (let i=0; i<2; i++) {
-            if (value[i] === 100) {
-                str += "무제한";
-            } else if (value[i] !== 0) {
-                str += value[i] + "만 원";
+            if (value[i] <= 10) { // 5만 ~ 50만 (5만 단위 10스텝)
+                str += value[i] * 5 + "만 원";
+            } else if (value[i] <= 15) { // 60만 ~ 100만 (10만 단위 5스텝)
+                str += (value[i] - 5) * 10 + "만 원";
+            } else if (value[i] <= 19) { // 150만 ~ 300만 (50만 단위 4스텝)
+                str += (value[i] - 13) * 50 + "만 원";
             } else {
-                str += value[i] + "원";
+                str += "무제한";
             }
 
             if (value[0] === value[1]) { break; }
@@ -202,9 +205,8 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
                         <p className={styles.title}>보증금</p>
                         <p className={styles.range}>{deposit}</p>
                         <CustomSlider
-                            step={100}
                             min={0}
-                            max={30000}
+                            max={48}
                             handleValue={handleDeposit}
                         />
                         <div className={styles.index}>
@@ -217,9 +219,8 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
                         <p className={styles.title}>월세</p>
                         <p className={styles.range}>{monthly}</p>
                         <CustomSlider
-                            step={10}
                             min={0}
-                            max={100}
+                            max={20}
                             handleValue={handleMonthly}
                         />
                         <div className={styles.index}>
