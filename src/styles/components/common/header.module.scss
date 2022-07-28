@@ -1,46 +1,69 @@
 @import "../../main.module.scss";
 
 .wrapper {
-    @include flexBox(row, center);
+    @include setBoxShadow();
+
     width: 100vw;
-    height: 80px;
+    height: toRem(80px);
+
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr);
+
+    .left {
+        justify-self: start;
+    }
 
     .middle {
-        @include flexBox(row, center);
-        width: 23vw;
-
+        width: toRem(340px);
+        justify-self: center;
+        
         article {
+            @include flexBox(row, center, center);
+            width: toRem(160px);
+            padding: toRem(8px) 0;
+
+            &.active {
+                border-bottom: toRem(1px) solid;
+                border-color: $main;
+                
+                span {
+                    color: $main;
+                }
+            }
+
+            &.inactive {
+                border-color: $gray;
+
+                span {
+                    color: $gray;
+                }
+            }
+
             &:hover {
                 cursor: pointer;
-            }
+            } 
             
             span {
-                @include typoStyle(700, 20px, 26px, -0.5px);
-                color: $main;
-                margin-left: 7px;
+                @include typoStyle(700, 16px, 24px, -0.5px, $main);
+                margin-left: toRem(7px);
             }
-        }
-        
+        }   
     }
 
     .right {
-        @include flexBox(row, center);
-        width: 11vw;
-        margin-right: 3.125vw;
+        @include flexBox(row, center, space-between);
 
-        article {
-            @include flexBox(column, center);
-            height: 54px;
+        width: toRem(504px);
+        height: toRem(40px);
+        margin: auto toRem(20px) auto 0;
+        justify-self: end;
+        
+        span {
+            @include typoStyle(500, 16px, 24px, -0.5px, $main);
 
             &:hover {
                 cursor: pointer;
             }
-
-            span {
-                @include typoStyle(500, 10px, 10px, -0.5px);
-                color: $main;
-                text-align: center;
-            }
-        }        
+        }
     }
 }
