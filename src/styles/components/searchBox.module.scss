@@ -1,61 +1,229 @@
 @import "../main.module.scss";
 
-.box {
-    @include flexBox(row, center, center);
-    @include setBoxShadow();
-    border-radius: toRem(4px);
-    background-color: $white;
+.wrapper {
+    width: toRem(1200px);
+    margin: 0 auto;
 
-    input {
-        margin-left: toRem(20px);
-        border: none;
+    .box {
+        @include flexBox(row, center, center);
+        @include setBoxShadow();
+        border-radius: toRem(4px);
+        background-color: $white;
+        position: relative;
+        margin: 0 auto;
 
-        &:focus {
-            outline: none;
+        input {
+            margin-left: toRem(20px);
+            border: none;
+
+            &:focus {
+                outline: none;
+            }
+
+            &::placeholder {
+                color: #B7B7B7;
+            }        
         }
 
-        &::placeholder {
-            color: #B7B7B7;
-        }        
+        &.shortBox {
+            width: toRem(400px);
+            height: toRem(72px);
+
+            input {
+                @include typoStyle(700, 24px, 36px, -0.5px, $main);
+                width: toRem(250px);    
+            }
+        }
+
+        &.longBox {
+            width: toRem(995px);
+            height: toRem(64px);
+
+            input {
+                @include typoStyle(500, 16px, 16px, -0.5px, #B7B7B7);
+                width: toRem(850px);
+            }
+
+        }
     }
 
-    &.shortBox {
-        width: toRem(400px);
+    .list {
+        position: absolute;
+        top: toRem(80px);
+        z-index: 99;
+
+        height: toRem(280px);
+        padding: toRem(20px) toRem(50px);
+        background-color: $white;
+        @include setBoxShadow();
+        border-radius: toRem(4px);
+
+        &.shortList {
+            width: toRem(400px);
+        }
+
+        &.longList {
+            width: toRem(995px);
+        }
+    }
+
+    .filters {
+        @include flexBox(row, center);
+        width: toRem(994px);
         height: toRem(72px);
+        margin: toRem(24px) auto;
+        position: relative;
+        
+        .filter {
+            @include flexBox(column, flex-start);
+            @include setBoxShadow();
+            border-radius: 4px;
+            height: toRem(64px);
 
-        input {
-            @include typoStyle(700, 24px, 36px, -0.5px, $main);
-            width: toRem(250px);    
+            .title {
+                @include typoStyle(700, 16px, 16px, -0.5px, $main);
+            }
+            
+            /* Checkbox Filter */
+            &.checkOpt {
+                div {
+                    @include flexBox(row, center);
+                    
+                    input {
+                        display: none;
+                    }
+
+                    label {
+                        @include typoStyle(500, 14px, 18.2px, -0.5px, #b7b7b7);
+
+                        &.active {
+                            color: $main;
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+            }
+
+            &.first {
+                width: toRem(182px);
+                padding: toRem(10px) toRem(16px);
+
+                div {
+                    width: toRem(150px);
+                }
+            }
+
+            &.second {
+                width: toRem(244px);
+                padding: toRem(12px) toRem(16px);
+
+                div {
+                    width: toRem(212px);
+                }
+            }
+            /************/
+            
+            /* Slider Filter */
+            &.rangeOpt {
+                width: toRem(232px);
+                padding: toRem(8px) toRem(16px);
+                position: relative;
+
+                .range {
+                    @include typoStyle(700, 14px, 14px, -0.5px, $main);
+                    position: absolute;
+                    top: toRem(9px);
+                    right: toRem(16px);
+                }
+
+                .index {
+                    width: toRem(200px);
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+
+                    p {
+                        @include typoStyle(400, 12px, 12px, -0.5px, #3F3D56);
+
+                        &.start {
+                            text-align: left;
+                        }
+
+                        &.center {
+                            text-align: center;
+                        }
+
+                        &.end {
+                            text-align: right;
+                        }
+                    }
+                }
+            }
+            /************/
+
+            /* Extra Filter */
+            &.extraOpt {
+                width: toRem(64px);
+                padding: toRem(15px) toRem(9.5px);
+
+                &:hover {
+                    cursor: pointer;
+                }
+                
+                svg {
+                    margin: 0 auto;
+                }
+
+                .extra {
+                    @include typoStyle(500, 12px, 12px, -0.5px, $main);
+                }
+            }
+            /************/
         }
     }
 
-    &.longBox {
-        width: toRem(995px);
-        height: toRem(64px);
+    .extraList {
+        position: absolute;
+        z-index: 9;
 
-        input {
-            @include typoStyle(500, 16px, 16px, -0.5px, #B7B7B7);
-            width: toRem(850px);
+        @include flexBox(column, flex-start);
+        @include setBoxShadow();
+        width: toRem(1200px);
+        height: toRem(360px);
+        background-color: $white;
+        border-radius: 4px;
+        padding: toRem(20px) toRem(150px);
+
+        p {
+            @include typoStyle(500, 24px, 24px, -0.5px, $main);
         }
+        
+        .extraGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px);
+            margin: toRem(20px);
+            width: toRem(960px);
 
-    }
-}
+            .extraItem {
+                @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+                @include setBoxShadow();
+                @include flexBox(row, center, center);
+                
+                width: toRem(200px);
+                height: toRem(54px);
 
-.list {
-    position: relative;
-    top: toRem(10px);
+                &:hover {
+                    cursor: pointer;
+                }
 
-    height: toRem(280px);
-    padding: toRem(20px) toRem(50px);
-    background-color: $white;
-    @include setBoxShadow();
-    border-radius: toRem(4px);
-
-    &.shortList {
-        width: toRem(400px);
-    }
-
-    &.longList {
-        width: toRem(995px);
+                &.on {
+                    color: $main;
+                }
+            }
+        }
     }
 }
