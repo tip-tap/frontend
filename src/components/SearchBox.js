@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
@@ -6,10 +6,74 @@ import styles from "../styles/components/searchBox.module.scss";
 
 const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
+const { kakao } = window;
 
-const SearchBox = ({ type, withFilter }) => {
-    // 검색창 자동완성
+const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
+    /* 검색창 자동완성 */
     const [showList, setShowList] = useState(false);
+    const [timer, setTimer] = useState(null);
+    const [list, setList] = useState([]);
+    const [listError, setListError] = useState("");
+    const [refIdx, setRefIdx] = useState(-1);
+    const listRef = useRef(null);
+    let places = new kakao.maps.services.Places();
+
+    const onSearchCallback = (data, status, pagination) => {
+        setList([]);
+        setListError("");
+
+        if (status === kakao.maps.services.Status.OK) {
+            const listSet = new Set();
+            for (let i=0; i<data.length; i++) {   
+                listSet.add(data[i].road_address_name ? data[i].road_address_name : data[i].address_name);
+            }
+            setList(Array.from(listSet).slice(0, 5));
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            setListError("검색 결과가 존재하지 않습니다");
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            setListError("검색 결과 중 오류가 발생했습니다");
+        }
+    }
+
+    const confirmSearch = (address) => {
+        console.log("here");
+        let geocoder = new kakao.maps.services.Geocoder();
+        let callback = function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                setCenterLat(result[0].y);
+                setCenterLng(result[0].x);
+                setShowList(false);
+            }
+        }
+        geocoder.addressSearch(address, callback);
+    }
+
+    const onSearch = (keyword) => {
+        places.keywordSearch(keyword, onSearchCallback);
+        setShowList(true);
+    }
+
+    const debouncedChange = (e) => {
+        if (timer) { clearTimeout(timer); }
+        setTimer(setTimeout(() => {
+            if (e.target.value === "") {
+                setShowList(false);
+            }
+            else {
+                onSearch(e.target.value);
+            }
+        }, 500));
+    }
+
+    const handleKeyEvent = (e) => {
+        console.log(e);
+        if (e.key === "ArrowDown") {
+            setRefIdx(refIdx+1);
+        } else if (e.key === "ArrowUp") {
+            setRefIdx(refIdx-1);
+        }
+    }
+    /************/
 
     // 계약 형태 및 방 수 체크박스
     const [checks, setChecks] = useState(Array(7).fill(0));
@@ -70,13 +134,13 @@ const SearchBox = ({ type, withFilter }) => {
         "와이파이": 0, "옷장": 0, "수납장": 0, "신발장": 0,
         "침대": 0, "책상": 0, "의자": 0, "건조대": 0
     });
-    /************/
 
     const handleExtra = (v) => {
         let newOptions = {...extraOptions};
         newOptions[v] ? newOptions[v] = 0 : newOptions[v] = 1;
         setExtraOptions(newOptions);
     }
+    /************/
 
     return (
         <div className={styles.wrapper}>
@@ -86,13 +150,26 @@ const SearchBox = ({ type, withFilter }) => {
                 ${type === "long" && styles.longBox}
             `}>
                 <Search />
-                <input placeholder="지역을 입력해주세요"/>
+                <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
                 {showList && 
-                <div className={`
-                    ${styles.list}
-                    ${type === "short" && styles.shortList}
-                    ${type === "long" && styles.longList}
-                `}>
+                <div
+                    className={`
+                        ${styles.list}
+                        ${type === "short" && styles.shortList}
+                        ${type === "long" && styles.longList}
+                    `}
+                    id="list"
+                    ref={listRef}
+                >
+                    {listError !== "" ? 
+                        <p>{listError}</p>
+                    :
+                        list.map((v, i) => (
+                            <div key={i} className={refIdx === i && styles.focus} onClick={() => confirmSearch(v)}>
+                                {v}
+                            </div>
+                        ))
+                    }
                 </div>
                 }
             </section>

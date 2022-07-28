@@ -40,7 +40,7 @@
             height: toRem(64px);
 
             input {
-                @include typoStyle(500, 16px, 16px, -0.5px, #B7B7B7);
+                @include typoStyle(500, 16px, 16px, -0.5px, $main);
                 width: toRem(850px);
             }
 
@@ -58,12 +58,36 @@
         @include setBoxShadow();
         border-radius: toRem(4px);
 
+        @include typoStyle(500, 16px, 16px, -0.5px, $main);
+
         &.shortList {
             width: toRem(400px);
         }
 
         &.longList {
             width: toRem(995px);
+        }
+
+        div {
+            @include flexBox(row, center, flex-start);
+            width: 100%;
+            height: toRem(32px);
+            margin-bottom: toRem(20px);
+            padding-left: toRem(20px);
+
+            &:hover {
+                cursor: pointer;
+                background-color: #e9ecef;
+            }
+
+            &.focus {
+                background-color: #e9ecef;
+            }
+        }
+
+        p {
+            color: $lightgray !important;
+            text-align: center;
         }
     }
 
