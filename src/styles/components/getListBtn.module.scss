@@ -1,0 +1,15 @@
+@import "../main.module.scss";
+
+.btn {
+    @include flexBox(row, center, center);
+    width: toRem(380px);
+    height: toRem(64px);
+
+    background: $white;
+    border: 2px solid $main;
+    border-radius: 999px;
+    margin: 0 auto;
+
+    @include typoStyle(500, 24px, 24px, 0.5px);
+    color: $main;
+}
