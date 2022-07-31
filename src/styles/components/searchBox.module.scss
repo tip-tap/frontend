@@ -10,7 +10,6 @@
         border-radius: toRem(4px);
         background-color: $white;
         position: relative;
-        margin: 0 auto;
 
         input {
             margin-left: toRem(20px);
@@ -36,6 +35,7 @@
         }
 
         &.longBox {
+            margin: 0 auto;
             width: toRem(995px);
             height: toRem(64px);
 

@@ -72,7 +72,7 @@ const Details = () => {
     }, [])
 
     return (
-        <Layout>
+        <Layout withToggle={true} active={"none"}>
             <div className={styles.wrapper}>
                 <section className={styles.slider}>
                     <Slider

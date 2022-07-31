@@ -1,6 +1,7 @@
 @import "../main.module.scss";
 
 body {
+    overflow: auto !important;
     overflow-x: hidden !important;
 
     .wrapper {

@@ -9,7 +9,7 @@ const MapView = () => {
     const [centerLng, setCenterLng] = useState(-1);
 
     return (
-        <Layout>
+        <Layout withToggle={true} active={"none"}>
             <div className={styles.wrapper}>
                 <section className={styles.searchDiv}>
                     <SearchBox type="long" withFilter={true} setCenterLat={setCenterLat} setCenterLng={setCenterLng} />

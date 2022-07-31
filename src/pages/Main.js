@@ -6,7 +6,7 @@ import styles from "../styles/pages/main.module.scss";
 
 const Main = () => {
     return (
-        <Layout>
+        <Layout withToggle={true} active={"none"}>
             <div className={styles.wrapper}>
                 <section className={styles.greeting}>
                     <article className={styles.left}>
@@ -26,7 +26,7 @@ const Main = () => {
                                 <br/>
                                 매물을 확인해 보세요
                             </p>
-                            <SearchBox type="short" />
+                            <SearchBox type="short" withFilter={false} />
                         </div>
                     </article>
                 </section>
