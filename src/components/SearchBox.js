@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useRef } from "react";
 import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
@@ -6,10 +6,73 @@ import styles from "../styles/components/searchBox.module.scss";
 
 const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
+const { kakao } = window;
 
-const SearchBox = ({ type, withFilter }) => {
-    // 검색창 자동완성
+const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
+    /* 검색창 자동완성 */
     const [showList, setShowList] = useState(false);
+    const [timer, setTimer] = useState(null);
+    const [list, setList] = useState([]);
+    const [listError, setListError] = useState("");
+    const [refIdx, setRefIdx] = useState(-1);
+    const listRef = useRef(null);
+    let places = new kakao.maps.services.Places();
+
+    const onSearchCallback = (data, status, pagination) => {
+        setList([]);
+        setListError("");
+
+        if (status === kakao.maps.services.Status.OK) {
+            const listSet = new Set();
+            for (let i=0; i<data.length; i++) {   
+                listSet.add(data[i].road_address_name ? data[i].road_address_name : data[i].address_name);
+            }
+            setList(Array.from(listSet).slice(0, 5));
+        } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            setListError("검색 결과가 존재하지 않습니다");
+        } else if (status === kakao.maps.services.Status.ERROR) {
+            setListError("검색 결과 중 오류가 발생했습니다");
+        }
+    }
+
+    const confirmSearch = (address) => {
+        console.log("here");
+        let geocoder = new kakao.maps.services.Geocoder();
+        let callback = function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                setCenterLat(result[0].y);
+                setCenterLng(result[0].x);
+                setShowList(false);
+            }
+        }
+        geocoder.addressSearch(address, callback);
+    }
+
+    const onSearch = (keyword) => {
+        places.keywordSearch(keyword, onSearchCallback);
+        setShowList(true);
+    }
+
+    const debouncedChange = (e) => {
+        if (timer) { clearTimeout(timer); }
+        setTimer(setTimeout(() => {
+            if (e.target.value === "") {
+                setShowList(false);
+            }
+            else {
+                onSearch(e.target.value);
+            }
+        }, 500));
+    }
+
+    const handleKeyEvent = (e) => {
+        if (e.key === "ArrowDown") {
+            setRefIdx(refIdx+1);
+        } else if (e.key === "ArrowUp") {
+            setRefIdx(refIdx-1);
+        }
+    }
+    /************/
 
     // 계약 형태 및 방 수 체크박스
     const [checks, setChecks] = useState(Array(7).fill(0));
@@ -27,18 +90,20 @@ const SearchBox = ({ type, withFilter }) => {
     const handleDeposit = (value) => {
         let str = "";
         for (let i=0; i<2; i++) {
-            if (value[i] === 30000) {
-                str += "무제한";
-            } else if (value[i] > 9999) {
-                str += Math.floor(value[i] / 10000) + "억" + value[i] % 10000 + "만 원";
-            } else if (value[i] > 0) {
-                str += value[i] + "만 원";
+            if (value[i] <= 10) { // 100만 ~ 1000만 (100만 단위 10스텝)
+                str += value[i] * 100 + "만 원";
+            } else if (value[i] <= 34) { // 2000만 ~ 2억5천 (1000만 단위 24스텝)
+                str += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) + "억" : "";
+                str += (value[i] - 9) % 10 * 1000 + "만 원";
+            } else if (value[i] <= 47) { // 3억 ~ 9억 (5000만 단위 13스텝)
+                str += value[i] % 2 ? (value[i] - 29) / 2 + "억" : (value[i] - 30) / 2 + "억";
+                str += value[i] % 2 ? "" : "5000만 원";
             } else {
-                str += value[i] + "원";
+                str += "무제한";
             }
 
             if (value[0] === value[1]) { break; }
-            if (i === 0) { str += " ~ "; }
+            if (i === 0) {str += " ~ "; }
         }
         setDeposit(str);
     }
@@ -46,12 +111,14 @@ const SearchBox = ({ type, withFilter }) => {
     const handleMonthly = (value) => {
         let str = "";
         for (let i=0; i<2; i++) {
-            if (value[i] === 100) {
-                str += "무제한";
-            } else if (value[i] !== 0) {
-                str += value[i] + "만 원";
+            if (value[i] <= 10) { // 5만 ~ 50만 (5만 단위 10스텝)
+                str += value[i] * 5 + "만 원";
+            } else if (value[i] <= 15) { // 60만 ~ 100만 (10만 단위 5스텝)
+                str += (value[i] - 5) * 10 + "만 원";
+            } else if (value[i] <= 19) { // 150만 ~ 300만 (50만 단위 4스텝)
+                str += (value[i] - 13) * 50 + "만 원";
             } else {
-                str += value[i] + "원";
+                str += "무제한";
             }
 
             if (value[0] === value[1]) { break; }
@@ -70,13 +137,13 @@ const SearchBox = ({ type, withFilter }) => {
         "와이파이": 0, "옷장": 0, "수납장": 0, "신발장": 0,
         "침대": 0, "책상": 0, "의자": 0, "건조대": 0
     });
-    /************/
 
     const handleExtra = (v) => {
         let newOptions = {...extraOptions};
         newOptions[v] ? newOptions[v] = 0 : newOptions[v] = 1;
         setExtraOptions(newOptions);
     }
+    /************/
 
     return (
         <div className={styles.wrapper}>
@@ -86,13 +153,26 @@ const SearchBox = ({ type, withFilter }) => {
                 ${type === "long" && styles.longBox}
             `}>
                 <Search />
-                <input placeholder="지역을 입력해주세요"/>
+                <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
                 {showList && 
-                <div className={`
-                    ${styles.list}
-                    ${type === "short" && styles.shortList}
-                    ${type === "long" && styles.longList}
-                `}>
+                <div
+                    className={`
+                        ${styles.list}
+                        ${type === "short" && styles.shortList}
+                        ${type === "long" && styles.longList}
+                    `}
+                    id="list"
+                    ref={listRef}
+                >
+                    {listError !== "" ? 
+                        <p>{listError}</p>
+                    :
+                        list.map((v, i) => (
+                            <div key={i} className={refIdx === i && styles.focus} onClick={() => confirmSearch(v)}>
+                                {v}
+                            </div>
+                        ))
+                    }
                 </div>
                 }
             </section>
@@ -125,9 +205,8 @@ const SearchBox = ({ type, withFilter }) => {
                         <p className={styles.title}>보증금</p>
                         <p className={styles.range}>{deposit}</p>
                         <CustomSlider
-                            step={100}
                             min={0}
-                            max={30000}
+                            max={48}
                             handleValue={handleDeposit}
                         />
                         <div className={styles.index}>
@@ -140,9 +219,8 @@ const SearchBox = ({ type, withFilter }) => {
                         <p className={styles.title}>월세</p>
                         <p className={styles.range}>{monthly}</p>
                         <CustomSlider
-                            step={10}
                             min={0}
-                            max={100}
+                            max={20}
                             handleValue={handleMonthly}
                         />
                         <div className={styles.index}>
