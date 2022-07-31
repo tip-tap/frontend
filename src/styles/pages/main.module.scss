@@ -1,20 +1,53 @@
 @import "../main.module.scss";
 
-div {
+.wrapper {
     width: 100vw;
 
-    section {
-        @include flexBox(row, center, center);
-    }    
+    .greeting {
+        @include flexBox(row, center, space-between);
+        
+        article {
+            width: 50vw;
+            height: toRem(800px);
+            
+            &.left {
+                @include flexBox(column, flex-end);
+                background-color: #F0F0F0;
+                padding-right: toVw(50px);
 
-    .upper {
-        color: $white;
-        height: 560px;
-        background-color: $main;
-    }
+                .content {
 
-    .lower {
-        color: $main;
-        padding: 20px;
+                    .text {
+                        color: $main;
+                        text-align: right;
+                    }
+                }
+            }
+    
+            &.right {
+                @include flexBox(column, flex-start);
+                background: linear-gradient(90deg, #0040BD -20.24%, rgba(95, 0, 189, 0.7) 135.79%);
+                padding-left: toVw(50px);
+                
+                .content {
+
+                    .text {
+                        color: $white;
+                        text-align: left;
+                    }
+                }
+            }
+
+            .content {
+                width: toRem(400px);
+                height: toRem(368px);
+                margin-top: 200px;
+
+                .text {
+                    @include typoStyle(700, 32px, 48px, -0.5px);
+                    margin-bottom: 200px;
+                }                
+            }
+        }
     }
 }
