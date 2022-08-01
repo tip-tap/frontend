@@ -53,7 +53,7 @@ const Details = () => {
         } else if (i === 1) {
             optionsRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
         } else {
-            facilitiesRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
+            facilitiesRef.current?.scrollIntoView({behavior: "smooth", block: "start"});
         }
     }
 

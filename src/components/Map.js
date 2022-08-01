@@ -4,7 +4,7 @@ import styles from "../styles/components/map.module.scss";
 const { kakao } = window;
 let map;
 
-const Map = ({ centerLat, centerLng }) => {
+const Map = ({ centerLat = -1, centerLng = -1 }) => {
     const onValid = useCallback((pos) => {
         map.setCenter(new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
 
