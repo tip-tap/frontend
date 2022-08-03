@@ -1,0 +1,24 @@
+@import "../main.module.scss";
+
+body {
+    overflow: hidden !important;
+
+    .wrapper {
+        @include flexBox(column, center, center);
+        width: 100vw;
+    
+        .searchDiv {
+            @include flexBox(column, center, center);
+            margin-top: toRem(20px);
+        }
+
+        .listDiv{
+            @include flexBox (row, center,$justify-content:space-between);
+            flex-wrap: wrap;
+            margin-top: toRem(20px);
+            width: toRem(1200px);
+            margin-bottom: toRem(30px);
+        }
+    
+    }
+}

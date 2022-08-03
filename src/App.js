@@ -8,6 +8,12 @@ import Main from "./pages/Main";
 import Map from "./components/Map";
 import MapView from "./pages/MapView";
 import Details from "./pages/Details";
+import ListView from "./pages/ListView";
+import WishListView from "./pages/WishListView"
+import CreateChecklist from "./pages/CreateChecklist";
+import CompareChecklist from "./pages/CompareChecklist";
+import Sort from "./sort/Sort"
+
 
 function App() {
   return (
@@ -16,6 +22,12 @@ function App() {
       <Route path="/" element={<Main />} />
       <Route path="/map" element={<MapView />} />
       <Route path="/details" element={<Details />} />
+      <Route path="/list" element={<ListView />} />
+      <Route path="/wishlist" element={<WishListView />} />
+      <Route path="/createcl" element={<CreateChecklist />} />
+      <Route path="/compare" element={<CompareChecklist />} />
+      <Route path="/sort" element={<Sort />} />
+
     </Routes>
   );
 }

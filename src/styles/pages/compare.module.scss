@@ -1,0 +1,67 @@
+@import "../main.module.scss";
+
+
+
+body {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+
+    .headwrapper {
+        @include flexBox(row, center, flex-start);
+        width: 100vw;
+        height: toRem(116px);
+        padding-left: toRem(360px);
+
+        span{
+            @include typoStyle(500, 24px, 24px, -0.5px);
+            margin-right: toRem(53px);
+        }
+        input{
+            margin-right: toRem(8px);
+        }
+        label{
+            margin-right: toRem(43px);
+            @include typoStyle(500, 16px, 16px, -0.5px);
+        }
+        
+
+
+        }
+    .basicswrapper{
+        @include flexBox(row, flex-end, flex-start);
+
+
+        .basics{
+            height:toRem(343px);
+            width:toRem(95px);
+            padding-top: toRem(26px);
+            padding-left: toRem(8px);
+            padding-right: toRem(8px);
+            margin-left: toRem(246px);
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+            .basicsContent{
+                @include typoStyle(700, 16px, 16px, -0.5px);
+                margin-bottom: toRem(15px);
+                text-align: right;
+
+            }
+    
+        }
+        .checklistwrapper{
+            @include flexBox(row, center, flex-start);
+        }
+        
+
+
+
+
+    }
+
+    
+
+
+
+
+    }

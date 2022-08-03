@@ -1,0 +1,38 @@
+@import "../main.module.scss";
+
+.btn {
+    @include flexBox(row, center, center);
+
+    @include setBoxShadow();
+    border-radius: toRem(4px);
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.primaryL {
+        width: toRem(300px);
+        height: toRem(48px);
+        
+        background-color: $main;
+        border: none;
+
+        span {
+            @include typoStyle(500, 16px, 16px, -0.5px, $white);
+        }
+    }
+
+    &.secondaryM {
+        width: toRem(160px);
+        height: toRem(48px);
+
+        background-color: $main;
+        border: none;
+
+        span {
+            @include typoStyle(500, 16px, 16px, -0.5px, $white);
+        }
+    }
+
+    
+}

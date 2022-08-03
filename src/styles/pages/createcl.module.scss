@@ -1,0 +1,24 @@
+@import "../main.module.scss";
+
+
+
+body {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+
+    .wrapper {
+        @include flexBox(column, center, center);
+        width: 100vw;
+        
+        .imgwrapper{
+            @include flexBox(row, center, center);
+            height : toRem(104px);
+            width : toRem(880px);
+            background: #FFFFFF;
+            margin-top: toRem(46px);
+        }
+
+
+
+        }
+    }

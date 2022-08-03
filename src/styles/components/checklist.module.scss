@@ -1,0 +1,55 @@
+@import "../main.module.scss";
+
+.checklistwrapper{
+    @include flexBox(column, flex-start, flex-start);
+    margin-left: toRem(23px);
+    width: toRem(190px);
+    height: toRem(495px);
+    background: #FFFFFF;
+
+    .delete{
+        @include flexBox(column, flex-end, flex-start);
+        width: toRem(190px);
+        height: toRem(42px);
+    }
+
+    .itemwrapper{
+        width: toRem(190px);
+        height: toRem(453px);
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        .imagewrapper{
+            width: toRem(190px);
+            height: toRem(110px);
+    
+            .image{
+                width: toRem(190px);
+                height: toRem(110px);
+                object-fit: fill;
+            }
+        }
+        .contentwrapper{
+            @include typoStyle(400, 13px, 16.1px, -0.5px);
+            align-items: center;
+            padding-top: toRem(25px);
+            padding-left: toRem(8px);
+            padding-right: toRem(8px);
+    
+            .itemContent{
+                margin-bottom: toRem(15px);
+            }
+    
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+}

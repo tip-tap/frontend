@@ -1,0 +1,86 @@
+@import "../main.module.scss";
+
+
+
+body {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+
+    .wrapper {
+        overflow-x: hidden;
+        overflow-y: hidden;
+        height : toRem(400px);
+        width : toRem(380px);
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        margin-bottom: toRem(30px);
+
+        .imgposition{
+            position:relative;
+
+            .image {
+                width: toRem(380px);
+                height: toRem(228px);
+                object-fit: fill;
+            }
+            .heartbtn{
+                position: absolute;
+                top: toRem(13px);
+                left: toRem(317px);
+            }
+        }
+    
+        
+
+        .basicswrapper{
+            @include flexBox (row, center,$justify-content:space-around);
+            width: toRem(380px);
+            height: toRem(63px);
+            padding-left: toRem(35px);
+            padding-right: toRem(35px);
+
+            .basicsItem{
+                .itemTitle{
+                    @include typoStyle(700, 14px, 14px, -0.5px, $main);
+                    float: left;
+                }
+                .itemContent{
+                    @include typoStyle(700, 14px, 14px, -0.5px, $color: #3F3D56);
+                    float: left;
+                    margin-left: toRem(4px);
+                }
+            }
+        }
+
+        .detailsbtn{
+            @include flexBox (row, center,$justify-content:center);
+        }
+        .underwrapper{
+            @include flexBox (row, center, space-between);
+            width:toRem(380px);
+            height:toRem(61px);
+
+            .tagswrapper{
+                @include flexBox (row, center,$justify-content:flex-start);
+                @include typoStyle(400, 12px, 12px, -0.5px, $main);
+                width: toRem(270px);
+                height: toRem(61px);
+                padding-left: toRem(40px);
+    
+                .tag{
+                    margin-right: toRem(8px);
+                }
+            }
+            .timewrapper{
+                @include flexBox (row, center,$justify-content:flex-end);
+                width: toRem(110px);
+                height: toRem(61px);
+                padding-right: toRem(40px);
+
+                .time{
+                    @include typoStyle(400, 12px, 12px, -0.5px, #3F3D56);  
+                }
+            }
+        }
+        }
+    }
