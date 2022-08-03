@@ -1,0 +1,191 @@
+@import "../main.module.scss";
+
+body {
+    overflow: auto !important;
+    overflow-x: hidden !important;
+
+    .wrapper {
+        @include flexBox(column, center, center);
+        width: 100vw;
+        
+        .images {
+            @include flexBox(row, center, center);
+            background: #FFFFFF;
+            margin-top: toRem(46px);
+            margin-bottom: toRem(40px);
+        }
+
+        .subtitle {
+            @include typoStyle(500, 24px, 24px, -0.5px, $main);
+            margin-top: toRem(40px);
+            margin-bottom: toRem(20px);
+        }
+
+        .basics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+
+            .basicsItem {
+                @include setBoxShadow();
+
+                display: grid;
+                grid-template-columns: toRem(100px) 1fr;
+                align-items: center;
+
+                width: toRem(200px);
+                height: toRem(54px);
+                padding: toRem(16px) toRem(19px);
+                background-color: $white;
+                border-radius: 4px;
+
+                &:nth-child(-n+4) {
+                    width: toRem(420px) !important;
+                    grid-column: span 2;
+                }
+                
+                .basicsLabel {
+                    @include typoStyle(700, 16px, 16px, -0.5px, $main);
+                }
+                input {
+
+                }
+            }
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+
+            .optionsItem {
+                @include typoStyle(500, 14px, 14px, -0.5px, #B7B7B7);
+                @include flexBox(row, center, center);
+                @include setBoxShadow();
+
+                width: toRem(200px);
+                height: toRem(54px);
+                padding: toRem(8px);
+                background-color: $white;
+
+                input {
+                    display: none;
+                }
+
+                label {
+                    @include flexBox(row, center, center);
+                    width: 100%;
+                    height: 100%;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                &.active {
+                    color: $main;
+                }
+            }
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+            
+            .detailsItem {
+                position: relative;
+
+                width: toRem(200px);
+                height: toRem(70px);
+                padding: toRem(12px) toRem(16px);
+                
+                @include setBoxShadow();
+                background-color: $white;
+                border-radius: toRem(4px);
+
+                &:nth-child(n+11):nth-child(-n+13) {
+                    width: toRem(420px) !important;
+                    grid-column: span 2;
+                }
+
+                input {
+                    display: none;
+                }
+    
+                .detailsKey {
+                    @include typoStyle(700, 16px, 16px, -0.5px, #3F3D56);
+                    margin-bottom: toRem(16px);
+
+                    &.active {
+                        color: $main;
+                    }
+                }
+
+                .choices {
+                    @include flexBox(row, center, space-around);
+                    
+
+                    .detailsValue {
+                        @include typoStyle(500, 14px, 14px, -0.5px, #B7B7B7);
+        
+                        &:hover {
+                            cursor: pointer;
+                        }
+        
+                        &.active {
+                            color: $main;
+                        }
+                    }
+
+                    
+                }
+
+                .water-related {
+                    @include typoStyle(700, 14px, 14px, -0.5px, #3F3D56);
+                    position: absolute;
+                    top: toRem(13px);
+                    right: toRem(74px);
+                    
+                    span {
+                        margin: 0 toRem(10px);
+                    }
+                }
+            }
+        }
+
+        .buttons {
+            @include flexBox(row, center);
+            width: toRem(846px);
+            margin: toRem(60px) auto;
+
+
+            .btn {
+                @include setBoxShadow();
+                @include typoStyle(700, 24px, 36px, -0.5px, $white);
+                width: toRem(400px);
+                height: toRem(72px);
+                border-radius: toRem(4px);
+                border: none;
+
+
+                &.cancel {
+                    background-color: #D7D7D7;
+                }
+    
+                &.save {
+                    background-color: $main;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+            
+        }
+    }
+}
