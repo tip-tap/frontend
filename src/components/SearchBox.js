@@ -146,20 +146,31 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     /************/
 
     return (
-        <div className={styles.wrapper}>
+        <div className={`${styles.wrapper} ${type !== "mini" && styles.nonMiniWrapper}`}>
             <section className={`
                 ${styles.box}
                 ${type === "short" && styles.shortBox}
                 ${type === "long" && styles.longBox}
+                ${type === "mini" && styles.miniBox}
             `}>
-                <Search />
-                <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
+                {type !== "mini" ? 
+                <>
+                    <Search width="48" height="48" /> 
+                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
+                </>
+                :
+                <>
+                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
+                    <Search width="18" height="18" /> 
+                </>
+                }
                 {showList && 
                 <div
                     className={`
                         ${styles.list}
                         ${type === "short" && styles.shortList}
                         ${type === "long" && styles.longList}
+                        ${type === "mini" && styles.miniList}
                     `}
                     id="list"
                     ref={listRef}

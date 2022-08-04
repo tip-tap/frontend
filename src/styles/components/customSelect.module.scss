@@ -1,0 +1,5 @@
+@import "../main.module.scss";
+
+.typography {
+    @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+}

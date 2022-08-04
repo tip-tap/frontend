@@ -1,0 +1,56 @@
+@import "../main.module.scss";
+
+input {
+    @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);   
+
+    &::placeholder {
+        @include typoStyle(300, 14px, 14px, -0.5px, $gray);   
+    }
+}
+
+.unit {
+    @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+}
+
+.suffix {
+    position: absolute;
+    top: toRem(8px);
+    right: toRem(8px);
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.slider {
+    position: relative;
+    left: toRem(-8px);
+    top: toRem(20px);
+
+    @include setBoxShadow();
+    width: toRem(200px);
+    background-color: $white;
+    border-radius: toRem(4px);
+    padding: toRem(4px) toRem(8px);
+
+    .units {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        @include typoStyle(400, 12px, 12px, -0.5px, $darkgray);
+        
+        span {
+            &:nth-child(1) {
+                text-align: start;
+            }
+    
+            &:nth-child(2) {
+                text-align: center;
+            }
+
+            &:nth-child(3) {
+                text-align: end;
+            }
+        }
+        
+    }
+}
