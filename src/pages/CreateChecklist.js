@@ -5,7 +5,6 @@ import Layout from "../components/common/Layout";
 import ImgUpload from '../components/ImgUpload';
 import SearchBox from '../components/SearchBox';
 import CustomSelect from '../components/CustomSelect';
-import CustomInputSlider from '../components/CustomInputSlider';
 import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
 
@@ -36,15 +35,25 @@ const CreateChecklist = () => {
     const { register, watch, handleSubmit, getValues, control } = useForm();
 
     const onSubmit = () => {
-
+        let isValid = true;
+        const values = Object.values(getValues());
+        const len = values.length;
+        for (let i=0; i<len; i++) {
+            if (values[i] === "" || values[i] === null || values[i] === undefined) {
+                isValid = false;
+                break;
+            }
+        }
+        if (!isValid) {
+            setIsModalVisible(true);
+        } 
     }
 
     const [centerLat, setCenterLat] = useState(-1);
     const [centerLng, setCenterLng] = useState(-1);
-    const [isModalVisible, setIsModalVisible] = useState(true);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleDeposit = (e) => {
-        console.log(e.target.value);
         if (e.target.value.includes("억")) {
             const idx = e.target.value.indexOf("억");
             const curValue = parseInt(e.target.value.substr(0, idx) + e.target.value.substr(idx+2));
@@ -62,7 +71,6 @@ const CreateChecklist = () => {
         }
     }
 
-    console.log(watch("입주 가능일 옵션"), typeof watch("입주 가능일 옵션"));
     return(
         <>
             <Layout withToggle={true} active={"none"}>
@@ -277,13 +285,18 @@ const CreateChecklist = () => {
                         </section>
 
                         <section className={styles.buttons}>
-                            <button className={`${styles.btn} ${styles.cancel}`}>취소</button>
-                            <button className={`${styles.btn} ${styles.save}`}>저장</button>
+                            <button type="button" className={`${styles.btn} ${styles.cancel}`}>취소</button>
+                            <button type="submit" className={`${styles.btn} ${styles.save}`}>저장</button>
                         </section>
                     </form>
                 </div>
             </Layout>
-            <ConfirmModal isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} />
+            <ConfirmModal
+                title="입력되지 않은 항목이 있습니다"
+                content="그래도 저장하시겠습니까?"
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+            />
         </>
     );
 }
