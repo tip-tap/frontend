@@ -62,6 +62,7 @@ const CreateChecklist = () => {
         }
     }
 
+    console.log(watch("입주 가능일 옵션"), typeof watch("입주 가능일 옵션"));
     return(
         <>
             <Layout withToggle={true} active={"none"}>
@@ -95,6 +96,7 @@ const CreateChecklist = () => {
                                             onChange={(_, dateString) => {
                                                 onChange(dateString);
                                             }}
+                                            disabled={watch("입주 가능일 옵션") === undefined || watch("입주 가능일 옵션") === "직접 입력" ? false : true}
                                         />
                                     )}
                                 />

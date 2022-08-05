@@ -16,6 +16,7 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     const [listError, setListError] = useState("");
     const [refIdx, setRefIdx] = useState(-1);
     const listRef = useRef(null);
+    const inputRef = useRef(null);
     let places = new kakao.maps.services.Places();
 
     const onSearchCallback = (data, status, pagination) => {
@@ -36,7 +37,9 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     }
 
     const confirmSearch = (address) => {
-        console.log("here");
+        inputRef.current.value = address;
+        setRefIdx(-1);
+
         let geocoder = new kakao.maps.services.Geocoder();
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
@@ -68,8 +71,15 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     const handleKeyEvent = (e) => {
         if (e.key === "ArrowDown") {
             setRefIdx(refIdx+1);
-        } else if (e.key === "ArrowUp") {
+        }else if (e.key === "ArrowUp") {
             setRefIdx(refIdx-1);
+        } else if (e.key === "Enter") {
+            if (refIdx >= 0 && refIdx <= 4) {
+                e.target.value = list[refIdx];
+                setRefIdx(-1);
+                setShowList(false);
+                confirmSearch(e.target.value);
+            }
         }
     }
     /************/
@@ -156,11 +166,11 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
                 {type !== "mini" ? 
                 <>
                     <Search width="48" height="48" /> 
-                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
+                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent} ref={inputRef} />
                 </>
                 :
                 <>
-                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent}/>
+                    <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent} ref={inputRef} />
                     <Search width="18" height="18" /> 
                 </>
                 }
