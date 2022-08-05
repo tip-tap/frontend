@@ -145,16 +145,6 @@ body {
                         bottom: toRem(4px);
                         right: toRem(8px);
                     }
-
-
-                    &.withSlider {
-                        width: 100%;
-                        
-                        input {
-                            text-align: end !important;
-                        }
-
-                    }
                 }
             }
         }

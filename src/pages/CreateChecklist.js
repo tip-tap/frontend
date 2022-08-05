@@ -134,39 +134,42 @@ const CreateChecklist = () => {
                                     <label className={styles.unit}>만원</label>
                                 </div>
                             </article>
-                            <article className={styles.basicsItem}>
+                            <article className={`${styles.basicsItem} ${styles.selectCenter}`}>
                                 <div className={styles.basicsLabel}>월세</div>         
-                                <div className={`${styles.withUnits} ${styles.withSlider}`}>
                                 <Controller 
                                     control={control}
                                     name="월세"
                                     render={({field: { onChange }}) => (
-                                        <CustomInputSlider
-                                            min={0}
-                                            max={300}
-                                            text="만원"
+                                        <CustomSelect
+                                            defaultValue="0만원"
+                                            options={[
+                                                "0만원", "10만원", "15만원", "20만원", "25만원", "30만원", "35만원", "40만원", "45만원", "50만원",
+                                                "55만원", "60만원", "65만원", "70만원", "75만원", "80만원", "85만원", "90만원", "95만원", "100만원"
+                                            ]}
+                                            withAdd={true}
                                             onChange={onChange}
                                         />  
                                     )}
-                                />          
-                                </div>
+                                />         
                             </article>
-                            <article className={styles.basicsItem}>
+                            <article className={`${styles.basicsItem} ${styles.selectCenter}`}>
                                 <div className={styles.basicsLabel}>관리비</div>
-                                <div className={`${styles.withUnits} ${styles.withSlider}`}>     
                                     <Controller 
                                         control={control}
                                         name="관리비"
                                         render={({field: { onChange }}) => (
-                                            <CustomInputSlider
-                                                min={0}
-                                                max={50}
-                                                text="만원"
+                                            <CustomSelect
+                                                defaultValue="0만원"
+                                                options={[
+                                                    "0만원", "1만원", "2만원", "3만원", "4만원", "5만원", "6만원", "7만원", "8만원", "9만원", "10만원",
+                                                    "11만원", "12만원", "13만원", "14만원", "15만원", "16만원", "17만원", "18만원", "19만원", "20만원",
+                                                    "21만원", "22만원", "23만원", "24만원", "25만원", "26만원", "27만원", "28만원", "29만원", "30만원",
+                                                ]}
+                                                withAdd={true}
                                                 onChange={onChange}
-                                            />  
+                                            />   
                                         )}
                                     />
-                                </div>
                             </article>
 
                             <article className={`${styles.basicsItem} ${styles.selectCenter}`}>
@@ -184,22 +187,23 @@ const CreateChecklist = () => {
                                     )}
                                 />
                             </article>
-                            <article className={styles.basicsItem}>
-                                <div className={styles.basicsLabel}>평 수</div>
-                                <div className={`${styles.withUnits} ${styles.withSlider}`}>      
+                            <article className={`${styles.basicsItem} ${styles.selectCenter}`}>
+                                <div className={styles.basicsLabel}>평 수</div>  
                                     <Controller 
                                         control={control}
                                         name="평 수"
                                         render={({field: { onChange }}) => (
-                                            <CustomInputSlider
-                                                min={0}
-                                                max={50}
-                                                text="평"
+                                            <CustomSelect
+                                                defaultValue="0원"
+                                                options={[
+                                                    "0평", "1평", "2평", "3평", "4평", "5평", "6평", "7평", "8평", "9평", "10평",
+                                                    "11평", "12평", "13평", "14평", "15평", "16평", "17평", "18평", "19평", "20평"
+                                                ]}
+                                                withAdd={true}
                                                 onChange={onChange}
-                                            />  
+                                            />    
                                         )}
-                                    />                        
-                                </div>   
+                                    />               
                             </article>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>방 수</div>
