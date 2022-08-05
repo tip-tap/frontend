@@ -1,0 +1,33 @@
+@import "../main.module.scss";
+
+.container {
+    @include flexBox(row, center);
+    width: toRem(1000px);
+    padding-bottom: toRem(20px);
+    padding-top: toRem(20px);
+    
+    overflow: auto;
+    white-space: nowrap;
+    overflow-y: hidden;
+}
+.container::-webkit-scrollbar {
+    width: toRem(10px);
+    height: toRem(5px);
+  }
+  .container::-webkit-scrollbar-thumb {
+    background-color: #0040BD;
+    border-radius: toRem(10px);
+  }
+  .container::-webkit-scrollbar-track {
+    background-color: #B7B7B7;
+    border-radius: toRem(10px);
+  }
+
+.item {
+    list-style: none;
+    margin-right: toRem(5px);
+
+    &:hover {
+        cursor: pointer;
+    }
+}

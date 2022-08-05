@@ -3,43 +3,92 @@
 .checklistwrapper{
     @include flexBox(column, flex-start, flex-start);
     margin-left: toRem(23px);
-    width: toRem(190px);
-    height: toRem(495px);
+    width: toRem(193px);
     background: #FFFFFF;
 
     .delete{
         @include flexBox(column, flex-end, flex-start);
-        width: toRem(190px);
+        width: toRem(193px);
         height: toRem(42px);
     }
 
-    .itemwrapper{
-        width: toRem(190px);
+    .basicswrap{
+        width: toRem(193px);
         height: toRem(453px);
         background: #FFFFFF;
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        &:hover{
+            background-color: #F2F2F2;
+        }
+        &:active{
+            background-color: #F2F2F2;
+        }
 
         .imagewrapper{
-            width: toRem(190px);
+            width: toRem(193px);
             height: toRem(110px);
     
             .image{
-                width: toRem(190px);
+                width: toRem(193px);
                 height: toRem(110px);
                 object-fit: fill;
             }
         }
-        .contentwrapper{
+        .basicsContentWrap{
             @include typoStyle(400, 13px, 16.1px, -0.5px);
             align-items: center;
             padding-top: toRem(25px);
             padding-left: toRem(8px);
             padding-right: toRem(8px);
     
-            .itemContent{
+            .basicsContent{
                 margin-bottom: toRem(15px);
             }
+        }
+
+    }
+
+    .emptylist{
+        width: toRem(193px);
+        height: toRem(56px);
+    }
+
+    .optionswrap{
+        width: toRem(193px);
+        height: toRem(505px);
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        .optionsContentWrap{
+            @include typoStyle(400, 13px, 16.1px, -0.5px);
+            align-items: center;
+            padding-top: toRem(25px);
+            padding-left: toRem(8px);
+            padding-right: toRem(8px);
     
+            .optionsContent{
+                margin-bottom: toRem(15px);
+            }
+        }
+
+    }
+
+    .detailswrap{
+        width: toRem(193px);
+        height: toRem(445px);
+        background: #FFFFFF;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        .detailsContentWrap{
+            @include typoStyle(400, 13px, 16.1px, -0.5px);
+            align-items: center;
+            padding-top: toRem(25px);
+            padding-left: toRem(8px);
+            padding-right: toRem(8px);
+    
+            .detailsContent{
+                margin-bottom: toRem(15px);
+            }
         }
 
     }
