@@ -11,6 +11,7 @@ import ListView from "./pages/ListView";
 import WishListView from "./pages/WishListView";
 import CreateChecklist from "./pages/CreateChecklist";
 import CompareChecklist from "./pages/CompareChecklist";
+import CompareMapView from "./pages/CompareMapView";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/wishlist" element={<WishListView />} />
       <Route path="/createcl" element={<CreateChecklist />} />
       <Route path="/compare" element={<CompareChecklist />} />
+      <Route path="/compare_map" element={<CompareMapView />} />
     </Routes>
   );
 }
