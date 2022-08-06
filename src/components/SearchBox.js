@@ -95,6 +95,7 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
         let newChecks = [...checks];
         newChecks[index] = e.target.checked;
         setChecks(newChecks);
+        console.log(e.target.checked);
     }
 
     const handleDeposit = (value) => {

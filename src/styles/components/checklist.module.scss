@@ -1,0 +1,156 @@
+@import "../main.module.scss";
+
+.checklistwrapper{
+    @include flexBox(column, flex-start, flex-start);
+    margin-left: toRem(23px);
+    width: toRem(193px);
+    background: #FFFFFF;
+
+    .delete{
+        @include flexBox(column, flex-end, flex-start);
+        width: toRem(193px);
+        height: toRem(42px);
+        padding-left: toRem(3px);
+        .deleteButton{
+            width: toRem(20px);
+            height: toRem(20px);
+            border-radius: 100%;
+            border: #0040BD solid toRem(2.38px);
+            background-color: white;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+            padding: 0;
+            &:hover {
+                cursor: pointer;
+            }
+            &::after{
+                display: inline-block;
+                content: "\00d7";
+            }
+        }
+    }
+    .wangbasics{
+        @include flexBox(column, flex-start, flex-start);
+        height:toRem(499px);
+        width:toRem(193px);
+
+        .basicswrap{
+            width: toRem(193px);
+            height: toRem(453px);
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            &:hover{
+                background-color: #F2F2F2;
+            }
+            &:active{
+                background-color: #F2F2F2;
+            }
+    
+            .imagewrapper{
+                width: toRem(193px);
+                height: toRem(110px);
+        
+                .image{
+                    width: toRem(193px);
+                    height: toRem(110px);
+                    object-fit: fill;
+                }
+            }
+            .basicsContentWrap{
+                @include typoStyle(400, 13px, 16.1px, -0.5px);
+                align-items: center;
+                padding-top: toRem(25px);
+                padding-left: toRem(8px);
+                padding-right: toRem(8px);
+        
+                .basicsContent{
+                    margin-bottom: toRem(15px);
+                }
+            }
+            .emptylist{
+                width: toRem(193px);
+                height: toRem(46px);
+            }
+        }
+
+    }
+    
+    .wangoptions{
+        @include flexBox(column, flex-start, flex-start);
+        height:toRem(551px);
+        width:toRem(193px);
+        .optionswrap{
+            width: toRem(193px);
+            height: toRem(505px);
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            &:hover{
+                background-color: #F2F2F2;
+            }
+            &:active{
+                background-color: #F2F2F2;
+            }
+    
+            .optionsContentWrap{
+                @include typoStyle(400, 13px, 16.1px, -0.5px);
+                align-items: center;
+                padding-top: toRem(25px);
+                padding-left: toRem(8px);
+                padding-right: toRem(8px);
+        
+                .optionsContent{
+                    margin-bottom: toRem(15px);
+                }
+            }
+            .emptylist{
+                width: toRem(193px);
+                height: toRem(46px);
+            }
+            
+        }
+
+    }
+
+    
+    .wangdetails{
+        @include flexBox(column, flex-start, flex-start);
+        height:toRem(491px);
+        width:toRem(193px);
+        .detailswrap{
+            width: toRem(193px);
+            height: toRem(445px);
+            background: #FFFFFF;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            &:hover{
+                background-color: #F2F2F2;
+            }
+            &:active{
+                background-color: #F2F2F2;
+            }
+    
+            .detailsContentWrap{
+                @include typoStyle(400, 13px, 16.1px, -0.5px);
+                align-items: center;
+                padding-top: toRem(25px);
+                padding-left: toRem(8px);
+                padding-right: toRem(8px);
+        
+                .detailsContent{
+                    margin-bottom: toRem(15px);
+                }
+            }
+            .emptylist{
+                width: toRem(193px);
+                height: toRem(46px);
+            }
+        }
+
+    }
+    
+    .none{
+        display:none;
+    }
+
+
+
+
+}
