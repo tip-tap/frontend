@@ -7,7 +7,6 @@ import Test from "./pages/Test";
 import Main from "./pages/Main";
 import MapView from "./pages/MapView";
 import Details from "./pages/Details";
-import CreateChecklist from "./pages/CreateChecklist";
 import ListView from "./pages/ListView";
 import WishListView from "./pages/WishListView";
 import CreateChecklist from "./pages/CreateChecklist";
