@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import styles from "../styles/components/checklist.module.scss";
 import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
@@ -36,61 +36,62 @@ const checkdetails = {
 
 
 
+const Checklist = ({isChecked, whichChecked}) => {
 
+    const[isDelete,setIsDelete] = useState(0);
+    
+    const handleDelete = () =>{
+        console.log("되는거니");
+        alert("되는거니");
+    };
 
-const Checklist = () => {
     return(
         <div className={styles.checklistwrapper}>
-            <div className = {styles.delete}><Delete></Delete></div>
+            <div className = {styles.delete}><Delete onClick ={handleDelete}></Delete></div>
 
-            <div className = {styles.basicswrap}>
-                <div className={styles.imagewrapper}>
-                    <img className={styles.image} src = {RoomImage} alt = 'listimg'/>
-                </div>
-                <div className={styles.basicsContentWrap}>
-                    {Object.keys(checkbasics).map((key, index) => (
-                        <div className={styles.basicsContent}>
-                            {checkbasics[key]}
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className={styles.emptylist}></div>
-
-            <div className = {styles.optionswrap}>
-                <div className={styles.optionsContentWrap}>
-                    {Object.keys(checkoptions).map((key, index) => (
-                        <div className={styles.optionsContent}>
-                            {checkoptions[key]}
-                        </div>
-                    ))}
+            <div className={styles.wangbasics}>
+                <div className = {styles.basicswrap}>
+                    <div className={styles.imagewrapper}>
+                        <img className={styles.image} src = {RoomImage} alt = 'listimg'/>
+                    </div>
+                    <div className={styles.basicsContentWrap}>
+                        {Object.keys(checkbasics).map((key, index) => (
+                            <div className={styles.basicsContent}>
+                                {checkbasics[key]}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={styles.emptylist}></div>
                 </div>
             </div>
 
-            <div className={styles.emptylist}></div>
-
-            <div className = {styles.detailswrap}>
-                <div className={styles.detailsContentWrap}>
-                    {Object.keys(checkdetails).map((key, index) => (
-                        <div className={styles.detailsContent}>
-                            {checkdetails[key]}
-                        </div>
-                    ))}
+            <div className={isChecked[1] && whichChecked[1] ?styles.wangoptions :styles.none}>
+                <div className = {styles.optionswrap}>
+                    <div className={styles.optionsContentWrap}>
+                        {Object.keys(checkoptions).map((key, index) => (
+                            <div className={styles.optionsContent}>
+                                {checkoptions[key]}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={styles.emptylist}></div>
                 </div>
             </div>
             
-
-
-
-
-
-
-
-
-
-
-
+                
+            <div className = {isChecked[2] && whichChecked[2] ?styles.wangdetails :styles.none}>
+                <div className={styles.detailswrap}>
+                    <div className={styles.detailsContentWrap}>
+                        {Object.keys(checkdetails).map((key, index) => (
+                            <div className={styles.detailsContent}>
+                                {checkdetails[key]}
+                            </div>
+                        ))}
+                    </div>
+                    <div className={styles.emptylist}></div>
+                </div>
+            </div>
+        
         </div>
     );
 }

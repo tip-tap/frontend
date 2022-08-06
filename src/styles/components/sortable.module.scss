@@ -3,12 +3,12 @@
 .container {
     @include flexBox(row, center);
     width: toRem(1000px);
-    padding-bottom: toRem(20px);
     padding-top: toRem(20px);
     
     overflow: auto;
     white-space: nowrap;
     overflow-y: hidden;
+    margin-bottom: toRem(36px);
 }
 .container::-webkit-scrollbar {
     width: toRem(10px);

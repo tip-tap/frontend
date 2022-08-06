@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-import {render} from 'react-dom';
+import React, {useEffect} from 'react';
 import {sortableContainer, sortableElement} from 'react-sortable-hoc';
 import {arrayMoveImmutable} from 'array-move';
 import styles from "../styles/components/sortable.module.scss";
@@ -10,28 +9,32 @@ const SortableContainer = sortableContainer(({children}) => {
   return <ul className={styles.container}>{children}</ul>;
 });
 
-export default class App extends Component {
-  state = {
-    items: [<Checklist></Checklist>, <Checklist></Checklist>, <Checklist></Checklist>,<Checklist></Checklist>, <Checklist></Checklist>, <Checklist></Checklist>, <Checklist></Checklist>],
+
+const Sortable = ({isChecked, whichChecked}) => {
+  let items = [<Checklist isChecked={isChecked} whichChecked={whichChecked}/>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>,<Checklist isChecked={isChecked} whichChecked={whichChecked}></Checklist>];
+  let onSortEnd = ({oldIndex, newIndex}) => {
+    arrayMoveImmutable (items, oldIndex, newIndex);
   };
+  useEffect(()=>{
 
-  onSortEnd = ({oldIndex, newIndex}) => {
-    this.setState(({items}) => ({
-      items: arrayMoveImmutable (items, oldIndex, newIndex),
-    }));
-  };
+    onSortEnd = ({oldIndex, newIndex}) => {
+      arrayMoveImmutable (items, oldIndex, newIndex);
+    };
 
-  render() {
-    const {items} = this.state;
+  },items)
 
-    return (
-      <SortableContainer onSortEnd={this.onSortEnd} axis="x" lockAxis="x"> 
-        {items.map((value, index) => (
-          <SortableItem key={`item-${value}`} index={index} value={value}/>
-        ))}
-      </SortableContainer>
-    );
-  }
+
+  return (
+    <SortableContainer onSortEnd={onSortEnd} axis="x" lockAxis="x"> 
+      {items.map((value, index) => (
+        <SortableItem key={`item-${value}`} index={index} value={value}/>
+      ))}
+    </SortableContainer>
+  );
+
 }
 
-render(<App />, document.getElementById('root'));
+
+export default Sortable;
+
+
