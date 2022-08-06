@@ -1,20 +1,18 @@
 @import "../main.module.scss";
 
-body {
-    overflow: hidden !important;
+.wrapper {
+    @include flexBox(column, center, center);
+    width: 100vw;
+    height: calc(100vh - 5rem);
+    overflow: hidden;
 
-    .wrapper {
+    .searchDiv {
         @include flexBox(column, center, center);
+        margin-top: toRem(20px);
+    }
+
+    .mapDiv {
         width: 100vw;
-    
-        .searchDiv {
-            @include flexBox(column, center, center);
-            margin-top: toRem(20px);
-        }
-    
-        .mapDiv {
-            width: 100vw;
-            height: toRem(804px);
-        }
+        height: toRem(804px);
     }
 }
