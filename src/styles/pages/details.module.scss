@@ -88,6 +88,8 @@ body {
                                 background-color: $white;
                                 border-radius: 4px;
 
+                                position: relative;
+
                                 &:nth-child(-n+4) {
                                     width: toRem(420px) !important;
                                     grid-column: span 2;
@@ -99,6 +101,18 @@ body {
 
                                 .itemContent {
                                     @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+                                }
+
+                                .manner {
+                                    @include typoStyle(500, 14px, 14px, -0.5px, $main);
+
+                                    position: absolute;
+                                    right: toRem(17px);
+
+                                    .number {
+                                        color: #F88C29;
+                                        margin-left: toRem(10px);
+                                    }
                                 }
                             }
                         }

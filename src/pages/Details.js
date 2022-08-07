@@ -109,6 +109,12 @@ const Details = () => {
                                         <div className={styles.itemContent}>
                                             {basics[key]}
                                         </div>
+                                        {key === "공인중개사" &&
+                                        <div className={styles.manner}>
+                                            <span>매너온도</span>
+                                            <span className={styles.number}>40℃</span>
+                                        </div>
+                                        }
                                     </div>
                                 ))}
                             </article>
