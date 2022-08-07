@@ -20,18 +20,20 @@ const CompareMapView = () => {
 
     return (
         <Layout>
-            <div className={styles.title}>주변시설</div>
-            <div className={styles.markers}>
-                {markers.map((value, i) => {
-                    if (value) {
-                        return <div key={"markerOn" + i} onClick={() => handleMarkers(i)}>{MarkersOn[labels[i]]()}</div> 
-                    } else {
-                        return <div key={"markerOff" + i} onClick={() => handleMarkers(i)}>{MarkersOff[labels[i]]()}</div>
-                    }
-                })}
-            </div>
-            <div className={styles.map}>
-                <Map />
+            <div className={styles.wrapper}>
+                <div className={styles.title}>주변시설</div>
+                <div className={styles.markers}>
+                    {markers.map((value, i) => {
+                        if (value) {
+                            return <div key={"markerOn" + i} onClick={() => handleMarkers(i)}>{MarkersOn[labels[i]]()}</div> 
+                        } else {
+                            return <div key={"markerOff" + i} onClick={() => handleMarkers(i)}>{MarkersOff[labels[i]]()}</div>
+                        }
+                    })}
+                </div>
+                <div className={styles.map}>
+                    <Map centerLat={33.450701} centerLng={126.570667} markerFilter={markers.filter((_, i) => i !== 7)} />
+                </div>
             </div>
         </Layout>
     );

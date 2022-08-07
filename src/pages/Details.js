@@ -127,7 +127,7 @@ const Details = () => {
                             <article className={styles.title}>주변 시설</article>
                         </section>
                         <section className={styles.facilitiesMap}>
-                            <Map />
+                            <Map centerLat={33.450701} centerLng={126.570667} />
                         </section>
                     </article>
                 </section>

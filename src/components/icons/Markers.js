@@ -1,3 +1,27 @@
+import subway from "../../assets/markers/subway.svg";
+import mart from "../../assets/markers/mart.svg";
+import store from "../../assets/markers/store.svg";
+import restaurant from "../../assets/markers/restaurant.svg";
+import cafe from "../../assets/markers/cafe.svg";
+import hospital from "../../assets/markers/hospital.svg";
+import pharmacy from "../../assets/markers/pharmacy.svg";
+import visited from "../../assets/markers/visited.svg";
+import agent from "../../assets/markers/agent.svg";
+
+
+export const Markers = {
+    "지하철": subway,
+    "대형마트": mart,
+    "편의점": store,
+    "음식점": restaurant,
+    "카페": cafe,
+    "병원": hospital,
+    "약국": pharmacy,
+    "방문매물": visited,
+    "중개업소": agent
+}
+
+/*
 export const Markers = {
     "지하철": () => (
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -142,4 +166,4 @@ export const Markers = {
         </defs>
         </svg>
     )
-};
+};*/
