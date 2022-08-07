@@ -46,6 +46,10 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
                 setCenterLat(result[0].y);
                 setCenterLng(result[0].x);
                 setShowList(false);
+            } else {
+                setShowList(false);
+                alert("검색 결과가 존재하지 않습니다");
+                inputRef.current.value = "";
             }
         }
         geocoder.addressSearch(address, callback);
@@ -78,8 +82,8 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
                 e.target.value = list[refIdx];
                 setRefIdx(-1);
                 setShowList(false);
-                confirmSearch(e.target.value);
-            }
+            } 
+            confirmSearch(e.target.value);
         }
     }
     /************/
