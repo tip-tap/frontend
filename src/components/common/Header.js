@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styles from "../../styles/components/common/header.module.scss";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
 import { ReactComponent as Map } from "../../assets/map.svg";
@@ -12,14 +13,18 @@ const Header = ({ withToggle, active }) => {
             </section>
             {withToggle &&
             <section className={styles.middle}>
-                <article className={active === "map" ? styles.active : styles.inactive}>
-                    <Map fill={active === "map" ? "#0040BD" : "#CACACA"}/>
-                    <span>지도로 보기</span>
-                </article>
-                <article className={active === "list" ? styles.active : styles.inactive}>
-                    <List fill={active === "list" ? "#0040BD" : "#CACACA"} />
-                    <span>리스트로 보기</span>
-                </article>
+                <Link to="/map">
+                    <article className={active === "map" ? styles.active : styles.inactive}>
+                        <Map fill={active === "map" ? "#0040BD" : "#CACACA"}/>
+                        <span>지도로 보기</span>
+                    </article>
+                </Link>
+                <Link to ="/list">
+                    <article className={active === "list" ? styles.active : styles.inactive}>
+                        <List fill={active === "list" ? "#0040BD" : "#CACACA"} />
+                        <span>리스트로 보기</span>
+                    </article>
+                </Link>
             </section>
             }
             <section className={styles.right}>

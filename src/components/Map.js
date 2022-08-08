@@ -1,6 +1,8 @@
 import React, { useEffect, useCallback } from "react";
 import styles from "../styles/components/map.module.scss";
 import { Markers } from "./icons/Markers";
+import { useRecoilValue } from "recoil";
+import { centerPosState } from "../_recoil/state";
 
 const { kakao } = window;
 let map;
@@ -16,7 +18,11 @@ const categoryCode = {
     "AG2": "중개업소"
 };
 
-const Map = ({ centerLat = -1, centerLng = -1, markerFilter = Array(8).fill(1) }) => {
+const Map = ({ markerFilter = Array(8).fill(1) }) => {
+    // recoil 상태 관리
+    const {centerLat, centerLng} = useRecoilValue(centerPosState);
+    
+    // navigator.geolocation callback
     const onValid = useCallback((pos) => {
         map.setCenter(new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
 
@@ -33,6 +39,7 @@ const Map = ({ centerLat = -1, centerLng = -1, markerFilter = Array(8).fill(1) }
         }
     }, [centerLat, centerLng]);
 
+    // 지도에 마커 및 인포윈도우 표시
     const displayMarker = (position, category, place) => {
         // 마커 생성
         let markerImage = new kakao.maps.MarkerImage(Markers[categoryCode[category]], new kakao.maps.Size(36, 36));

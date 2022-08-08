@@ -1,14 +1,20 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
+import { useSetRecoilState, useRecoilState } from "recoil";
+import { centerPosState, searchInputState } from "../_recoil/state";
 
 const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
-const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
+const SearchBox = ({ type, withFilter }) => {
+    /* recoil 상태 관리 */
+    const setCenterPos = useSetRecoilState(centerPosState);
+    const [searchInput, setSearchInput] = useRecoilState(searchInputState);
+
     /* 검색창 자동완성 */
     const [showList, setShowList] = useState(false);
     const [timer, setTimer] = useState(null);
@@ -38,16 +44,15 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
 
     const confirmSearch = (address) => {
         inputRef.current.value = address;
+        setSearchInput(address);
         setRefIdx(-1);
+        setShowList(false);
 
         let geocoder = new kakao.maps.services.Geocoder();
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
-                setCenterLat(result[0].y);
-                setCenterLng(result[0].x);
-                setShowList(false);
+                setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
             } else {
-                setShowList(false);
                 alert("검색 결과가 존재하지 않습니다");
                 inputRef.current.value = "";
             }
@@ -80,8 +85,6 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
         } else if (e.key === "Enter") {
             if (refIdx >= 0 && refIdx <= 4) {
                 e.target.value = list[refIdx];
-                setRefIdx(-1);
-                setShowList(false);
             } 
             confirmSearch(e.target.value);
         }
@@ -159,6 +162,13 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
         setExtraOptions(newOptions);
     }
     /************/
+
+    useEffect(() => {
+        console.log(searchInput);
+        if (searchInput !== "") {
+            inputRef.current.value = searchInput;
+        }
+    }, [searchInput]);
 
     return (
         <div className={`${styles.wrapper} ${type !== "mini" && styles.nonMiniWrapper}`}>
