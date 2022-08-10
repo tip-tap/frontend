@@ -222,9 +222,13 @@ const CreateChecklist = () => {
     }
 
     const deleteImage = async () => {
-        // 이미지 삭제 (체크리스트) 500 ERROR 🚨
-        await axios.delete("http://localhost:8000/api/v1/image/", {
-            image: ""
+        // 이미지 삭제 (체크리스트) SUCCESS ✅
+        await axios({
+            method: "delete",
+            url: "http://localhost:8000/api/v1/image/",
+            data: {
+                image: "/media/image/8/a74be9d8821d4d899cf7612e2e40e351.jpg"
+            }
         })
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
@@ -233,7 +237,7 @@ const CreateChecklist = () => {
     /************/
 
     const onSubmit = () => {
-        postChecklist(); // api test
+        // postChecklist(); // api test
         // putChecklist(); // api test
         // postImage(); // api test
         // deleteImage(); // api test
