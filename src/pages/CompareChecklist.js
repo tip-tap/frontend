@@ -5,6 +5,7 @@ import CreateListBtn from "../components/CreateListBtn";
 import styles from "../styles/pages/compare.module.scss";
 import Sortable from "../components/Sortable"
 import Toggle from "../components/common/Toggle";
+import axios from "axios";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -18,6 +19,29 @@ const checkdetails = ["곰팡이","누수","벌레","균열","방음","창문 �
 
 
 const CompareChecklist  = () => {
+    /* API TEST */
+    const getAllChecklist = async () => {
+        // 체크리스트 조회 SUCCESS ✅
+        await axios.get("http://localhost:8000/api/v1/checklist/")
+        .then((res) => {
+            console.log(res);
+            console.log(res.data);
+        })
+        .catch((err) => console.log(err))
+    }
+
+    const getOneChecklist = async () => {
+        const checklist_id = 2; // dummy
+        // 체크리스트 한개 조회 SUCCESS ✅
+        await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
+        .then((res) => {
+            console.log(res);
+            console.log(res.data);
+        })
+        .catch((err) => console.log(err))
+
+    }
+    /************/
 
     const[isChecked, setIsChecked] = useState(Array(3).fill(false));
     const[whichChecked, setWhichChecked] = useState(Array(3).fill(0));
@@ -51,10 +75,6 @@ const CompareChecklist  = () => {
        }
     }
 
-    useEffect(()=>{
-        window.addEventListener("scroll",handleScroll);
-    },[])
-
     useEffect(() =>{
         if(isSwitch===true){
             if(isChecked[0]===true && position===0){
@@ -71,7 +91,11 @@ const CompareChecklist  = () => {
                 }
             }
         }     
-    },[isChecked,whichChecked])
+
+        window.addEventListener("scroll",handleScroll);
+        getAllChecklist(); // api test
+        getOneChecklist(); // api test
+    },[isChecked, whichChecked, isSwitch, position])
 
 
     return (

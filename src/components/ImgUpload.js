@@ -11,7 +11,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ImgUpload = () => {
+const ImgUpload = ({ setImages }) => {
   const btnRef = useRef();
 
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -33,6 +33,12 @@ const ImgUpload = () => {
 
   const handleChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    
+    const newImages = [];
+    newFileList.forEach((v) => {
+      newImages.push(v.originFileObj);
+    });
+    setImages(newImages);
   }
   
   useEffect(() => {

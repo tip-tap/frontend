@@ -7,7 +7,7 @@ import styles from "../styles/pages/main.module.scss";
 import axios from "axios";
 
 const Main = () => {
-
+    /* API TEST */
     const getRooms = async () => {
         const firstLat = 37.5665;
         const firstLng = 126.97423268424383;
@@ -17,12 +17,16 @@ const Main = () => {
 
         const thirdLat = 37.56820802746253;
         const thirdLng = 126.98363800062684;
-        await axios.get(`http://182.221.99.250:8000/api/v1/rooms/?location=[[${firstLat},${firstLng}],[${secondLat},${secondLng}],[${thirdLat},${thirdLng}]]`)
+
+        // 매물 조회 SUCCESS ✅
+        await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${firstLat},${firstLng}],[${secondLat},${secondLng}],[${thirdLat},${thirdLng}]]`)
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
+    /************/
+
     useEffect(() => {
-        getRooms();
+        getRooms(); // api test
     });
     return (
         <Layout>

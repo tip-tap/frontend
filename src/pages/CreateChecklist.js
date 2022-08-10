@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { useForm, Controller } from "react-hook-form";
 import styles from "../styles/pages/createcl.module.scss";
 import Layout from "../components/common/Layout";
@@ -7,6 +7,7 @@ import SearchBox from '../components/SearchBox';
 import CustomSelect from '../components/CustomSelect';
 import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
+import axios from "axios";
 
 const options = [
     "가스레인지", "인덕션", "전자레인지", "냉장고",
@@ -34,7 +35,209 @@ const details = {
 const CreateChecklist = () => {
     const { register, watch, handleSubmit, getValues, control } = useForm();
 
+    const postChecklist = async () => {
+        /* API TEST */
+        console.log(images);
+        // 체크리스트 저장 (방법 1) SUCCESS ✅
+        // multiple images post?! 🤔
+        await axios.post("http://localhost:8000/api/v1/checklist/", {
+                roomInfo: {
+                    "basicInfo_location_x": 33.450701,
+                    "basicInfo_location_y": 126.570667,
+                    "basicInfo_brokerAgency": "안녕부동산",
+                    "basicInfo_move_in_date": "문의조정가능",
+                    "basicInfo_brokerAgency_contact": "010-3849-8829",
+                    "basicInfo_room_type": "J",
+                    "basicInfo_deposit":  10000000,
+                    "basicInfo_monthly_rent": 500000,
+                    "basicInfo_maintenance_fee": 1,
+                    "basicInfo_floor": 1,
+                    "basicInfo_area": 8,
+                    "basicInfo_number_of_rooms": 1.5,
+                    "basicInfo_interior_structure": "L",
+                    "option_gas_stove": false,
+                    "option_induction": false,
+                    "option_microwave": false,
+                    "option_refrigerator": false,
+                    "option_washing_machine": false,
+                    "option_air_conditioner": false,
+                    "option_internet": false,
+                    "option_tv": false,
+                    "option_wifi": false,
+                    "option_closet": false,
+                    "option_cabinet": false,
+                    "option_shoe_rack": false,
+                    "option_bed": false,
+                    "option_desk": false,
+                    "option_chair": false,
+                    "option_drying_rack": false,
+                    "detailInfo_is_moldy": false,
+                    "detailInfo_is_leak": false,
+                    "detailInfo_is_bug": false,
+                    "detailInfo_is_crack": false,
+                    "detailInfo_soundproof": "A",
+                    "detailInfo_window_size": "L",
+                    "detailInfo_main_direction": "E",
+                    "detailInfo_ventilator": "S",
+                    "detailInfo_ventilation": "B",
+                    "detailInfo_external_noise": "L",
+                    "detailInfo_water_pressure": "W",
+                    "detailInfo_drainage": "S",
+                    "detailInfo_hot_water": "S"
+                },
+                room: null,
+                image: images[0]
+            }
+            , {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+
+        /*
+        // 체크리스트 저장 (방법 2) SUCCESS ✅
+        await axios.post("http://localhost:8000/api/v1/checklist/", {
+            roomInfo: {
+                "basicInfo_location_x": 33.450701,
+                "basicInfo_location_y": 126.570667,
+                "basicInfo_brokerAgency": "안녕부동산",
+                "basicInfo_move_in_date": "문의조정가능",
+                "basicInfo_brokerAgency_contact": "010-3849-8829",
+                "basicInfo_room_type": "J",
+                "basicInfo_deposit":  10000000,
+                "basicInfo_monthly_rent": 500000,
+                "basicInfo_maintenance_fee": 1,
+                "basicInfo_floor": 1,
+                "basicInfo_area": 8,
+                "basicInfo_number_of_rooms": 1.5,
+                "basicInfo_interior_structure": "L",
+                "option_gas_stove": false,
+                "option_induction": false,
+                "option_microwave": false,
+                "option_refrigerator": false,
+                "option_washing_machine": false,
+                "option_air_conditioner": false,
+                "option_internet": false,
+                "option_tv": false,
+                "option_wifi": false,
+                "option_closet": false,
+                "option_cabinet": false,
+                "option_shoe_rack": false,
+                "option_bed": false,
+                "option_desk": false,
+                "option_chair": false,
+                "option_drying_rack": false,
+                "detailInfo_is_moldy": false,
+                "detailInfo_is_leak": false,
+                "detailInfo_is_bug": false,
+                "detailInfo_is_crack": false,
+                "detailInfo_soundproof": "A",
+                "detailInfo_window_size": "L",
+                "detailInfo_main_direction": "E",
+                "detailInfo_ventilator": "S",
+                "detailInfo_ventilation": "B",
+                "detailInfo_external_noise": "L",
+                "detailInfo_water_pressure": "W",
+                "detailInfo_drainage": "S",
+                "detailInfo_hot_water": "S"
+            },
+            room: null,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+        */
+    }
+
+    const putChecklist = async () => {
+        const checklist_id = 2; // dummy
+        
+        // 체크리스트 수정 SUCCESS ✅
+        // cf. room 및 images 필드 변경 불가
+        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, {
+            roomInfo: {
+                "basicInfo_location_x": 33.450701,
+                "basicInfo_location_y": 126.570667,
+                "basicInfo_brokerAgency": "하이부동산",
+                "basicInfo_move_in_date": "문의조정가능",
+                "basicInfo_brokerAgency_contact": "010-3849-8829",
+                "basicInfo_room_type": "J",
+                "basicInfo_deposit":  10000000,
+                "basicInfo_monthly_rent": 500000,
+                "basicInfo_maintenance_fee": 1,
+                "basicInfo_floor": 1,
+                "basicInfo_area": 8,
+                "basicInfo_number_of_rooms": 1.5,
+                "basicInfo_interior_structure": "L",
+                "option_gas_stove": false,
+                "option_induction": false,
+                "option_microwave": false,
+                "option_refrigerator": false,
+                "option_washing_machine": false,
+                "option_air_conditioner": false,
+                "option_internet": false,
+                "option_tv": false,
+                "option_wifi": false,
+                "option_closet": false,
+                "option_cabinet": false,
+                "option_shoe_rack": false,
+                "option_bed": false,
+                "option_desk": false,
+                "option_chair": false,
+                "option_drying_rack": false,
+                "detailInfo_is_moldy": false,
+                "detailInfo_is_leak": false,
+                "detailInfo_is_bug": false,
+                "detailInfo_is_crack": false,
+                "detailInfo_soundproof": "A",
+                "detailInfo_window_size": "L",
+                "detailInfo_main_direction": "E",
+                "detailInfo_ventilator": "S",
+                "detailInfo_ventilation": "B",
+                "detailInfo_external_noise": "L",
+                "detailInfo_water_pressure": "W",
+                "detailInfo_drainage": "S",
+                "detailInfo_hot_water": "S"
+            }
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
+    const [images, setImages] = useState([]);
+
+    const postImage = () => {
+        const checklist_id = 2; // dummy
+
+        images.forEach(async (v) => {
+            // 이미지 추가 (체크리스트) SUCCESS ✅
+            await axios.post("http://localhost:8000/api/v1/image/", {
+            checklist_id,
+            image: v
+            }, {
+                headers: { "Content-Type": "multipart/form-data" }
+            })
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err))
+        })
+    }
+
+    const deleteImage = async () => {
+        // 이미지 삭제 (체크리스트) 500 ERROR 🚨
+        await axios.delete("http://localhost:8000/api/v1/image/", {
+            image: ""
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
+    /************/
+
     const onSubmit = () => {
+        postChecklist(); // api test
+        // putChecklist(); // api test
+        // postImage(); // api test
+        // deleteImage(); // api test
+
         let isValid = true;
         const values = Object.values(getValues());
         const len = values.length;
@@ -76,7 +279,7 @@ const CreateChecklist = () => {
                     <button className={styles.confirm}>매물 확정하기</button>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <section className={styles.images}>
-                            <ImgUpload />
+                            <ImgUpload setImages={setImages} />
                         </section>
 
                         <p className={styles.subtitle}>기본 정보</p>
