@@ -12,19 +12,15 @@
         height: toRem(42px);
         padding-left: toRem(3px);
         .deleteButton{
-            width: toRem(20px);
-            height: toRem(20px);
-            border-radius: 100%;
-            border: #0040BD solid toRem(2.38px);
-            background-color: white;
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-            padding: 0;
-            &:hover {
+            border: none;
+            outline: none;
+            background-color: $white;
+
+            &:hover{
                 cursor: pointer;
             }
-            &::after{
-                display: inline-block;
-                content: "\00d7";
+            svg{
+                pointer-events: none;
             }
         }
     }
@@ -154,3 +150,4 @@
 
 
 }
+
