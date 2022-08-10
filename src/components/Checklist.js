@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "../styles/components/checklist.module.scss";
 import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
+import ConfirmModal from '../components/ConfirmModal';
 
 const checkbasics = {
     "매물 위치": "서울특별시 성동구 사근동 9가길 6",
@@ -38,16 +39,24 @@ const checkdetails = {
 
 const Checklist = ({isChecked, whichChecked}) => {
 
-    const[isDelete,setIsDelete] = useState(0);
-    
+    const [isDelete, setIsDelete] = useState(false);
+    <ConfirmModal
+            title="체크리스트가 삭제됩니다"
+            content="그래도 삭제하시겠습니까?"
+            isModalVisible={isDelete}
+            setIsModalVisible={setIsDelete}
+            />
     const handleDelete = () =>{
-        console.log("되는거니");
-        alert("되는거니");
+        setIsDelete(true);
     };
 
     return(
         <div className={styles.checklistwrapper}>
-            <div className = {styles.delete}><Delete onClick ={handleDelete}></Delete></div>
+            <div className = {styles.delete}>
+                <button className = {styles.deleteButton} onClick ={handleDelete}>
+                    <Delete/>
+                </button>
+            </div>
 
             <div className={styles.wangbasics}>
                 <div className = {styles.basicswrap}>

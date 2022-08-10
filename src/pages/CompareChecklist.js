@@ -5,7 +5,7 @@ import styles from "../styles/pages/compare.module.scss";
 import Sortable from "../components/Sortable"
 
 
-const headers = ["기본정보","옵션","세부정보"]
+const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
 "보증금","월세","관리비","해당층","평 수","방 수","내부 구조"]
 const checkoptions = [
@@ -77,11 +77,12 @@ const CompareChecklist  = () => {
         <Layout withToggle={true} active={"none"}>
             <div className={`${styles.headwrapper} ${isFixed && styles.fixedHeader}`}>
                 <span className={styles.infotitle}>보고싶은 정보들</span>
-
+                <input type = "checkbox" id ={0} checked = {true} onClick ={(e)=> handleCheck(e,0) } ></input>
+                <label id ={0}>{'기본정보'}</label>
                 {headers.map((value,i) =>
                     <>
-                        <input type = "checkbox" id ={i} onClick ={(e)=> handleCheck(e,i) } ></input>
-                        <label id ={i}>{value}</label>
+                        <input type = "checkbox" id ={i+1} onClick ={(e)=> handleCheck(e,i+1) } ></input>
+                        <label id ={i+1}>{value}</label>
                     </>
                 )}
                 <CreateListBtn type = "secondary-m"/>
