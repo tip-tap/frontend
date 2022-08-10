@@ -1,22 +1,31 @@
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
+import { useSetRecoilState, useRecoilState } from "recoil";
+import { centerPosState, searchInputState, checksState, depositState, monthlyState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
 
 const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
-const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
+const SearchBox = ({ type, withFilter }) => {
+    // 지도 중심좌표
+    const setCenterPos = useSetRecoilState(centerPosState);
+    
     /* 검색창 자동완성 */
+    const [searchInput, setSearchInput] = useRecoilState(searchInputState);
+
     const [showList, setShowList] = useState(false);
     const [timer, setTimer] = useState(null);
     const [list, setList] = useState([]);
     const [listError, setListError] = useState("");
     const [refIdx, setRefIdx] = useState(-1);
+    
     const listRef = useRef(null);
     const inputRef = useRef(null);
+    
     let places = new kakao.maps.services.Places();
 
     const onSearchCallback = (data, status, pagination) => {
@@ -38,14 +47,17 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
 
     const confirmSearch = (address) => {
         inputRef.current.value = address;
+        setSearchInput(address);
         setRefIdx(-1);
+        setShowList(false);
 
         let geocoder = new kakao.maps.services.Geocoder();
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
-                setCenterLat(result[0].y);
-                setCenterLng(result[0].x);
-                setShowList(false);
+                setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
+            } else {
+                alert("검색 결과가 존재하지 않습니다");
+                inputRef.current.value = "";
             }
         }
         geocoder.addressSearch(address, callback);
@@ -76,20 +88,20 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
         } else if (e.key === "Enter") {
             if (refIdx >= 0 && refIdx <= 4) {
                 e.target.value = list[refIdx];
-                setRefIdx(-1);
-                setShowList(false);
-                confirmSearch(e.target.value);
-            }
+            } 
+            confirmSearch(e.target.value);
         }
     }
     /************/
 
     // 계약 형태 및 방 수 체크박스
-    const [checks, setChecks] = useState(Array(7).fill(0));
+    const [checks, setChecks] = useRecoilState(checksState);
 
     /* 보증금 및 월세 슬라이더 */
-    const [deposit, setDeposit] = useState("");
-    const [monthly, setMonthly] = useState([]);
+    const [deposit, setDeposit] = useRecoilState(depositState);
+    const [monthly, setMonthly] = useRecoilState(monthlyState);
+    const setDepositValue = useSetRecoilState(depositValueState);
+    const setMonthlyValue = useSetRecoilState(monthlyValueState);
 
     const handleCheckbox = (e, index) => {
         let newChecks = [...checks];
@@ -99,6 +111,8 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     }
 
     const handleDeposit = (value) => {
+        setDepositValue(value);
+
         let str = "";
         for (let i=0; i<2; i++) {
             if (value[i] <= 10) { // 100만 ~ 1000만 (100만 단위 10스텝)
@@ -120,6 +134,8 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
     }
 
     const handleMonthly = (value) => {
+        setMonthlyValue(value);
+        
         let str = "";
         for (let i=0; i<2; i++) {
             if (value[i] <= 10) { // 5만 ~ 50만 (5만 단위 10스텝)
@@ -142,12 +158,7 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
 
     /* 추가 필터 */
     const [showExtra, setShowExtra] = useState(false);
-    const [extraOptions, setExtraOptions] = useState({
-        "가스레인지": 0, "인덕션": 0, "전자레인지": 0, "냉장고": 0,
-        "세탁기": 0, "에어컨": 0, "인터넷": 0, "TV": 0,
-        "와이파이": 0, "옷장": 0, "수납장": 0, "신발장": 0,
-        "침대": 0, "책상": 0, "의자": 0, "건조대": 0
-    });
+    const [extraOptions, setExtraOptions] = useRecoilState(extraOptionsState);
 
     const handleExtra = (v) => {
         let newOptions = {...extraOptions};
@@ -155,6 +166,12 @@ const SearchBox = ({ type, withFilter, setCenterLat, setCenterLng }) => {
         setExtraOptions(newOptions);
     }
     /************/
+
+    useEffect(() => {
+        if (type === "long" && searchInput !== "") {
+            inputRef.current.value = searchInput;
+        }
+    }, [type, searchInput]);
 
     return (
         <div className={`${styles.wrapper} ${type !== "mini" && styles.nonMiniWrapper}`}>

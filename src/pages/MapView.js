@@ -1,21 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "../components/common/Layout";
 import SearchBox from "../components/SearchBox";
 import Map from "../components/Map";
 import styles from "../styles/pages/mapView.module.scss";
 
 const MapView = () => {
-    const [centerLat, setCenterLat] = useState(-1);
-    const [centerLng, setCenterLng] = useState(-1);
-
     return (
-        <Layout withToggle={true} active={"none"}>
+        <Layout withToggle={true} active={"map"}>
             <div className={styles.wrapper}>
                 <section className={styles.searchDiv}>
-                    <SearchBox type="long" withFilter={true} setCenterLat={setCenterLat} setCenterLng={setCenterLng} />
+                    <SearchBox type="long" withFilter={true} />
                 </section>
                 <section className={styles.mapDiv}>
-                    <Map centerLat={centerLat} centerLng={centerLng}/>
+                    <Map />
                 </section>
             </div>
         </Layout>

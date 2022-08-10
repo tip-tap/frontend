@@ -49,8 +49,6 @@ const CreateChecklist = () => {
         } 
     }
 
-    const [centerLat, setCenterLat] = useState(-1);
-    const [centerLng, setCenterLng] = useState(-1);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handleDeposit = (e) => {
@@ -85,7 +83,7 @@ const CreateChecklist = () => {
                         <section className={styles.basics}>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>매물 위치</div>
-                                <SearchBox type="mini" withFilter={false} setCenterLat={setCenterLat} setCenterLng={setCenterLng} />  
+                                <SearchBox type="mini" withFilter={false} />  
                             </article>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>공인중개사</div>
