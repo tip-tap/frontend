@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import CreateListBtn from "../components/CreateListBtn";
 import styles from "../styles/pages/compare.module.scss";
 import Sortable from "../components/Sortable"
-
+import Toggle from "../components/common/Toggle";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -74,7 +75,10 @@ const CompareChecklist  = () => {
 
 
     return (
-        <Layout withToggle={true} active={"none"}>
+        <Layout active="check">
+            <div className={styles.toggle}>
+                <Toggle active="list" mapLink="/compare_map" listLink="/compare_list" />
+            </div>
             <div className={`${styles.headwrapper} ${isFixed && styles.fixedHeader}`}>
                 <span className={styles.infotitle}>보고싶은 정보들</span>
                 <input type = "checkbox" id ={0} checked = {true} onClick ={(e)=> handleCheck(e,0) } ></input>
@@ -85,7 +89,9 @@ const CompareChecklist  = () => {
                         <label id ={i+1}>{value}</label>
                     </>
                 )}
-                <CreateListBtn type = "secondary-m"/>
+                <Link to="/create_checklist">
+                    <CreateListBtn type = "secondary-m"/>
+                </Link>
             </div>
 
 

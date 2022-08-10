@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
@@ -11,6 +12,8 @@ const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
 const SearchBox = ({ type, withFilter }) => {
+    const navigate = useNavigate();
+
     // 지도 중심좌표
     const setCenterPos = useSetRecoilState(centerPosState);
     
@@ -61,6 +64,8 @@ const SearchBox = ({ type, withFilter }) => {
             }
         }
         geocoder.addressSearch(address, callback);
+
+        navigate("/map");
     }
 
     const onSearch = (keyword) => {

@@ -6,6 +6,7 @@ import { MarkersOn } from "../components/icons/MarkersOn";
 import { MarkersOff } from "../components/icons/MarkersOff"
 import { ReactComponent as Heart } from "../assets/heart.svg";
 import styles from "../styles/pages/compareMapView.module.scss";
+import Toggle from "../components/common/Toggle";
 
 const labels = ["지하철", "대형마트", "편의점", "음식점", "카페", "병원", "약국", "방문매물", "중개업소"];
 
@@ -19,7 +20,10 @@ const CompareMapView = () => {
     }
 
     return (
-        <Layout>
+        <Layout active="check">
+            <div className={styles.toggle}>
+                <Toggle active="map" mapLink="/compare_map" listLink="/compare_list" />
+            </div>
             <div className={styles.wrapper}>
                 <div className={styles.title}>주변시설</div>
                 <div className={styles.markers}>

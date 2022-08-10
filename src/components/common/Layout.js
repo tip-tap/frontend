@@ -1,10 +1,10 @@
 import React from "react";
 import Header from "./Header";
 
-const Layout = ({ withToggle = true, active = "none", children }) => {
+const Layout = ({ active, children }) => {
     return (
         <>
-            <Header withToggle={withToggle} active={active}/>
+            <Header active={active} />
             { children }
         </>
     )

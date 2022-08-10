@@ -1,5 +1,9 @@
 @import "../main.module.scss";
 
+.toggle {
+    margin-top: toRem(20px);
+}
+
 .wrapper {
     width: 100vw;
     height: calc(100vh - 5rem);

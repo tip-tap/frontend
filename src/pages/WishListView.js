@@ -3,14 +3,13 @@ import styles from "../styles/pages/wishlistview.module.scss";
 import SearchBox  from "../components/SearchBox";
 import Layout from "../components/common/Layout";
 import WishList from "../components/WishList";
+import Toggle from "../components/common/Toggle";
 
-const WishListView = () => {
+const WishListView = ({active = "list"}) => {
     return(
-        <Layout withToggle={true} active={"none"}>
+        <Layout active="wish">
             <div className = {styles.wrapper}>
-                <section className={styles.searchDiv}>
-                    <SearchBox type="long" withFilter={true} />
-                </section>
+                <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
                 <section className = {styles.listDiv}>
                     <WishList id={1} />
                     <WishList id={2} />

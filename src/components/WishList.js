@@ -1,10 +1,10 @@
 import React, { useState , useEffect } from "react";
+import { Link } from "react-router-dom";
 import styles from "../styles/components/wishlist.module.scss";
 import RoomImage from "../dummy/room.png";
 import DetailsBtn from "../components/DetailsBtn";
 import CreateListBtn from "../components/CreateListBtn";
 import HeartBtn from "../components/HeartBtn";
-
 
 const basics = {
     "원룸": "5평",
@@ -21,7 +21,7 @@ const tags = {
 
 const time = "2일전";
 
-const WishList = ({ id, centerLat, centerLng }) => {
+const WishList = ({ id }) => {
 
     return (
         <>
@@ -46,7 +46,9 @@ const WishList = ({ id, centerLat, centerLng }) => {
                     ))}
                 </div>
                 <div className = {styles.detailsbtn}>
-                    <CreateListBtn type = "secondary-m"/>
+                    <Link to="/create_checklist">
+                        <CreateListBtn type = "secondary-m"/>
+                    </Link>
                     <DetailsBtn type="secondary-m" />
                 </div>
                 <div className={styles.underwrapper}>

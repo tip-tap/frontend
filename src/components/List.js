@@ -20,7 +20,7 @@ const tags = {
 
 const time = "2일전";
 
-const List = ({ id, centerLat, centerLng }) => {
+const List = ({ id }) => {
 
     return (
         <>

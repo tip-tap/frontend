@@ -6,6 +6,10 @@
     height: calc(100vh - 5rem);
     overflow: hidden;
 
+    &.extraPad {
+        padding-top: toRem(20px);
+    }
+
     .searchDiv {
         @include flexBox(column, center, center);
         margin-top: toRem(20px);
@@ -14,5 +18,6 @@
     .mapDiv {
         width: 100vw;
         height: toRem(804px);
+        margin-top: toRem(20px);
     }
 }

@@ -5,7 +5,6 @@ import "slick-carousel/slick/slick-theme.css";
 import "./styles/main.module.scss";
 import 'antd/dist/antd.min.css';
 import { Route, Routes } from "react-router-dom";
-import Test from "./pages/Test";
 import Main from "./pages/Main";
 import MapView from "./pages/MapView";
 import Details from "./pages/Details";
@@ -19,14 +18,14 @@ function App() {
   return (
     <RecoilRoot>
       <Routes>
-        <Route path="/test" element={<Test />} />
         <Route path="/" element={<Main />} />
-        <Route path="/map" element={<MapView />} />
-        <Route path="/details" element={<Details />} />
+        <Route path="/map" element={<MapView type="normal" />} />
         <Route path="/list" element={<ListView />} />
+        <Route path="/details" element={<Details />} />
+        <Route path="/wishmap" element={<MapView type="wish" />} />
         <Route path="/wishlist" element={<WishListView />} />
-        <Route path="/createcl" element={<CreateChecklist />} />
-        <Route path="/compare" element={<CompareChecklist />} />
+        <Route path="/create_checklist" element={<CreateChecklist />} />
+        <Route path="/compare_list" element={<CompareChecklist />} />
         <Route path="/compare_map" element={<CompareMapView />} />
       </Routes>
     </RecoilRoot>

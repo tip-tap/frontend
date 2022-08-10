@@ -71,7 +71,7 @@ const CreateChecklist = () => {
 
     return(
         <>
-            <Layout withToggle={true} active={"none"}>
+            <Layout>
                 <div className = {styles.wrapper}>
                     <button className={styles.confirm}>매물 확정하기</button>
                     <form onSubmit={handleSubmit(onSubmit)}>

@@ -60,7 +60,15 @@
         justify-self: end;
         
         span {
-            @include typoStyle(500, 16px, 24px, -0.5px, $main);
+            @include typoStyle(500, 16px, 24px, -0.5px);
+
+            &.active {
+                color: $main;
+            }
+
+            &.inactive {
+                color: $gray;
+            }
 
             &:hover {
                 cursor: pointer;

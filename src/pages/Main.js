@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import CreateListBtn from "../components/CreateListBtn";
 import SearchBox from "../components/SearchBox";
 import styles from "../styles/pages/main.module.scss";
+import axios from "axios";
 
 const Main = () => {
+
+    const getRooms = async () => {
+        const firstLat = 37.5665;
+        const firstLng = 126.97423268424383;
+
+        const secondLat = 37.566783658885626;
+        const secondLng = 126.97865792991867;
+
+        const thirdLat = 37.56820802746253;
+        const thirdLng = 126.98363800062684;
+        await axios.get(`http://182.221.99.250:8000/api/v1/rooms/?location=[[${firstLat},${firstLng}],[${secondLat},${secondLng}],[${thirdLat},${thirdLng}]]`)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+    useEffect(() => {
+        getRooms();
+    });
     return (
-        <Layout withToggle={true} active={"none"}>
+        <Layout>
             <div className={styles.wrapper}>
                 <section className={styles.greeting}>
                     <article className={styles.left}>
@@ -16,7 +35,9 @@ const Main = () => {
                                 <br/>
                                 보다 자세히 체크하고 싶다면?
                             </p>
-                            <CreateListBtn type="primary-xl" />
+                            <Link to="/create_checklist">
+                                <CreateListBtn type="primary-xl" />
+                            </Link>
                         </div>
                     </article>
                     <article className={styles.right}>
