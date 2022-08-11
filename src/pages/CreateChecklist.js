@@ -37,64 +37,6 @@ const CreateChecklist = () => {
 
     const postChecklist = async () => {
         /* API TEST */
-        console.log(images);
-        // 체크리스트 저장 (방법 1) SUCCESS ✅
-        // multiple images post?! 🤔
-        await axios.post("http://localhost:8000/api/v1/checklist/", {
-                roomInfo: {
-                    "basicInfo_location_x": 33.450701,
-                    "basicInfo_location_y": 126.570667,
-                    "basicInfo_brokerAgency": "안녕부동산",
-                    "basicInfo_move_in_date": "문의조정가능",
-                    "basicInfo_brokerAgency_contact": "010-3849-8829",
-                    "basicInfo_room_type": "J",
-                    "basicInfo_deposit":  10000000,
-                    "basicInfo_monthly_rent": 500000,
-                    "basicInfo_maintenance_fee": 1,
-                    "basicInfo_floor": 1,
-                    "basicInfo_area": 8,
-                    "basicInfo_number_of_rooms": 1.5,
-                    "basicInfo_interior_structure": "L",
-                    "option_gas_stove": false,
-                    "option_induction": false,
-                    "option_microwave": false,
-                    "option_refrigerator": false,
-                    "option_washing_machine": false,
-                    "option_air_conditioner": false,
-                    "option_internet": false,
-                    "option_tv": false,
-                    "option_wifi": false,
-                    "option_closet": false,
-                    "option_cabinet": false,
-                    "option_shoe_rack": false,
-                    "option_bed": false,
-                    "option_desk": false,
-                    "option_chair": false,
-                    "option_drying_rack": false,
-                    "detailInfo_is_moldy": false,
-                    "detailInfo_is_leak": false,
-                    "detailInfo_is_bug": false,
-                    "detailInfo_is_crack": false,
-                    "detailInfo_soundproof": "A",
-                    "detailInfo_window_size": "L",
-                    "detailInfo_main_direction": "E",
-                    "detailInfo_ventilator": "S",
-                    "detailInfo_ventilation": "B",
-                    "detailInfo_external_noise": "L",
-                    "detailInfo_water_pressure": "W",
-                    "detailInfo_drainage": "S",
-                    "detailInfo_hot_water": "S"
-                },
-                room: null,
-                image: images[0]
-            }
-            , {
-            headers: { "Content-Type": "multipart/form-data" }
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-
-        /*
         // 체크리스트 저장 (방법 2) SUCCESS ✅
         await axios.post("http://localhost:8000/api/v1/checklist/", {
             roomInfo: {
@@ -145,7 +87,7 @@ const CreateChecklist = () => {
         })
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
-        */
+        
     }
 
     const putChecklist = async () => {
@@ -234,6 +176,23 @@ const CreateChecklist = () => {
         .catch((err) => console.log(err))
     }
 
+    const confirmChecklist = async () => {
+        /*
+        await axios({
+            method: "post",
+            url: "http://localhost:8000/api/v1/confirm/",
+            data: {
+                checklist_id: 2, // dummy
+            }
+        })
+        */
+        await axios.post("http://localhost:8000/api/v1/confirm/", {
+            checklist_id: 1
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
     /************/
 
     const onSubmit = () => {
@@ -241,6 +200,7 @@ const CreateChecklist = () => {
         // putChecklist(); // api test
         // postImage(); // api test
         // deleteImage(); // api test
+        // confirmChecklist(); // api test
 
         let isValid = true;
         const values = Object.values(getValues());
