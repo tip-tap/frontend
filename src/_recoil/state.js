@@ -1,11 +1,27 @@
 import { atom } from "recoil";
 
-/* Map CenterPos */
+/* Map Pos */
 export const centerPosState = atom({
     key: "centerPos",
     default: {
-        centerLat: 33.450701,
-        centerLng: 126.570667,
+        centerLat: -1,
+        centerLng: -1,
+    }
+});
+
+export const lowerLeftPosState = atom({
+    key: "lowerLeftPos",
+    default: {
+        lowerLeftLat: 37.5665,
+        lowerLeftLng: 126.97423268424383,
+    }
+});
+
+export const upperRightPosState = atom({
+    key: "upperRightPos",
+    default: {
+        upperRightLat: 37.56820802746253,
+        upperRightLng: 126.98363800062684
     }
 });
 

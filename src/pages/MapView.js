@@ -6,8 +6,6 @@ import styles from "../styles/pages/mapView.module.scss";
 import Toggle from "../components/common/Toggle";
 
 const MapView = ({ type }) => {
-    console.log(type);
-
     return (
         <Layout active={type === "wish" ? "wish" : ""}>
             <div className={`${styles.wrapper} ${type === "wish" ? styles.extraPad : null}`}>

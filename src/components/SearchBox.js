@@ -58,7 +58,7 @@ const SearchBox = ({ type, withFilter }) => {
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
-            } else {
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 alert("검색 결과가 존재하지 않습니다");
                 inputRef.current.value = "";
             }
