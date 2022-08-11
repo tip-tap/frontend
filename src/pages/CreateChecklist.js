@@ -7,217 +7,89 @@ import SearchBox from '../components/SearchBox';
 import CustomSelect from '../components/CustomSelect';
 import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
+import { useRecoilValue } from "recoil";
+import { centerPosState } from "../_recoil/state";
 import axios from "axios";
-
-const options = [
-    "가스레인지", "인덕션", "전자레인지", "냉장고",
-    "세탁기", "에어컨", "인터넷", "TV",
-    "와이파이", "옷장", "수납장", "신발장",
-    "침대", "책상", "의자", "건조대"
-];
-
-const details = {
-    "곰팡이": ["있다", "없다"],
-    "누수": ["있다", "없다"],
-    "벌레": ["있다", "없다"],
-    "균열": ["있다", "없다"],
-    "방음": ["상", "중", "하"],
-    "창문 크기": ["크다", "보통이다", "작다"],
-    "주실 방향": ["동향", "서향", "남향", "북향"],
-    "환풍기": ["빠르다", "보통이다", "느리다"],
-    "통풍": ["상", "중", "하"],
-    "외부 소음": ["크다", "보통이다", "작다"],
-    "수압": ["세다", "보통이다", "약하다"],
-    "배수": ["세다", "보통이다", "약하다"],
-    "온수": ["세다", "보통이다", "약하다"]
-};
+import { optionsKR, optionsEN } from '../attributes/options';
+import { detailsObj, detailsKR, detailsEN } from '../attributes/details';
+import { converter } from '../attributes/converter';
 
 const CreateChecklist = () => {
     const { register, watch, handleSubmit, getValues, control } = useForm();
-
-    const postChecklist = async () => {
-        /* API TEST */
-        // 체크리스트 저장 (방법 2) SUCCESS ✅
-        await axios.post("http://localhost:8000/api/v1/checklist/", {
-            roomInfo: {
-                "basicInfo_location_x": 33.450701,
-                "basicInfo_location_y": 126.570667,
-                "basicInfo_brokerAgency": "안녕부동산",
-                "basicInfo_move_in_date": "문의조정가능",
-                "basicInfo_brokerAgency_contact": "010-3849-8829",
-                "basicInfo_room_type": "J",
-                "basicInfo_deposit":  10000000,
-                "basicInfo_monthly_rent": 500000,
-                "basicInfo_maintenance_fee": 1,
-                "basicInfo_floor": 1,
-                "basicInfo_area": 8,
-                "basicInfo_number_of_rooms": 1.5,
-                "basicInfo_interior_structure": "L",
-                "option_gas_stove": false,
-                "option_induction": false,
-                "option_microwave": false,
-                "option_refrigerator": false,
-                "option_washing_machine": false,
-                "option_air_conditioner": false,
-                "option_internet": false,
-                "option_tv": false,
-                "option_wifi": false,
-                "option_closet": false,
-                "option_cabinet": false,
-                "option_shoe_rack": false,
-                "option_bed": false,
-                "option_desk": false,
-                "option_chair": false,
-                "option_drying_rack": false,
-                "detailInfo_is_moldy": false,
-                "detailInfo_is_leak": false,
-                "detailInfo_is_bug": false,
-                "detailInfo_is_crack": false,
-                "detailInfo_soundproof": "A",
-                "detailInfo_window_size": "L",
-                "detailInfo_main_direction": "E",
-                "detailInfo_ventilator": "S",
-                "detailInfo_ventilation": "B",
-                "detailInfo_external_noise": "L",
-                "detailInfo_water_pressure": "W",
-                "detailInfo_drainage": "S",
-                "detailInfo_hot_water": "S"
-            },
-            room: null,
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-        
-    }
-
-    const putChecklist = async () => {
-        const checklist_id = 2; // dummy
-        
-        // 체크리스트 수정 SUCCESS ✅
-        // cf. room 및 images 필드 변경 불가
-        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, {
-            roomInfo: {
-                "basicInfo_location_x": 33.450701,
-                "basicInfo_location_y": 126.570667,
-                "basicInfo_brokerAgency": "하이부동산",
-                "basicInfo_move_in_date": "문의조정가능",
-                "basicInfo_brokerAgency_contact": "010-3849-8829",
-                "basicInfo_room_type": "J",
-                "basicInfo_deposit":  10000000,
-                "basicInfo_monthly_rent": 500000,
-                "basicInfo_maintenance_fee": 1,
-                "basicInfo_floor": 1,
-                "basicInfo_area": 8,
-                "basicInfo_number_of_rooms": 1.5,
-                "basicInfo_interior_structure": "L",
-                "option_gas_stove": false,
-                "option_induction": false,
-                "option_microwave": false,
-                "option_refrigerator": false,
-                "option_washing_machine": false,
-                "option_air_conditioner": false,
-                "option_internet": false,
-                "option_tv": false,
-                "option_wifi": false,
-                "option_closet": false,
-                "option_cabinet": false,
-                "option_shoe_rack": false,
-                "option_bed": false,
-                "option_desk": false,
-                "option_chair": false,
-                "option_drying_rack": false,
-                "detailInfo_is_moldy": false,
-                "detailInfo_is_leak": false,
-                "detailInfo_is_bug": false,
-                "detailInfo_is_crack": false,
-                "detailInfo_soundproof": "A",
-                "detailInfo_window_size": "L",
-                "detailInfo_main_direction": "E",
-                "detailInfo_ventilator": "S",
-                "detailInfo_ventilation": "B",
-                "detailInfo_external_noise": "L",
-                "detailInfo_water_pressure": "W",
-                "detailInfo_drainage": "S",
-                "detailInfo_hot_water": "S"
-            }
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-    }
-
+    const { centerLat, centerLng } = useRecoilValue(centerPosState);
     const [images, setImages] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const postImage = () => {
-        const checklist_id = 2; // dummy
-
-        images.forEach(async (v) => {
-            // 이미지 추가 (체크리스트) SUCCESS ✅
-            await axios.post("http://localhost:8000/api/v1/image/", {
-            checklist_id,
-            image: v
-            }, {
-                headers: { "Content-Type": "multipart/form-data" }
-            })
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err))
-        })
-    }
-
-    const deleteImage = async () => {
-        // 이미지 삭제 (체크리스트) SUCCESS ✅
-        await axios({
-            method: "delete",
-            url: "http://localhost:8000/api/v1/image/",
-            data: {
-                image: "/media/image/8/a74be9d8821d4d899cf7612e2e40e351.jpg"
-            }
-        })
+    // 이미지 추가 POST
+    const postImage = async (checklist_id, image) => {
+        await axios.post("http://localhost:8000/api/v1/image/", { checklist_id, image }, { headers: { "Content-Type": "multipart/form-data" }})
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
+    
+    // 체크리스트 생성 POST
+    const postChecklist = async (data) => {        
+        await axios.post("http://localhost:8000/api/v1/checklist/", data)
+        .then((res) => {
+            console.log(res);
 
-    const confirmChecklist = async () => {
-        /*
-        await axios({
-            method: "post",
-            url: "http://localhost:8000/api/v1/confirm/",
-            data: {
-                checklist_id: 2, // dummy
-            }
+            const { data: { data: { checklist_id }} } = res;
+            images.forEach((image) => postImage(checklist_id, image));
         })
-        */
-        await axios.post("http://localhost:8000/api/v1/confirm/", {
-            checklist_id: 1
-        })
-        .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
 
-    /************/
-
+    // 최종 제출
     const onSubmit = () => {
-        // postChecklist(); // api test
-        // putChecklist(); // api test
-        // postImage(); // api test
-        // deleteImage(); // api test
-        // confirmChecklist(); // api test
+        // 기본 정보를 포함한 roomInfo
+        const roomInfo = {
+            "basicInfo_location_x": Number(Number(centerLat).toFixed(7)) || null,
+            "basicInfo_location_y": Number(Number(centerLng).toFixed(7)) || null,
+            "basicInfo_brokerAgency": watch("공인중개사") || null,
+            "basicInfo_move_in_date": watch("입주 가능일 날짜") || watch("입주 가능일 옵션") || null,
+            "basicInfo_brokerAgency_contact": watch("연락처") || null,
+            "basicInfo_room_type": converter[watch("계약 형태")] || null,
+            "basicInfo_deposit":  Number(watch("보증금")) * 10000,
+            "basicInfo_monthly_rent": watch("월세") ? Number(watch("월세").slice(0, -2)) * 10000 : null,
+            "basicInfo_maintenance_fee": watch("관리비") ? Number(watch("관리비").slice(0, -2)) * 10000 : null,
+            "basicInfo_floor": watch("해당층") ? Number(watch("해당층").slice(0, -1)) : null,
+            "basicInfo_area": watch("평 수") ? Number(watch("평 수").slice(0, -1)) : null,
+            "basicInfo_number_of_rooms": converter[watch("방 수")] || null,
+            "basicInfo_interior_structure": converter[watch("내부 구조")] || null,
+        };
 
+        // roomInfo에 옵션 추가
+        optionsEN.forEach((option, idx) => roomInfo[option] = watch(optionsKR[idx]));
+
+        // roomInfo에 세부 정보 추가
+        for (let i=0; i<4; i++) {
+            roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? (watch(detailsKR[i]).slice(detailsKR[i].length) === "있다" ? true : false) : null;
+        }
+        for (let i=4; i<13; i++) {
+            roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? converter[watch(detailsKR[i]).slice(detailsKR[i].length)] : null;
+        }
+
+        const data = { room: null, roomInfo };
+        postChecklist(data);
+    }
+
+    // 유효성 검사
+    const onValidate = () => {
         let isValid = true;
         const values = Object.values(getValues());
-        const len = values.length;
+        const len = values.length - 1;
         for (let i=0; i<len; i++) {
             if (values[i] === "" || values[i] === null || values[i] === undefined) {
                 isValid = false;
                 break;
             }
         }
-        if (!isValid) {
-            setIsModalVisible(true);
-        } 
+
+        if (!isValid) { setIsModalVisible(true); }
+        else { onSubmit(); }
     }
 
-    const [isModalVisible, setIsModalVisible] = useState(false);
-
+    // 보증금 디스플레이 포맷팅
     const handleDeposit = (e) => {
         if (e.target.value.includes("억")) {
             const idx = e.target.value.indexOf("억");
@@ -236,12 +108,56 @@ const CreateChecklist = () => {
         }
     }
 
+    /* API TEST
+    const putChecklist = async () => {
+        const checklist_id = 2; // dummy
+        
+        // 체크리스트 수정 SUCCESS ✅
+        // cf. room 및 images 필드 변경 불가
+        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, {
+            
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
+    
+
+    const deleteImage = async () => {
+        // 이미지 삭제 (체크리스트) SUCCESS ✅
+        await axios({
+            method: "delete",
+            url: "http://localhost:8000/api/v1/image/",
+            data: {
+                image: "/media/image/8/a74be9d8821d4d899cf7612e2e40e351.jpg"
+            }
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
+    const confirmChecklist = async () => {
+        await axios({
+            method: "post",
+            url: "http://localhost:8000/api/v1/confirm/",
+            data: {
+                checklist_id: 2, // dummy
+            }
+        })
+        await axios.post("http://localhost:8000/api/v1/confirm/", {
+            checklist_id: 1
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+    */
+
     return(
         <>
             <Layout>
                 <div className = {styles.wrapper}>
                     <button className={styles.confirm}>매물 확정하기</button>
-                    <form onSubmit={handleSubmit(onSubmit)}>
+                    <form onSubmit={handleSubmit(onValidate)}>
                         <section className={styles.images}>
                             <ImgUpload setImages={setImages} />
                         </section>
@@ -355,7 +271,7 @@ const CreateChecklist = () => {
                                     render={({field: { onChange }}) => (
                                         <CustomSelect
                                             defaultValue="1층"
-                                            options={["1층", "2층", "3층", "4층", "5층", "6층", "7층이상", "반지층", "옥탑방"]}
+                                            options={["1층", "2층", "3층", "4층", "5층", "6층", "7층"]}
                                             withAdd={true}
                                             onChange={onChange}
                                         />    
@@ -412,7 +328,7 @@ const CreateChecklist = () => {
 
                         <p className={styles.subtitle}>옵션</p>
                         <section className={styles.options}>
-                            {options.map((value, index) => (
+                            {optionsKR.map((value, index) => (
                                 <article key={index} className={`${watch(value) && styles.active} ${styles.optionsItem}`}>
                                     <input type="checkbox" id={value} {...register(value)} />
                                     <label htmlFor={value}>{value}</label>
@@ -422,12 +338,12 @@ const CreateChecklist = () => {
 
                         <p className={styles.subtitle}>세부 정보</p>
                         <section className={styles.details}>
-                            {Object.keys(details).map((key, keyIdx) => (
+                            {Object.keys(detailsObj).map((key, keyIdx) => (
                                 <article key={keyIdx} className={styles.detailsItem}>
                                     <p className={`${(watch(key) !== null && watch(key) !== undefined) && styles.active} ${styles.detailsKey}`}>{key}</p>
                                     <div className={styles.choices}>
                                     {
-                                        details[key].map((value, valIdx) => (
+                                        detailsObj[key].map((value, valIdx) => (
                                             <Fragment key={valIdx}>
                                                 <input type="radio" name={key} id={key + value} value={key + value} {...register(key)} />
                                                 <label className={`${watch(key) === (key + value) && styles.active} ${styles.detailsValue}`} htmlFor={key + value}>{value}</label>
@@ -461,6 +377,7 @@ const CreateChecklist = () => {
                 content="그래도 저장하시겠습니까?"
                 isModalVisible={isModalVisible}
                 setIsModalVisible={setIsModalVisible}
+                onSubmit={onSubmit}
             />
         </>
     );

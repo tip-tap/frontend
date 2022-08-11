@@ -65,7 +65,9 @@ const SearchBox = ({ type, withFilter }) => {
         }
         geocoder.addressSearch(address, callback);
 
-        navigate("/map");
+        if (type !== "mini") {
+            navigate("/map");
+        }
     }
 
     const onSearch = (keyword) => {
@@ -91,6 +93,7 @@ const SearchBox = ({ type, withFilter }) => {
         }else if (e.key === "ArrowUp") {
             setRefIdx(refIdx-1);
         } else if (e.key === "Enter") {
+            e.preventDefault();
             if (refIdx >= 0 && refIdx <= 4) {
                 e.target.value = list[refIdx];
             } 
