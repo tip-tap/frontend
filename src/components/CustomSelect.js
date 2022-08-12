@@ -7,7 +7,7 @@ import styles from "../styles/components/customSelect.module.scss";
 const { Option } = Select;
 let index = 0;
 
-const CustomSelect = ({ defaultValue, options, withAdd, onChange }) => {
+const CustomSelect = ({ defaultValue, options, withAdd, onChange, value }) => {
   const [items, setItems] = useState([...options]);
   const [name, setName] = useState('');
   const inputRef = useRef(null);
@@ -67,6 +67,7 @@ const CustomSelect = ({ defaultValue, options, withAdd, onChange }) => {
         null
       }
       onChange={onChange}
+      value={value}
     >
         {items.map((item) => (
           <Option key={item}>{item}</Option>

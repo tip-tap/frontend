@@ -11,7 +11,7 @@ const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
-const SearchBox = ({ type, withFilter }) => {
+const SearchBox = ({ type, withFilter, defaultValue }) => {
     const navigate = useNavigate();
 
     // 지도 중심좌표
@@ -176,7 +176,7 @@ const SearchBox = ({ type, withFilter }) => {
     /************/
 
     useEffect(() => {
-        if (type === "long" && searchInput !== "") {
+        if ((type === "mini" || type === "long") && searchInput !== "") {
             inputRef.current.value = searchInput;
         }
     }, [type, searchInput]);

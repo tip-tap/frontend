@@ -24,7 +24,8 @@ function App() {
         <Route path="/details" element={<Details />} />
         <Route path="/wishmap" element={<MapView type="wish" />} />
         <Route path="/wishlist" element={<WishListView />} />
-        <Route path="/create_checklist" element={<CreateChecklist />} />
+        <Route path="/create_checklist" element={<CreateChecklist type="create" />} />
+        <Route path="/edit_checklist/:id" element={<CreateChecklist type="edit" />} />
         <Route path="/compare_list" element={<CompareChecklist />} />
         <Route path="/compare_map" element={<CompareMapView />} />
       </Routes>

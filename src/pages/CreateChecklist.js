@@ -1,5 +1,6 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { useForm, Controller } from "react-hook-form";
+import React, { Fragment, useState, useEffect, useCallback, useRef } from 'react';
+import { useForm, Controller} from "react-hook-form";
+import { useParams } from "react-router-dom";
 import styles from "../styles/pages/createcl.module.scss";
 import Layout from "../components/common/Layout";
 import ImgUpload from '../components/ImgUpload';
@@ -7,18 +8,25 @@ import SearchBox from '../components/SearchBox';
 import CustomSelect from '../components/CustomSelect';
 import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
-import { useRecoilValue } from "recoil";
-import { centerPosState } from "../_recoil/state";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { centerPosState, searchInputState } from "../_recoil/state";
 import axios from "axios";
 import { optionsKR, optionsEN } from '../attributes/options';
 import { detailsObj, detailsKR, detailsEN } from '../attributes/details';
-import { converter } from '../attributes/converter';
+import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../attributes/converter';
+import moment from "moment";
 
-const CreateChecklist = () => {
-    const { register, watch, handleSubmit, getValues, control } = useForm();
+const { kakao } = window;
+
+const CreateChecklist = ({ type }) => {
+    const params = useParams();
+    const { register, watch, handleSubmit, getValues, setValue, control } = useForm();
     const { centerLat, centerLng } = useRecoilValue(centerPosState);
+    const setCenterPos = useSetRecoilState(centerPosState);
+    const setSearchInput = useSetRecoilState(searchInputState);
     const [images, setImages] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const depositRef = useRef();
 
     // 이미지 추가 POST
     const postImage = async (checklist_id, image) => {
@@ -39,6 +47,13 @@ const CreateChecklist = () => {
         .catch((err) => console.log(err))
     }
 
+    // 체크리스트 수정 PUT
+    const putChecklist = async (checklist_id, data) => {
+        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, data)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
     // 최종 제출
     const onSubmit = () => {
         // 기본 정보를 포함한 roomInfo
@@ -48,14 +63,14 @@ const CreateChecklist = () => {
             "basicInfo_brokerAgency": watch("공인중개사") || null,
             "basicInfo_move_in_date": watch("입주 가능일 날짜") || watch("입주 가능일 옵션") || null,
             "basicInfo_brokerAgency_contact": watch("연락처") || null,
-            "basicInfo_room_type": converter[watch("계약 형태")] || null,
+            "basicInfo_room_type": basicsFEtoBE[watch("계약 형태")] || null,
             "basicInfo_deposit":  Number(watch("보증금")) * 10000,
             "basicInfo_monthly_rent": watch("월세") ? Number(watch("월세").slice(0, -2)) * 10000 : null,
             "basicInfo_maintenance_fee": watch("관리비") ? Number(watch("관리비").slice(0, -2)) * 10000 : null,
             "basicInfo_floor": watch("해당층") ? Number(watch("해당층").slice(0, -1)) : null,
             "basicInfo_area": watch("평 수") ? Number(watch("평 수").slice(0, -1)) : null,
-            "basicInfo_number_of_rooms": converter[watch("방 수")] || null,
-            "basicInfo_interior_structure": converter[watch("내부 구조")] || null,
+            "basicInfo_number_of_rooms": basicsFEtoBE[watch("방 수")] || null,
+            "basicInfo_interior_structure": basicsFEtoBE[watch("내부 구조")] || null,
         };
 
         // roomInfo에 옵션 추가
@@ -66,11 +81,11 @@ const CreateChecklist = () => {
             roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? (watch(detailsKR[i]).slice(detailsKR[i].length) === "있다" ? true : false) : null;
         }
         for (let i=4; i<13; i++) {
-            roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? converter[watch(detailsKR[i]).slice(detailsKR[i].length)] : null;
+            roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? detailsFEtoBE[detailsEN[i]][watch(detailsKR[i]).slice(detailsKR[i].length)] : null;
         }
 
-        const data = { room: null, roomInfo };
-        postChecklist(data);
+        if (type === "create") { postChecklist({ room: null, roomInfo }); }
+        else { putChecklist(params.id, { checklist_id: Number(params.id), roomInfo }); }
     }
 
     // 유효성 검사
@@ -90,39 +105,91 @@ const CreateChecklist = () => {
     }
 
     // 보증금 디스플레이 포맷팅
-    const handleDeposit = (e) => {
-        if (e.target.value.includes("억")) {
-            const idx = e.target.value.indexOf("억");
-            const curValue = parseInt(e.target.value.substr(0, idx) + e.target.value.substr(idx+2));
+    const handleDeposit = (deposit) => {
+        if (typeof deposit !== "string") { deposit = String(deposit); }
+
+        if (deposit.includes("억")) {
+            const idx = deposit.indexOf("억");
+            const curValue = parseInt(deposit.substr(0, idx) + deposit.substr(idx+2));
             if (curValue < 10000) { // 값이 억 미만으로 떨어진 경우
-                e.target.value = curValue;
+                depositRef.current.value = curValue;
             }
             else { // 값이 여전이 억 이상인 경우
                 if (curValue >= 99999999) { return; }
-                e.target.value = Math.floor(curValue / 10000) + "억 " + (curValue % 10000 === 0 ? "0000" : curValue % 10000);
+                depositRef.current.value = Math.floor(curValue / 10000) + "억 " + (curValue % 10000 === 0 ? "0000" : curValue % 10000);
             }
         }
-        else if (parseInt(e.target.value) >= 10000) { // 값이 억 이상으로 오른 경우
-            const curValue = parseInt(e.target.value);
-            e.target.value = Math.floor(curValue / 10000) + "억 " + (curValue % 10000 === 0 ? "0000" : curValue % 10000);
+        else if (parseInt(deposit) >= 10000) { // 값이 억 이상으로 오른 경우
+            const curValue = parseInt(deposit);
+            depositRef.current.value = Math.floor(curValue / 10000) + "억 " + (curValue % 10000 === 0 ? "0000" : curValue % 10000);
         }
     }
 
-    /* API TEST
-    const putChecklist = async () => {
-        const checklist_id = 2; // dummy
-        
-        // 체크리스트 수정 SUCCESS ✅
-        // cf. room 및 images 필드 변경 불가
-        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, {
-            
+    // 체크리스트 한 개 조회 GET (for edit mode)
+    const getOneChecklist = useCallback (async (checklist_id) => {
+        await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
+        .then((res) => {
+            console.log(res);
+            const roomInfo = res.data.roomInfo;
+
+            // 기본 정보
+            setCenterPos({
+                centerLat: roomInfo.basicInfo_location_x,
+                centerLng: roomInfo.basicInfo_location_y,
+            })
+            let geocoder = new kakao.maps.services.Geocoder();
+            let coord = new kakao.maps.LatLng(Number(roomInfo.basicInfo_location_x), Number(roomInfo.basicInfo_location_y));
+            let callback = function(result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
+                }
+            }
+            geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+            setValue("공인중개사", roomInfo.basicInfo_brokerAgency);
+            if (roomInfo.basicInfo_move_in_date === "문의조정가능" || roomInfo.basicInfo_move_in_date === "바로입주가능") {
+                setValue("입주 가능일 옵션", roomInfo.basicInfo_move_in_date);
+            }
+            else {
+                setValue("입주 가능일 옵션", "직접 입력");
+                setValue("입주 가능일 날짜", moment(roomInfo.basicInfo_move_in_date));
+            }            
+            setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
+            setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
+            setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
+            setValue("월세", roomInfo.basicInfo_monthly_rent / 10000 + "만원");
+            setValue("관리비", roomInfo.basicInfo_maintenance_fee / 10000 + "만원");
+            setValue("해당층", roomInfo.basicInfo_floor + "층");
+            setValue("평 수", roomInfo.basicInfo_area + "평");
+            setValue("방 수", basicsBEtoFE[roomInfo.basicInfo_number_of_rooms]);
+            setValue("내부 구조", basicsBEtoFE[roomInfo.basicInfo_interior_structure]);
+                        
+            // 옵션
+            optionsKR.forEach((option, index) => {
+                setValue(option, roomInfo[optionsEN[index]]);
+            });
+
+            // 세부 정보
+            for (let i=0; i<4; i++) {
+                const value = roomInfo[detailsEN[i]];
+                setValue(detailsKR[i], value !== null ? (value === true ? detailsKR[i] + "있다" : detailsKR[i] + "없다") : null);
+            }
+
+            for (let i=4; i<13; i++) {
+                const value = roomInfo[detailsEN[i]];
+                setValue(detailsKR[i], value !== null ? detailsKR[i] + detailsBEtoFE[value][roomInfo[value]] : null);
+            }
         })
-        .then((res) => console.log(res))
         .catch((err) => console.log(err))
-    }
+    }, [setValue, setSearchInput, setCenterPos]);
 
-    
+    useEffect(() => {
+        if (type === "edit") {
+            const checklist_id = params.id;
+            getOneChecklist(checklist_id);
+        }
+    }, [type, params.id, getOneChecklist]);
 
+    /* API TEST
     const deleteImage = async () => {
         // 이미지 삭제 (체크리스트) SUCCESS ✅
         await axios({
@@ -159,7 +226,7 @@ const CreateChecklist = () => {
                     <button className={styles.confirm}>매물 확정하기</button>
                     <form onSubmit={handleSubmit(onValidate)}>
                         <section className={styles.images}>
-                            <ImgUpload setImages={setImages} />
+                            <ImgUpload setImages={setImages} type={type} />
                         </section>
 
                         <p className={styles.subtitle}>기본 정보</p>
@@ -177,14 +244,16 @@ const CreateChecklist = () => {
                                 <Controller 
                                     control={control}
                                     name="입주 가능일 날짜"
-                                    render={({field: { onChange }}) => (
+                                    render={({field: { onChange, value }}) => (
                                         <DatePicker
+                                            format={"YYYY-MM-DD"}
                                             style={{ width: "100%", padding: "0px"}} 
                                             bordered={false}
                                             placeholder="입력해주세요"
                                             onChange={(_, dateString) => {
-                                                onChange(dateString);
+                                                onChange(moment(dateString));
                                             }}
+                                            value={value}
                                             disabled={watch("입주 가능일 옵션") === undefined || watch("입주 가능일 옵션") === "직접 입력" ? false : true}
                                         />
                                     )}
@@ -192,12 +261,13 @@ const CreateChecklist = () => {
                                 <Controller 
                                     control={control}
                                     name="입주 가능일 옵션"
-                                    render={({field: { onChange }}) => (
+                                    render={({field: { onChange, value }}) => (
                                         <CustomSelect
                                             defaultValue="직접 입력"
                                             options={["직접 입력", "문의조정가능", "바로입주가능"]}
                                             withAdd={false}
                                             onChange={onChange}
+                                            value={value}
                                         />    
                                     )}
                                 />
@@ -221,7 +291,7 @@ const CreateChecklist = () => {
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>보증금</div>
                                 <div className={styles.withUnits}>
-                                    <input type="text" placeholder="0" {...register("보증금", { onChange: (e) => handleDeposit(e) })} />      
+                                    <input type="text" placeholder="0" {...register("보증금", { onChange: (e) => handleDeposit(e.target.value) })} ref={depositRef} />      
                                     <label className={styles.unit}>만원</label>
                                 </div>
                             </article>
@@ -230,7 +300,7 @@ const CreateChecklist = () => {
                                 <Controller 
                                     control={control}
                                     name="월세"
-                                    render={({field: { onChange }}) => (
+                                    render={({field: { onChange, value }}) => (
                                         <CustomSelect
                                             defaultValue="0만원"
                                             options={[
@@ -239,6 +309,7 @@ const CreateChecklist = () => {
                                             ]}
                                             withAdd={true}
                                             onChange={onChange}
+                                            value={value}
                                         />  
                                     )}
                                 />         
@@ -248,7 +319,7 @@ const CreateChecklist = () => {
                                     <Controller 
                                         control={control}
                                         name="관리비"
-                                        render={({field: { onChange }}) => (
+                                        render={({field: { onChange, value }}) => (
                                             <CustomSelect
                                                 defaultValue="0만원"
                                                 options={[
@@ -258,6 +329,7 @@ const CreateChecklist = () => {
                                                 ]}
                                                 withAdd={true}
                                                 onChange={onChange}
+                                                value={value}
                                             />   
                                         )}
                                     />
@@ -268,12 +340,13 @@ const CreateChecklist = () => {
                                 <Controller 
                                     control={control}
                                     name="해당층"
-                                    render={({field: { onChange }}) => (
+                                    render={({field: { onChange, value }}) => (
                                         <CustomSelect
                                             defaultValue="1층"
                                             options={["1층", "2층", "3층", "4층", "5층", "6층", "7층"]}
                                             withAdd={true}
                                             onChange={onChange}
+                                            value={value}
                                         />    
                                     )}
                                 />
@@ -283,15 +356,16 @@ const CreateChecklist = () => {
                                     <Controller 
                                         control={control}
                                         name="평 수"
-                                        render={({field: { onChange }}) => (
+                                        render={({field: { onChange, value }}) => (
                                             <CustomSelect
-                                                defaultValue="0원"
+                                                defaultValue="0평"
                                                 options={[
                                                     "0평", "1평", "2평", "3평", "4평", "5평", "6평", "7평", "8평", "9평", "10평",
                                                     "11평", "12평", "13평", "14평", "15평", "16평", "17평", "18평", "19평", "20평"
                                                 ]}
                                                 withAdd={true}
                                                 onChange={onChange}
+                                                value={value}
                                             />    
                                         )}
                                     />               
@@ -314,12 +388,13 @@ const CreateChecklist = () => {
                                 <Controller 
                                     control={control}
                                     name="내부 구조"
-                                    render={({field: { onChange }}) => (
+                                    render={({field: { onChange, value }}) => (
                                         <CustomSelect
-                                            defaultValue="오픈형"
+                                            defaultValue="내부 구조"
                                             options={["오픈형", "주방분리형", "베란다분리형", "주방베란다분리형", "복층형"]}
-                                            withAdd={true}
+                                            withAdd={false}
                                             onChange={onChange}
+                                            value={value}
                                         />    
                                     )}
                                 />
