@@ -6,12 +6,14 @@ import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import { centerPosState, searchInputState, checksState, depositState, monthlyState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
+import { useSnackbar } from "notistack";
 
 const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
 const SearchBox = ({ type, withFilter, defaultValue }) => {
+    const { enqueueSnackbar, closeSnackbar} = useSnackbar();
     const navigate = useNavigate();
 
     // 지도 중심좌표
@@ -59,7 +61,19 @@ const SearchBox = ({ type, withFilter, defaultValue }) => {
             if (status === kakao.maps.services.Status.OK) {
                 setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                alert("검색 결과가 존재하지 않습니다");
+                enqueueSnackbar("검색 결과가 존재하지 않습니다", {
+                    variant: "info",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "center",
+                    },
+                    autoHideDuration: 2000,
+                    sx: {
+                        "& .SnackbarContent-root": {
+                            bgcolor: "#0040BD"
+                        }
+                    }
+                });
                 inputRef.current.value = "";
             }
         }
