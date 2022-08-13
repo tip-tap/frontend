@@ -18,7 +18,7 @@ const MapView = ({ type }) => {
                 }
                 <Toggle active="map" mapLink={type === "wish" ? "/wishmap" : "/map"} listLink={type === "wish" ? "/wishlist" : "/list"} />
                 <section className={styles.mapDiv}>
-                    <Map />
+                    <Map type="normal" />
                 </section>
             </div>
         </Layout>

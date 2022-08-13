@@ -36,7 +36,7 @@ const CompareMapView = () => {
                     })}
                 </div>
                 <div className={styles.map}>
-                    <Map markerFilter={markers.filter((_, i) => i !== 7)} />
+                    <Map markerFilter={markers.filter((_, i) => i !== 7)} type="compare" />
                 </div>
             </div>
         </Layout>

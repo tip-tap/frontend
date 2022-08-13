@@ -91,7 +91,7 @@ const CreateChecklist = ({ type }) => {
             roomInfo[detailsEN[i]] = watch(detailsKR[i]) ? detailsFEtoBE[detailsEN[i]][watch(detailsKR[i]).slice(detailsKR[i].length)] : null;
         }
 
-        if (type === "create") { postChecklist({ room: null, roomInfo }); }
+        if (type === "create" || type === "open") { postChecklist({ room: null, roomInfo }); }
         else { putChecklist(params.id, { checklist_id: Number(params.id), roomInfo }); }
     }
 
@@ -137,6 +137,67 @@ const CreateChecklist = ({ type }) => {
         e.target.value = e.target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
     }
 
+    const fillInfo = useCallback((fileList, roomInfo) => {
+        // 이미지
+        setDefaultFileList(fileList.map((url, idx) => {
+            return {
+                uid: idx.toString(),
+                name: url.slice(url.lastIndexOf('/') + 1),
+                status: "done",
+                url: `http://localhost:8000${url}`
+            };
+        }));
+
+        // 기본 정보
+        setCenterPos({
+            centerLat: roomInfo.basicInfo_location_x,
+            centerLng: roomInfo.basicInfo_location_y,
+        })
+        let geocoder = new kakao.maps.services.Geocoder();
+        let coord = new kakao.maps.LatLng(Number(roomInfo.basicInfo_location_x), Number(roomInfo.basicInfo_location_y));
+        let callback = function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
+            }
+        }
+        geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+        setValue("공인중개사", roomInfo.basicInfo_brokerAgency);
+        if (roomInfo.basicInfo_move_in_date === "문의조정가능" || roomInfo.basicInfo_move_in_date === "바로입주가능") {
+            setValue("입주 가능일 옵션", roomInfo.basicInfo_move_in_date);
+        }
+        else {
+            setValue("입주 가능일 옵션", "직접 입력");
+            setValue("입주 가능일 날짜", roomInfo.basicInfo_move_in_date ? moment(roomInfo.basicInfo_move_in_date) : null);
+        }            
+        setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
+        setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
+        setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
+        setValue("월세", roomInfo.basicInfo_monthly_rent ? roomInfo.basicInfo_monthly_rent / 10000 + "만원" : "0만원");
+        setValue("관리비", roomInfo.basicInfo_maintenance_fee ? roomInfo.basicInfo_maintenance_fee / 10000 + "만원" : "0만원");
+        setValue("해당층", roomInfo.basicInfo_floor ? roomInfo.basicInfo_floor + "층" : "0층");
+        setValue("평 수", roomInfo.basicInfo_area ? roomInfo.basicInfo_area + "평" : "0평");
+        setValue("방 수", basicsBEtoFE[roomInfo.basicInfo_number_of_rooms]);
+        setValue("내부 구조", roomInfo.basicInfo_interior_structure ? basicsBEtoFE[roomInfo.basicInfo_interior_structure] : "-");
+                    
+        // 옵션
+        optionsKR.forEach((option, index) => {
+            setValue(option, roomInfo[optionsEN[index]]);
+        });
+
+        // 세부 정보
+        if (type === "edit") {
+            for (let i=0; i<4; i++) {
+                const value = roomInfo[detailsEN[i]];
+                setValue(detailsKR[i], value !== null ? (value === true ? detailsKR[i] + "있다" : detailsKR[i] + "없다") : null);
+            }
+    
+            for (let i=4; i<13; i++) {
+                const value = roomInfo[detailsEN[i]];
+                setValue(detailsKR[i], value !== null ? detailsKR[i] + detailsBEtoFE[detailsEN[i]][value] : null);
+            }
+        }
+    }, [setValue, setSearchInput, setCenterPos, type]);
+
     // 체크리스트 한 개 조회 GET (for edit mode)
     const getOneChecklist = useCallback (async (checklist_id) => {
         await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
@@ -144,73 +205,33 @@ const CreateChecklist = ({ type }) => {
             console.log(res);
             const fileList = res.data.images;
             const roomInfo = res.data.roomInfo;
-
-            // 이미지
-            setDefaultFileList(fileList.map((url, idx) => {
-                return {
-                    uid: idx.toString(),
-                    name: url.slice(url.lastIndexOf('/') + 1),
-                    status: "done",
-                    url: `http://localhost:8000${url}`
-                };
-            }));
-
-            // 기본 정보
-            setCenterPos({
-                centerLat: roomInfo.basicInfo_location_x,
-                centerLng: roomInfo.basicInfo_location_y,
-            })
-            let geocoder = new kakao.maps.services.Geocoder();
-            let coord = new kakao.maps.LatLng(Number(roomInfo.basicInfo_location_x), Number(roomInfo.basicInfo_location_y));
-            let callback = function(result, status) {
-                if (status === kakao.maps.services.Status.OK) {
-                    setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
-                }
-            }
-            geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-            setValue("공인중개사", roomInfo.basicInfo_brokerAgency);
-            if (roomInfo.basicInfo_move_in_date === "문의조정가능" || roomInfo.basicInfo_move_in_date === "바로입주가능") {
-                setValue("입주 가능일 옵션", roomInfo.basicInfo_move_in_date);
-            }
-            else {
-                setValue("입주 가능일 옵션", "직접 입력");
-                setValue("입주 가능일 날짜", roomInfo.basicInfo_move_in_date ? moment(roomInfo.basicInfo_move_in_date) : null);
-            }            
-            setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
-            setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
-            setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
-            setValue("월세", roomInfo.basicInfo_monthly_rent ? roomInfo.basicInfo_monthly_rent / 10000 + "만원" : "0만원");
-            setValue("관리비", roomInfo.basicInfo_maintenance_fee ? roomInfo.basicInfo_maintenance_fee / 10000 + "만원" : "0만원");
-            setValue("해당층", roomInfo.basicInfo_floor ? roomInfo.basicInfo_floor + "층" : "0층");
-            setValue("평 수", roomInfo.basicInfo_area ? roomInfo.basicInfo_area + "평" : "0평");
-            setValue("방 수", basicsBEtoFE[roomInfo.basicInfo_number_of_rooms]);
-            setValue("내부 구조", roomInfo.basicInfo_interior_structure ? basicsBEtoFE[roomInfo.basicInfo_interior_structure] : "-");
-                        
-            // 옵션
-            optionsKR.forEach((option, index) => {
-                setValue(option, roomInfo[optionsEN[index]]);
-            });
-
-            // 세부 정보
-            for (let i=0; i<4; i++) {
-                const value = roomInfo[detailsEN[i]];
-                setValue(detailsKR[i], value !== null ? (value === true ? detailsKR[i] + "있다" : detailsKR[i] + "없다") : null);
-            }
-
-            for (let i=4; i<13; i++) {
-                const value = roomInfo[detailsEN[i]];
-                setValue(detailsKR[i], value !== null ? detailsKR[i] + detailsBEtoFE[detailsEN[i]][value] : null);
-            }
+            fillInfo(fileList, roomInfo);            
         })
         .catch((err) => console.log(err))
-    }, [setValue, setSearchInput, setCenterPos]);
+    }, [fillInfo]);
+
+    // 매물 조회 GET (for open mode) 
+    const getOneRoom = useCallback(async (room_id) => {
+        await axios.get(`http://localhost:8000/api/v1/rooms/${room_id}/`)
+        .then((res) => {
+            console.log(res);
+            const fileList = res.data.images;
+            const roomInfo = res.data.roomInfo;
+            fillInfo(fileList, roomInfo);
+        })
+        .catch((err) => console.log(err))
+    }, [fillInfo]);
 
     useEffect(() => {
         if (type === "edit") {
             const checklist_id = params.id;
             getOneChecklist(checklist_id);
         }
-    }, [type, params.id, getOneChecklist]);
+        else if (type === "open") {
+            const checklist_id = params.id;
+            getOneRoom(checklist_id);
+        }
+    }, [type, params.id, getOneChecklist, getOneRoom]);
 
     /* API TEST
     const deleteImage = async () => {

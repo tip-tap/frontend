@@ -19,11 +19,12 @@ function App() {
       <Route path="/" element={<Main />} />
       <Route path="/map" element={<MapView type="normal" />} />
       <Route path="/list" element={<ListView />} />
-      <Route path="/details" element={<Details />} />
+      <Route path="/details/:id" element={<Details />} />
       <Route path="/wishmap" element={<MapView type="wish" />} />
       <Route path="/wishlist" element={<WishListView />} />
       <Route path="/create_checklist" element={<CreateChecklist type="create" />} />
       <Route path="/edit_checklist/:id" element={<CreateChecklist type="edit" />} />
+      <Route path="/open_checklist/:id" element={<CreateChecklist type="open" />} />
       <Route path="/compare_list" element={<CompareChecklist />} />
       <Route path="/compare_map" element={<CompareMapView />} />
     </Routes>

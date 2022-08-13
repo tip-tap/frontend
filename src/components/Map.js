@@ -18,7 +18,7 @@ const categoryCode = {
     "AG2": "중개업소"
 };
 
-const Map = ({ markerFilter = Array(8).fill(1) }) => {
+const Map = ({ markerFilter = Array(8).fill(1), type }) => {
     // recoil 상태 관리
     const {centerLat, centerLng} = useRecoilValue(centerPosState);
     const setLowerLeftPos = useSetRecoilState(lowerLeftPosState);
@@ -119,19 +119,19 @@ const Map = ({ markerFilter = Array(8).fill(1) }) => {
         let mapContainer = document.getElementById("map");
         let mapOption = {
             center: new kakao.maps.LatLng(37.566783658885626, 126.97865792991867),
-            level: 3
+            level: 3,
         };
         map = new kakao.maps.Map(mapContainer, mapOption);
+
+        if (type === "compare" || type === "details") { map.setMaxLevel(5); }
+        else { map.setMaxLevel(10); }
         
         // 위치 액세스 가능할 시 사용자의 현 위치로 지도 중심 변경
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(onValid, onInvalid);
-        } else {
-            console.log("geolocation 사용 불가");
-        }
+        if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(onValid, onInvalid); }
+        else { console.log("geolocation 사용 불가"); }
 
-        getFacilities();
-    }, [onValid, onInvalid, getFacilities]);
+        if (type === "compare" || type === "details") { getFacilities(); }
+    }, [onValid, onInvalid, getFacilities, type]);
 
     return (
         <>  
