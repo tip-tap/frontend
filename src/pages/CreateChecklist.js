@@ -132,6 +132,11 @@ const CreateChecklist = ({ type }) => {
         }
     }
 
+    // 연락처 하이픈 입력
+    const handleContact = (e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+    }
+
     // 체크리스트 한 개 조회 GET (for edit mode)
     const getOneChecklist = useCallback (async (checklist_id) => {
         await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
@@ -292,7 +297,7 @@ const CreateChecklist = ({ type }) => {
                             </article>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>연락처</div>
-                                <input type="text" placeholder="입력해주세요" {...register("연락처")} />      
+                                <input type="text" placeholder="입력해주세요" {...register("연락처", { onChange: (e) => handleContact(e) })} />      
                             </article>
 
                             <article className={styles.basicsItem}>
@@ -328,6 +333,7 @@ const CreateChecklist = ({ type }) => {
                                             withAdd={true}
                                             onChange={onChange}
                                             value={value}
+                                            suffix="만원"
                                         />  
                                     )}
                                 />         
@@ -348,6 +354,7 @@ const CreateChecklist = ({ type }) => {
                                                 withAdd={true}
                                                 onChange={onChange}
                                                 value={value}
+                                                suffix="만원"
                                             />   
                                         )}
                                     />
@@ -361,10 +368,11 @@ const CreateChecklist = ({ type }) => {
                                     render={({field: { onChange, value }}) => (
                                         <CustomSelect
                                             defaultValue="0층"
-                                            options={["1층", "2층", "3층", "4층", "5층", "6층", "7층"]}
+                                            options={["0층", "1층", "2층", "3층", "4층", "5층", "6층", "7층"]}
                                             withAdd={true}
                                             onChange={onChange}
                                             value={value}
+                                            suffix="층"
                                         />    
                                     )}
                                 />
@@ -384,6 +392,7 @@ const CreateChecklist = ({ type }) => {
                                                 withAdd={true}
                                                 onChange={onChange}
                                                 value={value}
+                                                suffix="평"
                                             />    
                                         )}
                                     />               

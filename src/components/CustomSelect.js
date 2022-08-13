@@ -1,24 +1,29 @@
 import React, { useState, useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Select, Divider, Space, Input, Button } from 'antd';
+import { Select, Divider, Space, Input, Button, Tooltip } from 'antd';
 import { ReactComponent as Suffix } from "../assets/suffix.svg";
 import styles from "../styles/components/customSelect.module.scss";
 
 const { Option } = Select;
 let index = 0;
 
-const CustomSelect = ({ defaultValue, options, withAdd, onChange, value }) => {
+const CustomSelect = ({ defaultValue, options, withAdd, onChange, value, suffix }) => {
   const [items, setItems] = useState([...options]);
   const [name, setName] = useState('');
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const inputRef = useRef(null);
 
   const onNameChange = (event) => {
-    setName(event.target.value);
+    if (isNaN(event.target.value)) { setIsTooltipVisible(true);}
+    else { setIsTooltipVisible(false); }
+
+    setName(isNaN(parseInt(event.target.value)) ? "" : parseInt(event.target.value));
   };
 
   const addItem = (e) => {
     e.preventDefault();
-    setItems([...items, name || `New item ${index++}`]);
+    setIsTooltipVisible(false);
+    setItems([...items, name + suffix || `New item ${index++}`]);
     setName('');
     setTimeout(() => {
       inputRef.current?.focus();
@@ -52,12 +57,15 @@ const CustomSelect = ({ defaultValue, options, withAdd, onChange, value }) => {
                 padding: '0 8px 4px',
               }}
             >
-              <Input
-                placeholder="추가하기.."
-                ref={inputRef}
-                value={name}
-                onChange={onNameChange}
-              />
+              <Tooltip title="정수만 입력 가능" visible={isTooltipVisible}>
+                <Input
+                  placeholder="추가하기.."
+                  ref={inputRef}
+                  value={name}
+                  onChange={onNameChange}
+                  suffix={suffix}
+                />
+              </Tooltip>
               <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
               </Button>
             </Space>
