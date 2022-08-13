@@ -24,6 +24,7 @@ const CreateChecklist = ({ type }) => {
     const { centerLat, centerLng } = useRecoilValue(centerPosState);
     const setCenterPos = useSetRecoilState(centerPosState);
     const setSearchInput = useSetRecoilState(searchInputState);
+    const [defaultFileList, setDefaultFileList] = useState([]);
     const [images, setImages] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const depositRef = useRef();
@@ -50,7 +51,13 @@ const CreateChecklist = ({ type }) => {
     // 체크리스트 수정 PUT
     const putChecklist = async (checklist_id, data) => {
         await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, data)
-        .then((res) => console.log(res))
+        .then((res) => {
+            console.log(res);
+
+            if (images.length !== 0) {
+                images.forEach((image) => postImage(checklist_id, image));
+            }
+        })
         .catch((err) => console.log(err))
     }
 
@@ -130,7 +137,18 @@ const CreateChecklist = ({ type }) => {
         await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
         .then((res) => {
             console.log(res);
+            const fileList = res.data.images;
             const roomInfo = res.data.roomInfo;
+
+            // 이미지
+            setDefaultFileList(fileList.map((url, idx) => {
+                return {
+                    uid: idx.toString(),
+                    name: url.slice(url.lastIndexOf('/') + 1),
+                    status: "done",
+                    url: `http://localhost:8000${url}`
+                };
+            }));
 
             // 기본 정보
             setCenterPos({
@@ -151,17 +169,17 @@ const CreateChecklist = ({ type }) => {
             }
             else {
                 setValue("입주 가능일 옵션", "직접 입력");
-                setValue("입주 가능일 날짜", moment(roomInfo.basicInfo_move_in_date));
+                setValue("입주 가능일 날짜", roomInfo.basicInfo_move_in_date ? moment(roomInfo.basicInfo_move_in_date) : null);
             }            
             setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
             setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
             setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
-            setValue("월세", roomInfo.basicInfo_monthly_rent / 10000 + "만원");
-            setValue("관리비", roomInfo.basicInfo_maintenance_fee / 10000 + "만원");
-            setValue("해당층", roomInfo.basicInfo_floor + "층");
-            setValue("평 수", roomInfo.basicInfo_area + "평");
+            setValue("월세", roomInfo.basicInfo_monthly_rent ? roomInfo.basicInfo_monthly_rent / 10000 + "만원" : "0만원");
+            setValue("관리비", roomInfo.basicInfo_maintenance_fee ? roomInfo.basicInfo_maintenance_fee / 10000 + "만원" : "0만원");
+            setValue("해당층", roomInfo.basicInfo_floor ? roomInfo.basicInfo_floor + "층" : "0층");
+            setValue("평 수", roomInfo.basicInfo_area ? roomInfo.basicInfo_area + "평" : "0평");
             setValue("방 수", basicsBEtoFE[roomInfo.basicInfo_number_of_rooms]);
-            setValue("내부 구조", basicsBEtoFE[roomInfo.basicInfo_interior_structure]);
+            setValue("내부 구조", roomInfo.basicInfo_interior_structure ? basicsBEtoFE[roomInfo.basicInfo_interior_structure] : "-");
                         
             // 옵션
             optionsKR.forEach((option, index) => {
@@ -176,7 +194,7 @@ const CreateChecklist = ({ type }) => {
 
             for (let i=4; i<13; i++) {
                 const value = roomInfo[detailsEN[i]];
-                setValue(detailsKR[i], value !== null ? detailsKR[i] + detailsBEtoFE[value][roomInfo[value]] : null);
+                setValue(detailsKR[i], value !== null ? detailsKR[i] + detailsBEtoFE[detailsEN[i]][value] : null);
             }
         })
         .catch((err) => console.log(err))
@@ -226,7 +244,7 @@ const CreateChecklist = ({ type }) => {
                     <button className={styles.confirm}>매물 확정하기</button>
                     <form onSubmit={handleSubmit(onValidate)}>
                         <section className={styles.images}>
-                            <ImgUpload setImages={setImages} type={type} />
+                            <ImgUpload type={type} setImages={setImages} defaultFileList={defaultFileList} />
                         </section>
 
                         <p className={styles.subtitle}>기본 정보</p>
@@ -342,7 +360,7 @@ const CreateChecklist = ({ type }) => {
                                     name="해당층"
                                     render={({field: { onChange, value }}) => (
                                         <CustomSelect
-                                            defaultValue="1층"
+                                            defaultValue="0층"
                                             options={["1층", "2층", "3층", "4층", "5층", "6층", "7층"]}
                                             withAdd={true}
                                             onChange={onChange}
@@ -390,7 +408,7 @@ const CreateChecklist = ({ type }) => {
                                     name="내부 구조"
                                     render={({field: { onChange, value }}) => (
                                         <CustomSelect
-                                            defaultValue="내부 구조"
+                                            defaultValue="-"
                                             options={["오픈형", "주방분리형", "베란다분리형", "주방베란다분리형", "복층형"]}
                                             withAdd={false}
                                             onChange={onChange}
