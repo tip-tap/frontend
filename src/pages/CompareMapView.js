@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import Layout from "../components/common/Layout";
 import Map from "../components/Map";
-import { Markers } from "../components/icons/Markers";
-import { MarkersOn } from "../components/icons/MarkersOn";
-import { MarkersOff } from "../components/icons/MarkersOff"
-import { ReactComponent as Heart } from "../assets/heart.svg";
+import { MarkersOn } from "../icons/MarkersOn";
+import { MarkersOff } from "../icons/MarkersOff"
 import styles from "../styles/pages/compareMapView.module.scss";
 import Toggle from "../components/common/Toggle";
-
-const labels = ["지하철", "대형마트", "편의점", "음식점", "카페", "병원", "약국", "방문매물", "중개업소"];
+import { labels } from "../attributes/categories";
 
 const CompareMapView = () => {
     const [markers, setMarkers] = useState(Array(9).fill(1));
@@ -36,7 +33,7 @@ const CompareMapView = () => {
                     })}
                 </div>
                 <div className={styles.map}>
-                    <Map markerFilter={markers.filter((_, i) => i !== 7)} />
+                    <Map markerFilter={markers} type="compare" />
                 </div>
             </div>
         </Layout>

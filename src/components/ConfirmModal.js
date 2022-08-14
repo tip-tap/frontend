@@ -3,8 +3,9 @@ import { ReactComponent as Info } from "../assets/info.svg";
 import { ReactComponent as Close } from "../assets/close.svg";
 import styles from "../styles/components/confirmModal.module.scss";
 
-const ConfirmModal = ({ title, content, isModalVisible, setIsModalVisible }) => {
+const ConfirmModal = ({ title, content, isModalVisible, setIsModalVisible, onSubmit }) => {
   const handleOk = () => {
+    onSubmit();
     setIsModalVisible(false);
   };
 

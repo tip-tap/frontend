@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import styles from "../styles/components/imgUpload.module.scss";
+import axios from "axios";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -11,7 +12,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ImgUpload = ({ setImages }) => {
+const ImgUpload = ({ type, setImages, defaultFileList }) => {
   const btnRef = useRef();
 
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -29,7 +30,7 @@ const ImgUpload = ({ setImages }) => {
     setPreviewImage(file.url || file.preview);
     setPreviewVisible(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  };
+  }
 
   const handleChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -40,6 +41,25 @@ const ImgUpload = ({ setImages }) => {
     });
     setImages(newImages);
   }
+
+  const handleRemove = async (file) => {
+    // 이미지 삭제 DELETE (for edit mode)
+    if (type === "edit" && !file.originFileObj) {
+      await axios({
+        method: "delete",
+        url: "http://localhost:8000/api/v1/image/",
+        data: {
+            image: file.url.slice(21)
+        }
+     })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err))
+    }
+  }
+
+  useEffect(() => {
+    setFileList(defaultFileList);
+  }, [defaultFileList])
   
   useEffect(() => {
     btnRef.current?.scrollIntoView({behavior: "smooth", block: "nearest", inline: "start"});
@@ -51,9 +71,11 @@ const ImgUpload = ({ setImages }) => {
         listType="picture-card"
         beforeUpload={() => false}
         fileList={fileList}
+        defaultFileList={defaultFileList}
         multiple={true}
         onPreview={handlePreview}
         onChange={handleChange}
+        onRemove={handleRemove}
       >
         {fileList.length >= 10 ? null
         :

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import CreateListBtn from "../components/CreateListBtn";
@@ -7,27 +7,6 @@ import styles from "../styles/pages/main.module.scss";
 import axios from "axios";
 
 const Main = () => {
-    /* API TEST */
-    const getRooms = async () => {
-        const firstLat = 37.5665;
-        const firstLng = 126.97423268424383;
-
-        const secondLat = 37.566783658885626;
-        const secondLng = 126.97865792991867;
-
-        const thirdLat = 37.56820802746253;
-        const thirdLng = 126.98363800062684;
-
-        // 매물 조회 SUCCESS ✅
-        await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${firstLat},${firstLng}],[${secondLat},${secondLng}],[${thirdLat},${thirdLng}]]`)
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-    }
-    /************/
-
-    useEffect(() => {
-        getRooms(); // api test
-    });
     return (
         <Layout>
             <div className={styles.wrapper}>
