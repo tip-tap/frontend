@@ -1,12 +1,12 @@
-import subway from "../../assets/markers/subway.svg";
-import mart from "../../assets/markers/mart.svg";
-import store from "../../assets/markers/store.svg";
-import restaurant from "../../assets/markers/restaurant.svg";
-import cafe from "../../assets/markers/cafe.svg";
-import hospital from "../../assets/markers/hospital.svg";
-import pharmacy from "../../assets/markers/pharmacy.svg";
-import visited from "../../assets/markers/visited.svg";
-import agent from "../../assets/markers/agent.svg";
+import subway from "../assets/markers/subway.svg";
+import mart from "../assets/markers/mart.svg";
+import store from "../assets/markers/store.svg";
+import restaurant from "../assets/markers/restaurant.svg";
+import cafe from "../assets/markers/cafe.svg";
+import hospital from "../assets/markers/hospital.svg";
+import pharmacy from "../assets/markers/pharmacy.svg";
+import visited from "../assets/markers/visited.svg";
+import agent from "../assets/markers/agent.svg";
 
 
 export const Markers = {

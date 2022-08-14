@@ -12,7 +12,7 @@ const types = ["전세", "반전세", "월세"];
 const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
-const SearchBox = ({ type, withFilter, defaultValue }) => {
+const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
     const { enqueueSnackbar, closeSnackbar} = useSnackbar();
     const navigate = useNavigate();
 
@@ -60,6 +60,7 @@ const SearchBox = ({ type, withFilter, defaultValue }) => {
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
+                setSearchToggle(!searchToggle);
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 enqueueSnackbar("검색 결과가 존재하지 않습니다", {
                     variant: "info",

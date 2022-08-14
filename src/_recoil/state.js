@@ -4,8 +4,8 @@ import { atom } from "recoil";
 export const centerPosState = atom({
     key: "centerPos",
     default: {
-        centerLat: -1,
-        centerLng: -1,
+        centerLat: 37.566783658885626,
+        centerLng: 126.97865792991867,
     }
 });
 
