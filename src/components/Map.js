@@ -1,20 +1,28 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styles from "../styles/components/map.module.scss";
 import { Markers } from "../icons/Markers";
-import { useRecoilState } from "recoil";
-import { centerPosState, lowerLeftPosState, upperRightPosState } from "../_recoil/state";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { centerPosState, lowerLeftPosState, upperRightPosState, searchInputState } from "../_recoil/state";
 import { categoryCode } from "../attributes/categories";
 import heart from "../assets/heart.svg";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const { kakao } = window;
 let map;
 
 const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
+    // notistack snackbar
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
     // recoil 상태 관리
     const [{ centerLat, centerLng }, setCenterPos] = useRecoilState(centerPosState);
     const [{ lowerLeftLat, lowerLeftLng }, setLowerLeftPos] = useRecoilState(lowerLeftPosState);
     const [{ upperRightLat, upperRightLng }, setUpperRightPos] = useRecoilState(upperRightPosState);
+    const setSearchInput = useSetRecoilState(searchInputState);
+
+    // 지도 레벨
+    const [mapLevel, setMapLevel] = useState(3);
 
     // 지도에 마커 및 인포윈도우 표시
     const displayMarker = (position, category, place) => {
@@ -70,20 +78,46 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         }
     }, [centerLat, centerLng, markerFilter]);
 
+    // 매물 위치 불러오기
+    const getOneRoom = useCallback(() => {
+        let marker = new kakao.maps.Marker({
+            position: new kakao.maps.LatLng(centerLat, centerLng)
+        });
+        marker.setMap(map);
+    }, [centerLat, centerLng]);
+
     // 매물 조회 GET
     const getRooms = useCallback(async () => {
         console.log("getRooms");
         await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
-        .then((res) => console.log(res))
+        .then((res) => {
+            let clusterer = new kakao.maps.MarkerClusterer({
+                map: map,
+                averageCenter: true,
+                minLevel: 3,
+                minClusterSize: 1
+            });
+
+            res.data.rooms.forEach((room) => {
+                let marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(room.roomInfo.basicInfo_location_x, room.roomInfo.basicInfo_location_y)
+                });
+                clusterer.addMarker(marker);
+            })
+        })
         .catch((err) => console.log(err))
     }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng]);
 
     // 관심매물 조회 GET
     const getInterests = async () => {
-        console.log("getInterests");
         await axios.get("http://localhost:8000/api/v1/interest/")
         .then((res) => {
-            console.log(res);
+            let clusterer = new kakao.maps.MarkerClusterer({
+                map: map,
+                averageCenter: true,
+                minLevel: 5,
+                minClusterSize: 1
+            });
 
             let bounds = new kakao.maps.LatLngBounds();
             res.data.forEach((interest) => {
@@ -95,6 +129,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
                 });
                 marker.setMap(map);
                 bounds.extend(position);
+                clusterer.addMarker(marker);
             });
             map.setBounds(bounds);
         })
@@ -107,7 +142,12 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             console.log("getChecklists");
             await axios.get("http://localhost:8000/api/v1/checklist/")
             .then((res) => {
-                console.log(res);
+                let clusterer = new kakao.maps.MarkerClusterer({
+                    map: map,
+                    averageCenter: true,
+                    minLevel: 5,
+                    minClusterSize: 1
+                });
 
                 let bounds = new kakao.maps.LatLngBounds();
                 res.data.checklists.forEach((checklist) => {
@@ -119,7 +159,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
                     });
                     marker.setMap(map);
                     bounds.extend(position);
-                    
+                    clusterer.addMarker(marker);
                 });
             })
             .catch((err) => console.log(err))
@@ -138,7 +178,11 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             getChecklists();
             getFacilities();
         }
-    }, [type, getRooms, getFacilities]);
+        else if (type === "details") {
+            getOneRoom();
+            getFacilities();
+        }
+    }, [type, getRooms, getChecklists, getOneRoom, getFacilities]);
     
     // 지도 범위 좌표 업데이트
     const updateBounds = useCallback(() => {
@@ -182,17 +226,81 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         let mapContainer = document.getElementById("map");
         let mapOption = {
             center: new kakao.maps.LatLng(centerLat, centerLng),
-            level: 3,
+            level: mapLevel,
         };
         map = new kakao.maps.Map(mapContainer, mapOption);
 
         // 지도 확대/축소 레벨 제한
-        if (type === "compare" || type === "details") { map.setMaxLevel(5); }
+        if (type === "wish" || type === "compare" || type === "details") { map.setMaxLevel(5); }
         else { map.setMaxLevel(10); }
 
         // 지도 타입에 맞게 정보 업데이트
         getInfos();
-    }, [centerLat, centerLng, updateBounds, getInfos, type]);
+
+        // 전체 매물 검색 지도일 경우 줌/드래그 이벤트 설정
+        if (type === "normal") {
+            // geocoder
+            let geocoder = new kakao.maps.services.Geocoder();
+
+            // 줌(확대/축소) 이벤트 등록
+            kakao.maps.event.addListener(map, 'zoom_changed', function() {        			
+                let currentLevel = map.getLevel();
+                setMapLevel(currentLevel);
+                console.log("변경된 지도 확대/축소 레벨 " + currentLevel);
+                console.log("변경된 지도 범위", map.getBounds());
+                
+                if (currentLevel >= 10) {
+                    enqueueSnackbar("보고 있는 지역이 너무 넓습니다 지도를 확대해주세요", {
+                        variant: "info",
+                        anchorOrigin: {
+                            vertical: "top",
+                            horizontal: "center",
+                        },
+                        sx: {
+                            "& .SnackbarContent-root": {
+                                bgcolor: "#0040BD"
+                            }
+                        }
+                    });
+                }
+                else {
+                    closeSnackbar();
+                    setCenterPos({
+                        centerLat: map.getCenter().getLat(),
+                        centerLng: map.getCenter().getLng(),
+                    });
+                    updateBounds();
+                    getRooms();
+                }
+            });
+
+            // 드래그(이동) 이벤트 등록
+            kakao.maps.event.addListener(map, "dragend", function() {
+                let latlng = map.getCenter();
+                let currentBounds = map.getBounds();
+                console.log("이전 지도 중심좌표 ", centerLat, centerLng);
+                console.log("변경된 지도 중심좌표 " + latlng );
+                console.log("변경된 영역 ", currentBounds);
+
+                geocoder.coord2Address(map.getCenter().getLng(), map.getCenter().getLat(), (result, status) => { 
+                    if (status === kakao.maps.services.Status.OK) {
+                        setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
+                    }
+                });
+                
+
+                if (centerLat > currentBounds.getNorthEast().getLat() || centerLat < currentBounds.getSouthWest().getLat()
+                || centerLng > currentBounds.getNorthEast().getLng() || centerLng < currentBounds.getSouthWest().getLng()) {
+                    setCenterPos({
+                        centerLat: map.getCenter().getLat(),
+                        centerLng: map.getCenter().getLng(),
+                    });
+                    updateBounds();
+                    getRooms();
+                }
+            });
+        }
+    }, [type, centerLat, centerLng, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
 
     // 검색이벤트 발생 시 지도 중심 업데이트 및 범위 상태관리
     useEffect(() => {
