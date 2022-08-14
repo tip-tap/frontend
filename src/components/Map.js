@@ -161,6 +161,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
                     bounds.extend(position);
                     clusterer.addMarker(marker);
                 });
+                map.setBounds(bounds);
             })
             .catch((err) => console.log(err))
         }
@@ -231,8 +232,8 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         map = new kakao.maps.Map(mapContainer, mapOption);
 
         // 지도 확대/축소 레벨 제한
-        if (type === "wish" || type === "compare" || type === "details") { map.setMaxLevel(5); }
-        else { map.setMaxLevel(10); }
+        if (type === "details") { map.setMaxLevel(5); }
+        
 
         // 지도 타입에 맞게 정보 업데이트
         getInfos();
