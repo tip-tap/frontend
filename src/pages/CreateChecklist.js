@@ -233,36 +233,6 @@ const CreateChecklist = ({ type }) => {
         }
     }, [type, params.id, getOneChecklist, getOneRoom]);
 
-    /* API TEST
-    const deleteImage = async () => {
-        // 이미지 삭제 (체크리스트) SUCCESS ✅
-        await axios({
-            method: "delete",
-            url: "http://localhost:8000/api/v1/image/",
-            data: {
-                image: "/media/image/8/a74be9d8821d4d899cf7612e2e40e351.jpg"
-            }
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-    }
-
-    const confirmChecklist = async () => {
-        await axios({
-            method: "post",
-            url: "http://localhost:8000/api/v1/confirm/",
-            data: {
-                checklist_id: 2, // dummy
-            }
-        })
-        await axios.post("http://localhost:8000/api/v1/confirm/", {
-            checklist_id: 1
-        })
-        .then((res) => console.log(res))
-        .catch((err) => console.log(err))
-    }
-    */
-
     return(
         <>
             <Layout>

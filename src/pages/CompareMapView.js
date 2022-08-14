@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import Layout from "../components/common/Layout";
 import Map from "../components/Map";
-import { Markers } from "../icons/Markers";
-import { MarkersOn } from "../components/icons/MarkersOn";
-import { MarkersOff } from "../components/icons/MarkersOff"
+import { MarkersOn } from "../icons/MarkersOn";
+import { MarkersOff } from "../icons/MarkersOff"
 import styles from "../styles/pages/compareMapView.module.scss";
 import Toggle from "../components/common/Toggle";
 import { labels } from "../attributes/categories";
