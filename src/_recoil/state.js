@@ -37,14 +37,30 @@ export const checksState = atom({
     default: Array(7).fill(0)
 });
 
-export const depositState = atom({
-    key: "deposit",
+export const depositStrState = atom({
+    key: "depositStr",
     default: ""
 });
 
-export const monthlyState = atom({
-    key: "monthly",
-    default: []
+export const monthlyStrState = atom({
+    key: "monthlyStr",
+    default: "",
+});
+
+export const depositNumState = atom({
+    key: "depositNum",
+    default: {
+        min: 0,
+        max: 0,
+    }
+});
+
+export const monthlyNumState = atom({
+    key: "monthlyNum",
+    default: {
+        min: 0,
+        max: 0,
+    }
 });
 
 export const extraOptionsState = atom({
