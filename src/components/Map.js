@@ -15,7 +15,7 @@ import NoImage from "../assets/noImage.png";
 const { kakao } = window;
 let map;
 
-const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
+const Map = ({ markerFilter, type, searchToggle }) => {
     // useNavigate
     const navigate = useNavigate();
 
@@ -164,7 +164,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         if (obj === "interest" || obj === "checklist") {
             map.setBounds(bounds);
         }
-    }, [navigate]);
+    }, [navigate, getFacilities]);
 
     // 매물 조회 GET
     const getRooms = useCallback(async () => {

@@ -20,7 +20,7 @@ const MapView = ({ type }) => {
                 }
                 <Toggle active="map" mapLink={type === "wish" ? "/wishmap" : "/map"} listLink={type === "wish" ? "/wishlist" : "/list"} />
                 <section className={styles.mapDiv}>
-                    <Map type={type} searchToggle={searchToggle} />
+                    <Map type={type} searchToggle={searchToggle} markerFilter={Array(8).fill(0)} />
                 </section>
             </div>
         </Layout>

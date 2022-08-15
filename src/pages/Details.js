@@ -187,7 +187,7 @@ const Details = () => {
                             <article className={styles.title}>주변 시설</article>
                         </section>
                         <section className={styles.facilitiesMap}>
-                            <Map type="details" />
+                            <Map type="details" markerFilter={Array(8).fill(1)}/>
                         </section>
                     </article>
                 </section>
