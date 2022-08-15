@@ -6,9 +6,7 @@ import HeartBtn from "../components/HeartBtn";
 
 const time = "2일전";
 
-<<<<<<< Updated upstream
-const List = ({ id, centerLat, centerLng }) => {
-=======
+
 const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
 
     // object
@@ -29,7 +27,6 @@ const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
         else if (key === "월세"){return value["rent"]/10000+"만원" ;}
         else if (key === "관리비"){return value["mtnfee"]/10000+ "만원";}
     }
->>>>>>> Stashed changes
 
     return (
         <>

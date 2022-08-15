@@ -1,34 +1,10 @@
-<<<<<<< Updated upstream
 import React, { useState , useEffect } from "react";
-=======
-import React from "react";
-import { Link } from "react-router-dom";
->>>>>>> Stashed changes
 import styles from "../styles/components/wishlist.module.scss";
 import RoomImage from "../dummy/room.png";
 import DetailsBtn from "../components/DetailsBtn";
 import CreateListBtn from "../components/CreateListBtn";
 import HeartBtn from "../components/HeartBtn";
 
-<<<<<<< Updated upstream
-
-const basics = {
-    "원룸": "5평",
-    "보증금":"300만원",
-    "월세":"45만원",
-    "관리비":"6만원"
-};
-
-const tags = {
-    "왕십리역 5분 거리":1,
-    "풀옵션":1,
-    "즉시입주":1
-};
-
-const time = "2일전";
-
-const WishList = ({ id, centerLat, centerLng }) => {
-=======
 
 const time = "2일전";
 
@@ -50,8 +26,6 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
         else if (key === "월세"){return value["rent"]/10000+"만원" ;}
         else if (key === "관리비"){return value["mtnfee"]/10000+ "만원";}
     }
->>>>>>> Stashed changes
-
     return (
         <>
             <div className={styles.wrapper}>
