@@ -4,8 +4,8 @@ import CustomSlider from "../components/CustomSlider";
 import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
-import { useSetRecoilState, useRecoilState } from "recoil";
-import { centerPosState, searchInputState, checksState, depositState, monthlyState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
+import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
+import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
 import { useSnackbar } from "notistack";
 
 const types = ["전세", "반전세", "월세"];
@@ -123,8 +123,14 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
     const [checks, setChecks] = useRecoilState(checksState);
 
     /* 보증금 및 월세 슬라이더 */
-    const [deposit, setDeposit] = useRecoilState(depositState);
-    const [monthly, setMonthly] = useRecoilState(monthlyState);
+    const [depositStr, setDepositStr] = useRecoilState(depositStrState);
+    const [monthlyStr, setMonthlyStr] = useRecoilState(monthlyStrState);
+    
+    const depositNum = useRecoilValue(depositNumState);
+    //depositNum.min
+    //depositNum.max
+    const setDepositNum = useSetRecoilState(depositNumState);
+    const setMonthlyNum = useSetRecoilState(monthlyNumState);
     const setDepositValue = useSetRecoilState(depositValueState);
     const setMonthlyValue = useSetRecoilState(monthlyValueState);
 
@@ -139,46 +145,82 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         setDepositValue(value);
 
         let str = "";
+        const newDepositNum = { max: 0, min: 0 };
         for (let i=0; i<2; i++) {
+            let num = 0;
             if (value[i] <= 10) { // 100만 ~ 1000만 (100만 단위 10스텝)
                 str += value[i] * 100 + "만 원";
+                num += value[i] * 1000000;
             } else if (value[i] <= 34) { // 2000만 ~ 2억5천 (1000만 단위 24스텝)
                 str += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) + "억" : "";
                 str += (value[i] - 9) % 10 * 1000 + "만 원";
+                num += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) * 100000000 : 0;
+                num += (value[i] - 9) % 10 * 10000000;
             } else if (value[i] <= 47) { // 3억 ~ 9억 (5000만 단위 13스텝)
                 str += value[i] % 2 ? (value[i] - 29) / 2 + "억" : (value[i] - 30) / 2 + "억";
                 str += value[i] % 2 ? "" : "5000만 원";
+                num += value[i] % 2 ? (value[i] - 29) / 2 * 100000000 : (value[i] - 30) / 2 * 100000000;
+                num += value[i] % 2 ? 0 : 50000000;
             } else {
                 str += "무제한";
+                num += 1000000000;
             }
 
-            if (value[0] === value[1]) { break; }
-            if (i === 0) {str += " ~ "; }
+            if (value[0] === value[1]) {
+                newDepositNum.max = num;
+                newDepositNum.min = num;
+                break;
+            }
+            if (i === 0) {
+                str += " ~ ";
+                newDepositNum.min = num;
+            }
+            else if (i === 1) {
+                newDepositNum.max = num;
+            }
         }
-        setDeposit(str);
+        setDepositNum(newDepositNum);
+        setDepositStr(str);
     }
-
+    
     const handleMonthly = (value) => {
         setMonthlyValue(value);
         
         let str = "";
+        const newMonthlyNum = { max: 0, min: 0 };
         for (let i=0; i<2; i++) {
+            let num = 0;
             if (value[i] <= 10) { // 5만 ~ 50만 (5만 단위 10스텝)
                 str += value[i] * 5 + "만 원";
+                num += value[i] * 5 * 10000;
             } else if (value[i] <= 15) { // 60만 ~ 100만 (10만 단위 5스텝)
                 str += (value[i] - 5) * 10 + "만 원";
+                num += (value[i] - 5) * 100000;
             } else if (value[i] <= 19) { // 150만 ~ 300만 (50만 단위 4스텝)
                 str += (value[i] - 13) * 50 + "만 원";
+                num += (value[i] - 13) * 500000;
             } else {
                 str += "무제한";
+                num += 10000000;
             }
 
-            if (value[0] === value[1]) { break; }
-            if (i === 0) { str += " ~ "; }
+            if (value[0] === value[1]) {
+                newMonthlyNum.max = num;
+                newMonthlyNum.min = num;
+                break;
+            }
+            if (i === 0) {
+                str += " ~ "; 
+                newMonthlyNum.min = num;
+            }
+            else if (i === 1) {
+                newMonthlyNum.max = num;
+            }
         }
-
-        setMonthly(str);
+        setMonthlyNum(newMonthlyNum);
+        setMonthlyStr(str);
     }
+    
     /************/
 
     /* 추가 필터 */
@@ -267,7 +309,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                     </article>
                     <article className={`${styles.filter} ${styles.rangeOpt}`}>
                         <p className={styles.title}>보증금</p>
-                        <p className={styles.range}>{deposit}</p>
+                        <p className={styles.range}>{depositStr}</p>
                         <CustomSlider
                             min={0}
                             max={48}
@@ -281,7 +323,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                     </article>
                     <article className={`${styles.filter} ${styles.rangeOpt}`}>
                         <p className={styles.title}>월세</p>
-                        <p className={styles.range}>{monthly}</p>
+                        <p className={styles.range}>{monthlyStr}</p>
                         <CustomSlider
                             min={0}
                             max={20}
