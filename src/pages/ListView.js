@@ -35,13 +35,13 @@ const ListView = () => {
         getList();
     },[])
 
-
     return(
-        <Layout withToggle={true} active={"none"}>
+        <Layout>
             <div className = {styles.wrapper}>
                 <section className={styles.searchDiv}>
                     <SearchBox type="long" withFilter={true}/>
                 </section>
+                <Toggle active="list" mapLink="/map" listLink="/list" />
                 <section className = {styles.listDiv}>
                     {list.map((value)=>{
                             return(

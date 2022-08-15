@@ -1,6 +1,8 @@
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
-import React, { useState } from 'react';
+import styles from "../styles/components/imgUpload.module.scss";
+import axios from "axios";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -10,7 +12,9 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const ImgUpload = () => {
+const ImgUpload = ({ type, setImages, defaultFileList }) => {
+  const btnRef = useRef();
+
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -26,33 +30,66 @@ const ImgUpload = () => {
     setPreviewImage(file.url || file.preview);
     setPreviewVisible(true);
     setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-  };
+  }
 
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  const handleChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+    
+    const newImages = [];
+    newFileList.forEach((v) => {
+      newImages.push(v.originFileObj);
+    });
+    setImages(newImages);
+  }
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
+  const handleRemove = async (file) => {
+    // 이미지 삭제 DELETE (for edit mode)
+    if (type === "edit" && !file.originFileObj) {
+      await axios({
+        method: "delete",
+        url: "http://localhost:8000/api/v1/image/",
+        data: {
+            image: file.url.slice(21)
+        }
+     })
+    .then((res) => console.log(res))
+    .catch((err) => console.log(err))
+    }
+  }
+
+  useEffect(() => {
+    setFileList(defaultFileList);
+  }, [defaultFileList])
+  
+  useEffect(() => {
+    btnRef.current?.scrollIntoView({behavior: "smooth", block: "nearest", inline: "start"});
+  }, [fileList]);
+
   return (
-    <>
+    <div className={styles.wrapper}>
       <Upload
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
         listType="picture-card"
+        beforeUpload={() => false}
         fileList={fileList}
+        defaultFileList={defaultFileList}
         multiple={true}
         onPreview={handlePreview}
         onChange={handleChange}
+        onRemove={handleRemove}
       >
-        {fileList.length >= 8 ? null : uploadButton}
+        {fileList.length >= 10 ? null
+        :
+        <div ref={btnRef}>
+          <PlusOutlined />
+          <div
+            style={{
+              marginTop: 8,
+            }}
+          >
+            Upload<br/>(최대10장)
+          </div>
+        </div>
+        }
       </Upload>
       <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
         <img
@@ -63,7 +100,7 @@ const ImgUpload = () => {
           src={previewImage}
         />
       </Modal>
-    </>
+    </div>
   );
 };
 

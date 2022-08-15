@@ -1,18 +1,17 @@
 @import "../main.module.scss";
 
 .wrapper {
-    width: toRem(1200px);
-    margin: 0 auto;
+    &.nonMiniWrapper {
+        width: toRem(1200px);
+        margin: 0 auto;
+    }
 
     .box {
-        @include flexBox(row, center, center);
-        @include setBoxShadow();
         border-radius: toRem(4px);
         background-color: $white;
         position: relative;
 
         input {
-            margin-left: toRem(20px);
             border: none;
 
             &:focus {
@@ -20,21 +19,26 @@
             }
 
             &::placeholder {
-                color: #B7B7B7;
+                color: $gray;
             }        
         }
 
         &.shortBox {
+            @include flexBox(row, center, center);
+            @include setBoxShadow();
             width: toRem(400px);
             height: toRem(72px);
 
             input {
                 @include typoStyle(700, 24px, 36px, -0.5px, $main);
                 width: toRem(250px);    
+                margin-left: toRem(20px);
             }
         }
 
         &.longBox {
+            @include flexBox(row, center, center);
+            @include setBoxShadow();
             margin: 0 auto;
             width: toRem(995px);
             height: toRem(64px);
@@ -42,8 +46,24 @@
             input {
                 @include typoStyle(500, 16px, 16px, -0.5px, $main);
                 width: toRem(850px);
+                margin-left: toRem(20px);
             }
 
+        }
+
+        &.miniBox {
+            @include flexBox(row, center, flex-start);
+            height: toRem(24px);
+
+            input {
+                @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+                width: toRem(260px);
+                margin-left: 0;
+
+                &::placeholder {
+                    @include typoStyle(300, 14px, 14px, -0.5px, $gray);
+                }
+            }
         }
     }
 
@@ -66,6 +86,13 @@
 
         &.longList {
             width: toRem(995px);
+        }
+
+        &.miniList {
+            width: toRem(280px);
+            padding-left: 0px;
+            padding-right: 0px;
+            top: toRem(50px);
         }
 
         div {
@@ -118,7 +145,7 @@
                     }
 
                     label {
-                        @include typoStyle(500, 14px, 18.2px, -0.5px, #b7b7b7);
+                        @include typoStyle(500, 14px, 18.2px, -0.5px, $gray);
 
                         &.active {
                             color: $main;
@@ -170,7 +197,7 @@
                     grid-template-columns: 1fr 1fr 1fr;
 
                     p {
-                        @include typoStyle(400, 12px, 12px, -0.5px, #3F3D56);
+                        @include typoStyle(400, 12px, 12px, -0.5px, $darkgray);
 
                         &.start {
                             text-align: left;

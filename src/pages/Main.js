@@ -1,12 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import CreateListBtn from "../components/CreateListBtn";
 import SearchBox from "../components/SearchBox";
 import styles from "../styles/pages/main.module.scss";
+import axios from "axios";
 
 const Main = () => {
     return (
-        <Layout withToggle={true} active={"none"}>
+        <Layout>
             <div className={styles.wrapper}>
                 <section className={styles.greeting}>
                     <article className={styles.left}>
@@ -16,7 +18,9 @@ const Main = () => {
                                 <br/>
                                 보다 자세히 체크하고 싶다면?
                             </p>
-                            <CreateListBtn type="primary-xl" />
+                            <Link to="/create_checklist">
+                                <CreateListBtn type="primary-xl" />
+                            </Link>
                         </div>
                     </article>
                     <article className={styles.right}>

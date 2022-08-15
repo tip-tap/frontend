@@ -26,13 +26,13 @@ const WishListView = () => {
         getWishlist();
     },[])
 
-
     return(
-        <Layout withToggle={true} active={"none"}>
+        <Layout active="wish">
             <div className = {styles.wrapper}>
                 <section className={styles.searchDiv}>
                     <SearchBox type="long" withFilter={true}/>
                 </section>
+                <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
                 <section className = {styles.listDiv}>
                     {wishlist.map((value)=>{
                                 return(

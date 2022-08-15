@@ -1,4 +1,5 @@
 import React, { useState , useEffect } from "react";
+import { Link } from "react-router-dom";
 import styles from "../styles/components/wishlist.module.scss";
 import RoomImage from "../dummy/room.png";
 import DetailsBtn from "../components/DetailsBtn";
@@ -49,7 +50,9 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
                     ))}
                 </div>
                 <div className = {styles.detailsbtn}>
-                    <CreateListBtn type = "secondary-m"/>
+                    <Link to="/create_checklist">
+                        <CreateListBtn type = "secondary-m"/>
+                    </Link>
                     <DetailsBtn type="secondary-m" />
                 </div>
                 <div className={styles.underwrapper}>

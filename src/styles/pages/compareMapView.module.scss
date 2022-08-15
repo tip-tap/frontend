@@ -1,0 +1,36 @@
+@import "../main.module.scss";
+
+.toggle {
+    margin-top: toRem(20px);
+}
+
+.wrapper {
+    width: 100vw;
+    height: calc(100vh - 5rem);
+
+    .title {
+        @include typoStyle(500, 24px, 36px, -0.5px, $main);
+        @include setBoxShadow();
+        @include flexBox(row, center, center);
+        width: toRem(1200px);
+        height: toRem(50px);
+        margin: toRem(50px) auto toRem(30px) auto;
+        background-color: $white;
+    }
+    
+    .markers {
+        @include flexBox(row, center);
+        width: toRem(646px);
+        height: toRem(54px);
+        margin: 0 auto toRem(36px) auto;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    
+    .map {
+        width: 100vw;
+        height: calc(100vh - 11.25rem);
+    }
+}

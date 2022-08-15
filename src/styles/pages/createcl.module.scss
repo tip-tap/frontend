@@ -1,7 +1,5 @@
 @import "../main.module.scss";
 
-
-
 body {
     overflow: auto !important;
     overflow-x: hidden !important;
@@ -9,16 +7,282 @@ body {
     .wrapper {
         @include flexBox(column, center, center);
         width: 100vw;
+        position: relative;
+
+        .confirm {
+            @include typoStyle(700, 16px, 24px, -0.5px, $white);
+            @include setBoxShadow();
+            width: toRem(200px);
+            height: toRem(40px);
+            background-color: $main;
+            border-radius: toRem(4px);
+            border: none;
+
+            position: absolute;
+            top: toRem(247px);
+            left: toRem(642px);
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .subtitle {
+            @include typoStyle(500, 24px, 24px, -0.5px, $main);
+            margin-top: toRem(40px);
+            margin-bottom: toRem(20px);
+        }
         
-        .imgwrapper{
+        // 사진 업로드
+        .images {
             @include flexBox(row, center, center);
-            height : toRem(104px);
-            width : toRem(880px);
             background: #FFFFFF;
             margin-top: toRem(46px);
+            margin-bottom: toRem(40px);
         }
 
+        // 기본 정보
+        .basics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+
+            .basicsItem {
+                @include setBoxShadow();
+                display: grid;
+                grid-template-columns: toRem(100px) 1fr;
+                align-items: center;
+                background-color: $white;
+                border-radius: 4px;
+
+                .basicsLabel {
+                    @include typoStyle(700, 16px, 16px, -0.5px, $main);
+                }
+
+                &:nth-child(-n+4) {
+                    grid-column: span 2;
+                    width: toRem(420px);
+                    height: toRem(54px);
+                    padding: toRem(16px) toRem(19px);
+                }
+
+                &:nth-child(n+5):nth-child(-n+12) {
+                    @include flexBox(column, flex-start);
+                    width: toRem(200px);
+                    height: toRem(70px);
+                    padding: toRem(12px) toRem(8px);
+
+                    .basicsLabel {
+                        margin-left: toRem(8px);
+                        margin-bottom: toRem(12px);
+                    }
+
+                    input {
+                        height: toRem(22px);
+                    }
+                }
+
+                input[type=text] {
+                    @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+                    border: none;
+
+                    &:focus {
+                        outline: none;
+                    }
+
+                    &::placeholder {
+                        @include typoStyle(300, 14px, 14px, -0.5px, $gray);
+                    }
+                }
+
+                .choices {
+                    @include flexBox(row, center, space-around);
+                    width: toRem(184px);
+
+                    input[type=radio] {
+                        display: none;
+                    }
+
+                    label {
+                        @include typoStyle(300, 14px, 14px, -0.5px, $gray);
+
+                        &.active {
+                            @include typoStyle(500, 14px, 14px, -0.5px, $main);
+                        }
+
+                        &:hover {
+                            cursor: pointer;
+                        }
+                    }
+                }
+
+                &.selectEnd {
+                    grid-template-columns: toRem(100px) 1fr 1fr;
+                    padding: 0 toRem(19px);
+
+                    input {
+                        width: 100%;
+                    }
+                }
+
+                &.selectCenter{
+                    .basicsLabel {
+                        margin-bottom: toRem(6px) !important;
+                    }
+                }
+                
+                .withUnits {
+                    position: relative;
+
+                    input {
+                        width: 100% !important;
+                        text-align: center;
+                    }
+                    
+                    .unit {
+                        @include typoStyle(500, 14px, 14px, -0.5px, $darkgray);
+                        position: absolute;
+                        bottom: toRem(4px);
+                        right: toRem(8px);
+                    }
+                }
+            }
+        }
+
+        // 옵션
+        .options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+
+            .optionsItem {
+                @include typoStyle(500, 14px, 14px, -0.5px, $gray);
+                @include flexBox(row, center, center);
+                @include setBoxShadow();
+
+                width: toRem(200px);
+                height: toRem(54px);
+                padding: toRem(8px);
+                background-color: $white;
+
+                input {
+                    display: none;
+                }
+
+                label {
+                    @include flexBox(row, center, center);
+                    width: 100%;
+                    height: 100%;
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+
+                &.active {
+                    color: $main;
+                }
+            }
+        }
+
+        // 세부 정보
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: toRem(20px) toRem(20px);
+            
+            .detailsItem {
+                position: relative;
+
+                width: toRem(200px);
+                height: toRem(70px);
+                padding: toRem(12px) toRem(16px);
+                
+                @include setBoxShadow();
+                background-color: $white;
+                border-radius: toRem(4px);
+
+                &:nth-child(n+11):nth-child(-n+13) {
+                    width: toRem(420px) !important;
+                    grid-column: span 2;
+                }
+
+                input {
+                    display: none;
+                }
+    
+                .detailsKey {
+                    @include typoStyle(700, 16px, 16px, -0.5px, $darkgray);
+                    margin-bottom: toRem(16px);
+
+                    &.active {
+                        color: $main;
+                    }
+                }
+
+                .choices {
+                    @include flexBox(row, center, space-around);
+                    
+
+                    .detailsValue {
+                        @include typoStyle(500, 14px, 14px, -0.5px, $gray);
+        
+                        &:hover {
+                            cursor: pointer;
+                        }
+        
+                        &.active {
+                            color: $main;
+                        }
+                    }
+
+                    
+                }
+
+                .water-related {
+                    @include typoStyle(700, 14px, 14px, -0.5px, $darkgray);
+                    position: absolute;
+                    top: toRem(13px);
+                    right: toRem(74px);
+                    
+                    span {
+                        margin: 0 toRem(10px);
+                    }
+                }
+            }
+        }
+
+        // 버튼
+        .buttons {
+            @include flexBox(row, center);
+            width: toRem(846px);
+            margin: toRem(60px) auto;
 
 
+            .btn {
+                @include setBoxShadow();
+                @include typoStyle(700, 24px, 36px, -0.5px, $white);
+                width: toRem(400px);
+                height: toRem(72px);
+                border-radius: toRem(4px);
+                border: none;
+
+                &.cancel {
+                    background-color: #D7D7D7;
+                }
+    
+                &.save {
+                    background-color: $main;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                }
+            }
         }
     }
+}

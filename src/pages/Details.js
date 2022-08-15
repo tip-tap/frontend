@@ -1,45 +1,33 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useParams, Link } from "react-router-dom";
 import Layout from "../components/common/Layout";
 import Slider from "react-slick";
-// import GetListBtn from "../components/GetListBtn";
 import CreateListBtn from "../components/CreateListBtn";
 import Map from "../components/Map";
 import styles from "../styles/pages/details.module.scss";
-import img1 from "../dummy/1.jpg";
-import img2 from "../dummy/2.jpg";
-import img3 from "../dummy/3.jpg";
-import img4 from "../dummy/4.jpg";
-import img5 from "../dummy/5.jpg";
-import img6 from "../dummy/6.jpg";
-import img7 from "../dummy/7.jpg";
+import { useSetRecoilState } from "recoil";
+import { centerPosState } from "../_recoil/state";
+import axios from "axios";
+import { basicsKR, basicsEN } from "../attributes/basics";
+import { optionsKR, optionsEN } from "../attributes/options";
+import { basicsBEtoFE } from "../attributes/converter";
 
-
-const imgArr = [img1, img2, img3, img4, img5, img6, img7];
 const headers = ["기본정보", "옵션", "주변시설"];
-const basics = {
-    "매물 위치": "서울특별시 성동구 사근동 9가길 6",
-    "공인중개사": "인공인중개사",
-    "입주가능일": "즉시 입주 가능",
-    "연락처": "010-6855-1999",
-    "계약 형태": "반전세",
-    "보증금": "8,900만원",
-    "월세": "10만원",
-    "관리비": "5만원",
-    "해당층": "3층",
-    "평 수": "5평",
-    "방 수": "1개",
-    "내부 구조": "베란다분리형"
-};
-const options = {
-    "가스레인지": 0, "인덕션": 1, "전자레인지": 1, "냉장고": 1,
-    "세탁기": 1, "에어컨": 1, "인터넷": 1, "TV": 1,
-    "와이파이": 1, "옷장": 1, "수납장": 1, "신발장": 1,
-    "침대": 1, "책상": 1, "의자": 1, "건조대": 1
-};
+
+const { kakao } = window;
 
 const Details = () => {
+    const params = useParams();
+
     const [isActive, setIsActive] = useState(0);
     const [isFixed, setIsFixed] = useState(false);
+
+    const [basics, setBasics] = useState({});
+    const [options, setOptions] = useState({});
+    const [manner, setManner] = useState("");
+    const [images, setImages] = useState([]);
+
+    const setCenterPos = useSetRecoilState(centerPosState);
 
     const basicsRef = useRef();
     const optionsRef = useRef();
@@ -53,62 +41,134 @@ const Details = () => {
         } else if (i === 1) {
             optionsRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
         } else {
-            facilitiesRef.current?.scrollIntoView({behavior: "smooth", block: "center"});
+            facilitiesRef.current?.scrollIntoView({behavior: "smooth", block: "start"});
         }
     }
 
-    const handleScroll = () => {
-        console.log(window.scrollY);
-
-        if (window.scrollY > 680) {
-            setIsFixed(true);
-        } else {
-            setIsFixed(false);
+    const handleScroll = useCallback(() => {
+        if (images.length === 0) {
+            if (window.scrollY > 220) { setIsFixed(true); }
+            else { setIsFixed(false); }
         }
+        else {
+            if (window.scrollY > 680) { setIsFixed(true); }
+            else { setIsFixed(false); }
+        }
+    }, [images.length]);
+
+    const displayBasics = (key, value) => {
+        if (key === "입주 가능일") {
+            if (value === "문의조정가능" || value === "즉시입주가능") { return value; }
+            else { return value.slice(0, 10); }
+        }
+        else if (key === "계약 형태" || key === "방 수" || key === "내부구조") { return value ? basicsBEtoFE[value] : "-"; }
+        if (key === "보증금") { return value ? value / 10000 + "만원" : "-"; }
+        else if (key === "월세" || key === "관리비") { return value ? value / 10000 + "만원" : "-"; }
+        else if (key === "해당층") { return value ? value + "층" : "-"; }
+        else if (key === "평 수") { return value ? value + "평" : "-"; }
+        else { return value ? value : "-"; }
     }
+
+    const getOneRoom = useCallback(async (room_id) => {
+        await axios.get(`http://localhost:8000/api/v1/rooms/${room_id}/`)
+        .then((res) => {
+            console.log(res);
+            const roomInfo = res.data.roomInfo;
+
+            // 이미지
+            const imagesInfo  = [];
+            res.data.images.forEach((image) => {
+                imagesInfo.push(`http://localhost:8000${image}`);
+            });
+            if (imagesInfo.length > 0) {
+                while (imagesInfo.length < 5) {
+                    for (let i=0; i<res.data.images.length; i++) {
+                        imagesInfo.push(imagesInfo[i]);
+                    }
+                }
+            }
+            setImages(imagesInfo);
+
+            // 기본 정보
+            const basicsInfo = {};
+            basicsInfo[basicsKR[0]] = roomInfo.basicInfo_address;
+            for (let i=1; i<12; i++) {
+                basicsInfo[basicsKR[i]] = roomInfo[basicsEN[i+1]];
+            }
+            setBasics(basicsInfo);
+
+            // 매너온도
+            setManner(res.data.brokerAgency.brokerAgency_manner);
+            
+            // 옵션
+            const optionsInfo = {};
+            optionsKR.forEach((option, index) => {
+                optionsInfo[option] = roomInfo[optionsEN[index]];
+            });
+            setOptions(optionsInfo);
+
+            // 주변 시설
+            setCenterPos({
+                centerLat: roomInfo.basicInfo_location_x,
+                centerLng: roomInfo.basicInfo_location_y,
+            });
+        })
+        .catch((err) => console.log(err))
+    }, [setCenterPos]);
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
-    }, [])
+
+        const room_id = params.id;
+        getOneRoom(room_id);
+    }, [params, handleScroll, getOneRoom])
 
     return (
-        <Layout withToggle={true} active={"none"}>
+        <Layout>
             <div className={styles.wrapper}>
                 <section className={styles.slider}>
                     <Slider
                         infinite={true}
                         swipeToSlide={true}
-                        slidesToShow={5}
+                        slidesToShow={4}
                         centerMode={true}
                     >
-                        {imgArr.map((v, i) =>
-                            <div key={i}>
-                                <img className={styles.slide} src={v} alt="dummy data" />
+                        {images.map((url, i) =>
+                            <div key={`img - ${i}`}>
+                                <img className={styles.slide} src={url} alt={url.slice(url.lastIndexOf('/') + 1)} />
                             </div>
                         )}
                     </Slider>
                 </section>
                 <section className={styles.btn}>
-                    <CreateListBtn type="primary-xl-white-bg" />
+                    <Link to={`/open_checklist/${params.id}`}>
+                        <CreateListBtn type="primary-xl-white-bg" />
+                    </Link>
                 </section>
                 <section className={styles.info}>
                     <article className={`${styles.header} ${isFixed && styles.fixedHeader}`}>
                         {headers.map((value, i) => 
-                            <span key={i} className={isActive === i && styles.active} onClick={() => handleMiniHeader(i)}>{value}</span>
+                            <span key={`header - ${value}`} className={isActive === i && styles.active} onClick={() => handleMiniHeader(i)}>{value}</span>
                         )}
                     </article>
                     <article className={styles.body}>
                         <section className={styles.basics} ref={basicsRef}>
                             <article className={styles.title}>기본 정보</article>
                             <article className={styles.basicsGrid}>
-                                {Object.keys(basics).map((key, index) => (
-                                    <div className={styles.basicsItem}>
-                                        <div key={index} className={styles.itemTitle}>
+                                {Object.keys(basics).map((key) => (
+                                    <div key={`basic - ${key}`} className={styles.basicsItem}>
+                                        <div className={styles.itemTitle}>
                                             {key}
                                         </div>
                                         <div className={styles.itemContent}>
-                                            {basics[key]}
+                                            {displayBasics(key, basics[key])}
                                         </div>
+                                        {key === "공인중개사" &&
+                                        <div className={styles.manner}>
+                                            <span>매너온도</span>
+                                            <span className={styles.number}>{manner}℃</span>
+                                        </div>
+                                        }
                                     </div>
                                 ))}
                             </article>
@@ -116,8 +176,8 @@ const Details = () => {
                         <section className={styles.options} ref={optionsRef}>
                             <article className={styles.title}>옵션</article>
                             <article className={styles.optionsGrid}>
-                                {Object.keys(options).map((key, index) => (
-                                    <div key={index} className={`${styles.optionsItem} ${options[key] ? styles.positive : styles.negative}`}>
+                                {Object.keys(options).map((key) => (
+                                    <div key={`option - ${key}`} className={`${styles.optionsItem} ${options[key] ? styles.positive : styles.negative}`}>
                                         {key}
                                     </div>
                                 ))}
@@ -127,7 +187,7 @@ const Details = () => {
                             <article className={styles.title}>주변 시설</article>
                         </section>
                         <section className={styles.facilitiesMap}>
-                            <Map />
+                            <Map type="details" markerFilter={Array(8).fill(1)}/>
                         </section>
                     </article>
                 </section>

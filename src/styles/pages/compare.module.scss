@@ -1,10 +1,12 @@
 @import "../main.module.scss";
 
-
-
 body {
     overflow: auto !important;
     overflow-x: hidden !important;
+
+    .toggle {
+        margin-top: toRem(20px);
+    }
 
     .headwrapper {
         @include flexBox(row, center, flex-start);
@@ -13,7 +15,6 @@ body {
         padding-left: toRem(387px);
         padding-top: toRem(15px);
         background-color: #FFFFFF;
-        box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 
         .infotitle{
             @include typoStyle(500, 24px, 24px, -0.5px);
@@ -27,6 +28,7 @@ body {
             @include typoStyle(500, 16px, 16px, -0.5px);
         }
         &.fixedHeader {
+            box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
             position: fixed;
             top: 0;
         }

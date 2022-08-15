@@ -3,19 +3,24 @@ import Layout from "../components/common/Layout";
 import SearchBox from "../components/SearchBox";
 import Map from "../components/Map";
 import styles from "../styles/pages/mapView.module.scss";
+import Toggle from "../components/common/Toggle";
 
-const MapView = () => {
-    const [centerLat, setCenterLat] = useState(-1);
-    const [centerLng, setCenterLng] = useState(-1);
+const MapView = ({ type }) => {
+    const [searchToggle, setSearchToggle] = useState(true);
 
     return (
-        <Layout withToggle={true} active={"none"}>
-            <div className={styles.wrapper}>
+        <Layout active={type === "wish" ? "wish" : ""}>
+            <div className={`${styles.wrapper} ${type === "wish" ? styles.extraPad : null}`}>
+                {type === "wish" ? 
+                null
+                :
                 <section className={styles.searchDiv}>
-                    <SearchBox type="long" withFilter={true} setCenterLat={setCenterLat} setCenterLng={setCenterLng} />
+                    <SearchBox type="long" withFilter={true} searchToggle={searchToggle} setSearchToggle={setSearchToggle} />
                 </section>
+                }
+                <Toggle active="map" mapLink={type === "wish" ? "/wishmap" : "/map"} listLink={type === "wish" ? "/wishlist" : "/list"} />
                 <section className={styles.mapDiv}>
-                    <Map centerLat={centerLat} centerLng={centerLng}/>
+                    <Map type={type} searchToggle={searchToggle} markerFilter={Array(8).fill(0)} />
                 </section>
             </div>
         </Layout>

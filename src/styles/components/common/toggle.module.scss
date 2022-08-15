@@ -1,0 +1,38 @@
+@import "../../main.module.scss";
+
+.wrapper {
+    @include flexBox(row, center, center);
+    width: 100vw;
+    
+    .item {
+        @include flexBox(row, center, center);
+        width: toRem(160px);
+        padding: toRem(8px) 0;
+
+        &.active {
+            border-bottom: toRem(1px) solid;
+            border-color: $main;
+            
+            .text {
+                color: $main;
+            }
+        }
+
+        &.inactive {
+            border-color: $gray;
+
+            .text {
+                color: $gray;
+            }
+        }
+
+        &:hover {
+            cursor: pointer;
+        } 
+        
+        span {
+            @include typoStyle(700, 16px, 24px, -0.5px, $main);
+            margin-left: toRem(7px);
+        }
+    }   
+}

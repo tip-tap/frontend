@@ -3,6 +3,7 @@ import styles from "../styles/components/checklist.module.scss";
 import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
 import ConfirmModal from '../components/ConfirmModal';
+import axios from "axios";
 
 const checkbasics = {
     "매물 위치": "서울특별시 성동구 사근동 9가길 6",
@@ -35,9 +36,17 @@ const checkdetails = {
     "수압":"약하다","배수":"보통이다","온수":"세다"
 }
 
-
-
 const Checklist = ({isChecked, whichChecked}) => {
+    /* API TEST */
+    const deleteChecklist = async () => {
+        const checklist_id = 3; // dummy
+
+        // 체크리스트 삭제 SUCCESS ✅
+        await axios.delete(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+    /************/
 
     const [isDelete, setIsDelete] = useState(false);
     <ConfirmModal
@@ -47,6 +56,7 @@ const Checklist = ({isChecked, whichChecked}) => {
             setIsModalVisible={setIsDelete}
             />
     const handleDelete = () =>{
+        deleteChecklist(); // api test
         setIsDelete(true);
     };
 
