@@ -45,7 +45,7 @@ const Details = () => {
         }
     }
 
-    const handleScroll = () => {
+    const handleScroll = useCallback(() => {
         if (images.length === 0) {
             if (window.scrollY > 220) { setIsFixed(true); }
             else { setIsFixed(false); }
@@ -54,7 +54,7 @@ const Details = () => {
             if (window.scrollY > 680) { setIsFixed(true); }
             else { setIsFixed(false); }
         }
-    }
+    }, [images.length]);
 
     const displayBasics = (key, value) => {
         if (key === "입주 가능일") {
@@ -80,6 +80,13 @@ const Details = () => {
             res.data.images.forEach((image) => {
                 imagesInfo.push(`http://localhost:8000${image}`);
             });
+            if (imagesInfo.length > 0) {
+                while (imagesInfo.length < 5) {
+                    for (let i=0; i<res.data.images.length; i++) {
+                        imagesInfo.push(imagesInfo[i]);
+                    }
+                }
+            }
             setImages(imagesInfo);
 
             // 기본 정보
@@ -114,7 +121,7 @@ const Details = () => {
 
         const room_id = params.id;
         getOneRoom(room_id);
-    }, [params, getOneRoom])
+    }, [params, handleScroll, getOneRoom])
 
     return (
         <Layout>
@@ -123,7 +130,7 @@ const Details = () => {
                     <Slider
                         infinite={true}
                         swipeToSlide={true}
-                        slidesToShow={Math.min(4, images.length)}
+                        slidesToShow={4}
                         centerMode={true}
                     >
                         {images.map((url, i) =>
