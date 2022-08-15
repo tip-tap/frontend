@@ -1,17 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../styles/components/map.module.scss";
 import { Markers } from "../icons/Markers";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { centerPosState, lowerLeftPosState, upperRightPosState, searchInputState } from "../_recoil/state";
 import { categoryCode } from "../attributes/categories";
+import { basicsEN } from "../attributes/basics";
+import { basicsBEtoFE } from "../attributes/converter";
 import heart from "../assets/heart.svg";
 import axios from "axios";
 import { useSnackbar } from "notistack";
+import NoImage from "../assets/noImage.png";
 
 const { kakao } = window;
 let map;
 
 const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
+    // useNavigate
+    const navigate = useNavigate();
+
     // notistack snackbar
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -24,8 +31,8 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
     // 지도 레벨
     const [mapLevel, setMapLevel] = useState(3);
 
-    // 지도에 마커 및 인포윈도우 표시
-    const displayMarker = (position, category, place) => {
+    // 주변 시설 마커 및 인포윈도우 표시
+    const displayFacilities = (position, category, place) => {
         // 마커 생성
         let markerImage = new kakao.maps.MarkerImage(Markers[categoryCode[category]], new kakao.maps.Size(36, 36));
         let marker = new kakao.maps.Marker({
@@ -62,9 +69,10 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
     const getFacilities = useCallback(() => {
         let places = new kakao.maps.services.Places();
         let callback = function(status, result, pagination) {
-            // console.log(status, result);
-            for (let i=0; i<10; i++) {
-                displayMarker(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
+            if (result === "OK") {
+                for (let i=0; i<10; i++) {
+                    displayFacilities(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
+                }
             }
         };
 
@@ -86,55 +94,95 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         marker.setMap(map);
     }, [centerLat, centerLng]);
 
+    // 매물/체크리스트 마커 및 인포윈도우 표시
+    const displayObjs = useCallback((arr, obj) => {
+        let clusterer = new kakao.maps.MarkerClusterer({
+            map: map,
+            averageCenter: true,
+            minLevel: 3,
+            minClusterSize: 1
+        });
+
+        let bounds = new kakao.maps.LatLngBounds();
+
+        arr.forEach((element) => {
+            let position = new kakao.maps.LatLng(element.roomInfo.basicInfo_location_x, element.roomInfo.basicInfo_location_y);
+            let marker = new kakao.maps.Marker({
+                position,
+                clickable: true,
+            });
+
+            if (obj === "interest" || obj === "checklist") {
+                let markerImage = obj === "interest" ? new kakao.maps.MarkerImage(heart, new kakao.maps.Size(36, 36)) : new kakao.maps.MarkerImage(Markers["방문매물"], new kakao.maps.Size(36, 36));
+                marker.setImage(markerImage);
+                bounds.extend(position);
+            }
+            
+            kakao.maps.event.addListener(marker, "click", function() {
+                if (obj === "room" || obj === "interest") { navigate(`/details/${element.room_id}`); }
+                else { navigate(`/edit_checklist/${element.checklist_id}`)}
+            });
+
+            let iwContent = `
+            <div style="display:flex; flex-direction:column; width: 200px; padding: 5px 5px 7px 5px; font-family: 'Noto Sans KR', sans-serif;">
+                <img style="margin-bottom: 5px;" src=${element.images.length === 0 ? NoImage : `http://localhost:8000${element.images[0]}`}>
+                <div style="font-size: 12px; font-weight: 400;">
+                    <div style="margin-bottom: 5px;">
+                        <span style="color: #0040BD;">${basicsBEtoFE[element.roomInfo[basicsEN[11]]]}</span>
+                        <span style="color: #B7B7B7;">${element.roomInfo[basicsEN[10]]}평</span>
+                        <span style="color: #0040BD;">보증금</span>
+                        <span style="color: #B7B7B7;">${element.roomInfo[basicsEN[6]] / 10000}만원</span>
+                    </div>
+                    <div style="margin-bottom: 5px;">
+                        <span style="color: #0040BD;">월세</span>
+                        <span style="color: #B7B7B7;">${element.roomInfo[basicsEN[7]] / 10000}만원</span>
+                        <span style="color: #0040BD;">관리비</span>
+                        <span style="color: #B7B7B7;">${element.roomInfo[basicsEN[8]] / 10000}만원</span>
+                    </div>
+                    <div>${element.roomInfo.basicInfo_address}</div>
+                </div>
+            </div>
+            `
+
+            let infoWindow = new kakao.maps.InfoWindow({
+                content: iwContent,
+            });
+
+            kakao.maps.event.addListener(marker, "mouseover", function() {
+                infoWindow.open(map, marker);
+            });
+
+            kakao.maps.event.addListener(marker, "mouseout", function() {
+                infoWindow.close();
+            });
+
+            clusterer.addMarker(marker);
+        })
+
+        if (obj === "interest" || obj === "checklist") {
+            map.setBounds(bounds);
+        }
+    }, [navigate]);
+
     // 매물 조회 GET
     const getRooms = useCallback(async () => {
         console.log("getRooms");
         await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
         .then((res) => {
-            let clusterer = new kakao.maps.MarkerClusterer({
-                map: map,
-                averageCenter: true,
-                minLevel: 3,
-                minClusterSize: 1
-            });
-
-            res.data.rooms.forEach((room) => {
-                let marker = new kakao.maps.Marker({
-                    position: new kakao.maps.LatLng(room.roomInfo.basicInfo_location_x, room.roomInfo.basicInfo_location_y)
-                });
-                clusterer.addMarker(marker);
-            })
+            displayObjs(res.data.rooms, "room");
         })
         .catch((err) => console.log(err))
-    }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng]);
+    }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng, displayObjs]);
 
     // 관심매물 조회 GET
-    const getInterests = async () => {
+    const getInterests = useCallback(async () => {
         await axios.get("http://localhost:8000/api/v1/interest/")
         .then((res) => {
-            let clusterer = new kakao.maps.MarkerClusterer({
-                map: map,
-                averageCenter: true,
-                minLevel: 5,
-                minClusterSize: 1
-            });
-
-            let bounds = new kakao.maps.LatLngBounds();
-            res.data.forEach((interest) => {
-                let markerImage = new kakao.maps.MarkerImage(heart, new kakao.maps.Size(36, 36));
-                let position = new kakao.maps.LatLng(interest.roomInfo.basicInfo_location_x, interest.roomInfo.basicInfo_location_y); 
-                let marker = new kakao.maps.Marker({
-                    position,
-                    image: markerImage
-                });
-                marker.setMap(map);
-                bounds.extend(position);
-                clusterer.addMarker(marker);
-            });
-            map.setBounds(bounds);
+            console.log(res);
+            displayObjs(res.data, "interest");
         })
         .catch((err) => console.log(err))
-    }
+    }, [displayObjs]);
 
     // 체크리스트 조회 GET
     const getChecklists = useCallback(async () => {
@@ -142,30 +190,12 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             console.log("getChecklists");
             await axios.get("http://localhost:8000/api/v1/checklist/")
             .then((res) => {
-                let clusterer = new kakao.maps.MarkerClusterer({
-                    map: map,
-                    averageCenter: true,
-                    minLevel: 5,
-                    minClusterSize: 1
-                });
-
-                let bounds = new kakao.maps.LatLngBounds();
-                res.data.checklists.forEach((checklist) => {
-                    let markerImage = new kakao.maps.MarkerImage(Markers["방문매물"], new kakao.maps.Size(36, 36));
-                    let position = new kakao.maps.LatLng(checklist.roomInfo.basicInfo_location_x, checklist.roomInfo.basicInfo_location_y); 
-                    let marker = new kakao.maps.Marker({
-                        position,
-                        image: markerImage
-                    });
-                    marker.setMap(map);
-                    bounds.extend(position);
-                    clusterer.addMarker(marker);
-                });
-                map.setBounds(bounds);
+                console.log(res);
+                displayObjs(res.data.checklists, "checklist");
             })
             .catch((err) => console.log(err))
         }
-    }, [markerFilter]);
+    }, [markerFilter, displayObjs]);
 
     // getInfos (according to map type)
     const getInfos = useCallback(() => {
@@ -183,7 +213,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             getOneRoom();
             getFacilities();
         }
-    }, [type, getRooms, getChecklists, getOneRoom, getFacilities]);
+    }, [type, getRooms, getInterests, getChecklists, getOneRoom, getFacilities]);
     
     // 지도 범위 좌표 업데이트
     const updateBounds = useCallback(() => {
@@ -233,7 +263,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
 
         // 지도 확대/축소 레벨 제한
         if (type === "details") { map.setMaxLevel(5); }
-        
+        else { map.setMaxLevel(10); }
 
         // 지도 타입에 맞게 정보 업데이트
         getInfos();
