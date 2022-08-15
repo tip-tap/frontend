@@ -34,7 +34,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
                     <img className={styles.image} src = {RoomImage} alt = 'listimg'>
                     </img>
                     <div className = {styles.heartbtn}>
-                        <HeartBtn index = {id}></HeartBtn>
+                        <HeartBtn wish = {true} index = {{id}}></HeartBtn>
                     </div>
                 </div>
                 <div className = {styles.basicswrapper}>

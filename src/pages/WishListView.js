@@ -4,6 +4,7 @@ import Layout from "../components/common/Layout";
 import WishList from "../components/WishList";
 import axios from "axios";
 import SearchBox from "../components/SearchBox";
+import Toggle from "../components/common/Toggle";
 
 const WishListView = () => {
 
@@ -29,15 +30,12 @@ const WishListView = () => {
     return(
         <Layout active="wish">
             <div className = {styles.wrapper}>
-                <section className={styles.searchDiv}>
-                    <SearchBox type="long" withFilter={true}/>
-                </section>
                 <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
                 <section className = {styles.listDiv}>
                     {wishlist.map((value)=>{
-                                return(
-                                    <WishList id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail}/>
-                                )
+                            return(
+                                <WishList id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail}/>
+                            )
                     })}
                 </section>
             </div>

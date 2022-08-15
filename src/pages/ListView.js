@@ -6,9 +6,10 @@ import List from "../components/List";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { centerPosState, lowerLeftPosState, upperRightPosState } from "../_recoil/state";
+import Toggle from "../components/common/Toggle";
 
 const ListView = () => {
-
+ 
     const { centerLat, centerLng } = useRecoilValue(centerPosState);
     const { lowerLeftLat, lowerLeftLng } = useRecoilValue(lowerLeftPosState);
     const { upperRightLat, upperRightLng } = useRecoilValue(upperRightPosState);

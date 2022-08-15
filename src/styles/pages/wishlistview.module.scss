@@ -14,7 +14,7 @@ body {
         }
 
         .listDiv{
-            @include flexBox (row, center,$justify-content:space-between);
+            @include flexBox (row, center,$justify-content:flex-start);
             flex-wrap: wrap;
             margin-top: toRem(20px);
             width: toRem(1200px);

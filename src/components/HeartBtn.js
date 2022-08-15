@@ -4,40 +4,36 @@ import EmptyHeart from "../assets/emptyheart.svg";
 import styles from "../styles/components/HeartBtn.module.scss";
 import axios from "axios";
 
-const HeartBtn = ({id}) => {
-
+const HeartBtn = ({like, id}) => {
+    console.log({id});
     const [wish, setWish] = useState(false);
 
-    const postWish = async () =>{
+    const postWish = async ({id}) =>{
         console.log("post");
         await axios({
             method: "post",
             url: "http://localhost:8000/api/v1/interest/",
             data:{
-                room_id: 4
+                room_id: {id}
             }
         })
         .then((res)=> console.log(res))
         .catch((err)=>console.log(err))
     }
 
-    const deleteWish = async() => {
+    const deleteWish = async({id}) => {
         console.log("delete");
-        await axios.delete("https://localhost:8000/api/v1/interest/5/")
+        await axios.delete(`http://localhost:8000/api/v1/interest/${id}/`)
         .then((res)=> console.log(res))
         .catch((err)=> console.log(err))
     }
 
-    useEffect(()=>{
-        deleteWish();
-    },[])
-
     const handleWish = () => {
-        if (wish === "false"){
+        if (wish === false){
             console.log("등록");
             postWish();
         }
-        else if (wish === "true"){
+        else if (wish === true){
             console.log("삭제");
             deleteWish();
         }
