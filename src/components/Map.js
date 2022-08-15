@@ -66,7 +66,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
     }
 
     // 주변 시설 불러오기
-    const getFacilities = useCallback(() => {
+    const getFacilities = useCallback((position) => {
         let places = new kakao.maps.services.Places();
         let callback = function(status, result, pagination) {
             if (result === "OK") {
@@ -80,7 +80,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             if (i === 7) { continue; }
             if (markerFilter[i]) {
                 places.categorySearch(Object.keys(categoryCode)[i], callback, {
-                    location: new kakao.maps.LatLng(centerLat, centerLng)
+                    location: position ? position : new kakao.maps.LatLng(centerLat, centerLng)
                 });
             }
         }
@@ -157,6 +157,8 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
             });
 
             clusterer.addMarker(marker);
+
+            getFacilities(position);
         })
 
         if (obj === "interest" || obj === "checklist") {
@@ -207,7 +209,7 @@ const Map = ({ markerFilter = Array(8).fill(1), type, searchToggle }) => {
         }
         else if (type === "compare") {
             getChecklists();
-            getFacilities();
+            // getFacilities();
         }
         else if (type === "details") {
             getOneRoom();
