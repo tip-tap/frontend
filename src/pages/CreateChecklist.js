@@ -102,6 +102,11 @@ const CreateChecklist = ({ type }) => {
     // 최종 제출
     const onSubmit = () => {
         // 기본 정보를 포함한 roomInfo
+        let depositStr = depositRef.current.value;
+        let depositNum = 0;
+        if (depositStr.indexOf("억") !== -1) { depositNum += parseInt(depositStr) * 100000000 }
+        depositNum += parseInt(depositStr.slice(depositStr.indexOf("억")+1)) * 10000;
+
         const roomInfo = {
             "basicInfo_location_x": Number(Number(centerLat).toFixed(7)) || null,
             "basicInfo_location_y": Number(Number(centerLng).toFixed(7)) || null,
@@ -110,7 +115,7 @@ const CreateChecklist = ({ type }) => {
             "basicInfo_move_in_date": watch("입주 가능일 날짜") || watch("입주 가능일 옵션") || null,
             "basicInfo_brokerAgency_contact": watch("연락처") || null,
             "basicInfo_room_type": basicsFEtoBE[watch("계약 형태")] || null,
-            "basicInfo_deposit":  Number(watch("보증금")) * 10000,
+            "basicInfo_deposit": depositNum,
             "basicInfo_monthly_rent": watch("월세") ? Number(watch("월세").slice(0, -2)) * 10000 : null,
             "basicInfo_maintenance_fee": watch("관리비") ? Number(watch("관리비").slice(0, -2)) * 10000 : null,
             "basicInfo_floor": watch("해당층") ? Number(watch("해당층").slice(0, -1)) : null,
@@ -204,7 +209,7 @@ const CreateChecklist = ({ type }) => {
         }            
         setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
         setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
-        setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
+        depositRef.current.value = ((roomInfo.basicInfo_deposit >= 99999999 ? Math.floor(roomInfo.basicInfo_deposit / 100000000) + "억 " : "") + roomInfo.basicInfo_deposit % 100000000 / 10000);
         setValue("월세", roomInfo.basicInfo_monthly_rent ? roomInfo.basicInfo_monthly_rent / 10000 + "만원" : "0만원");
         setValue("관리비", roomInfo.basicInfo_maintenance_fee ? roomInfo.basicInfo_maintenance_fee / 10000 + "만원" : "0만원");
         setValue("해당층", roomInfo.basicInfo_floor ? roomInfo.basicInfo_floor + "층" : "0층");
