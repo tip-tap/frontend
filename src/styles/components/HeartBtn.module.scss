@@ -1,11 +1,14 @@
 @import "../main.module.scss";
 
-.input {
-    display: none;
-}
+.input{
+    border: none;
+    outline: none;
+    background-color: transparent;
 
-label{
-    &:hover {
+    &:hover{
         cursor: pointer;
+    }
+    svg{
+        pointer-events: none;
     }
 }

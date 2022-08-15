@@ -62,7 +62,7 @@ body {
 
             .tagswrapper{
                 @include flexBox (row, center,$justify-content:flex-start);
-                @include typoStyle(400, 12px, 12px, -0.5px, $main);
+                @include typoStyle(500, 12px, 12px, -0.5px, $main);
                 width: toRem(270px);
                 height: toRem(61px);
                 padding-left: toRem(40px);

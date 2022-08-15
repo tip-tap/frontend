@@ -1,32 +1,41 @@
-import React, { useState , useEffect } from "react";
+import React from "react";
 import styles from "../styles/components/list.module.scss";
-import RoomImage from "../dummy/room.png";
 import DetailsBtn from "../components/DetailsBtn";
 import HeartBtn from "../components/HeartBtn";
 
 
-const basics = {
-    "원룸": "5평",
-    "보증금":"300만원",
-    "월세":"45만원",
-    "관리비":"6만원"
-};
-
-const tags = {
-    "왕십리역 5분 거리":1,
-    "풀옵션":1,
-    "즉시입주":1
-};
-
 const time = "2일전";
 
+<<<<<<< Updated upstream
 const List = ({ id, centerLat, centerLng }) => {
+=======
+const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
+
+    // object
+
+    const basics = {
+        "원룸": {area},
+        "보증금":{deposit},
+        "월세":{rent},
+        "관리비":{mtnfee}
+    };
+    // console.log(basics);
+
+    const displayBasics = (key, value) =>{
+        //console.log(key);
+        //console.log(value["deposit"]);
+        if (key === "원룸"){return value["area"] + "평";}
+        else if (key === "보증금"){return value["deposit"]/10000 + "만원" ;}
+        else if (key === "월세"){return value["rent"]/10000+"만원" ;}
+        else if (key === "관리비"){return value["mtnfee"]/10000+ "만원";}
+    }
+>>>>>>> Stashed changes
 
     return (
         <>
             <div className={styles.wrapper}>
                 <div className = {styles.imgposition}>
-                    <img className={styles.image} src = {RoomImage} alt = 'listimg'>
+                    <img className={styles.image} src = {thumbnail} alt = 'listimg' >
                     </img>
                     <div className = {styles.heartbtn}>
                         <HeartBtn index = {id}></HeartBtn>
@@ -34,12 +43,12 @@ const List = ({ id, centerLat, centerLng }) => {
                 </div>
                 <div className = {styles.basicswrapper}>
                     {Object.keys(basics).map((key,index)=>(
-                        <div className={styles.basicsItem}>
-                            <div key={index} className={styles.itemTitle}>
+                        <div  key={`basic - ${key}`} className={styles.basicsItem}>
+                            <div className={styles.itemTitle}>
                                 {key}
                             </div>
-                            <div key={index} className={styles.itemContent}>
-                                {basics[key]}
+                            <div className={styles.itemContent}>
+                                {displayBasics(key, basics[key])}
                             </div>
                         </div>
                     ))}
@@ -49,9 +58,9 @@ const List = ({ id, centerLat, centerLng }) => {
                 </div>
                 <div className={styles.underwrapper}>
                     <div className={styles.tagswrapper}>
-                        {Object.keys(tags).map((key,index)=>(
-                            <div key={index} className={styles.tag}>
-                                {'#'}{key}
+                        {Object.keys(tag).map((key,index)=>(
+                            <div key={`tag - ${key}`} className={styles.tag}>
+                                {'#'}{tag[index]}
                             </div>
                         ))}
                     </div>
