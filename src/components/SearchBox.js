@@ -60,7 +60,9 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         let callback = function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
                 setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
-                setSearchToggle(!searchToggle);
+                if (searchToggle) {
+                    setSearchToggle(!searchToggle);
+                }
             } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
                 enqueueSnackbar("검색 결과가 존재하지 않습니다", {
                     variant: "info",
@@ -80,7 +82,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         }
         geocoder.addressSearch(address, callback);
 
-        if (type !== "mini") {
+        if (type === "long" || type === "short") {
             navigate("/map");
         }
     }
@@ -191,20 +193,20 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
     /************/
 
     useEffect(() => {
-        if ((type === "mini" || type === "long") && searchInput !== "") {
+        if ((type === "mini edit" || type === "mini open" || type === "long") && searchInput !== "") {
             inputRef.current.value = searchInput;
         }
     }, [type, searchInput]);
 
     return (
-        <div className={`${styles.wrapper} ${type !== "mini" && styles.nonMiniWrapper}`}>
+        <div className={`${styles.wrapper} ${type.slice(0, 4) !== "mini" && styles.nonMiniWrapper}`}>
             <section className={`
                 ${styles.box}
                 ${type === "short" && styles.shortBox}
                 ${type === "long" && styles.longBox}
-                ${type === "mini" && styles.miniBox}
+                ${type.slice(0, 4) === "mini" && styles.miniBox}
             `}>
-                {type !== "mini" ? 
+                {type.slice(0, 4) !== "mini" ? 
                 <>
                     <Search width="48" height="48" /> 
                     <input placeholder="지역을 입력해주세요" onChange={debouncedChange} onKeyDown={handleKeyEvent} ref={inputRef} />
@@ -221,7 +223,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                         ${styles.list}
                         ${type === "short" && styles.shortList}
                         ${type === "long" && styles.longList}
-                        ${type === "mini" && styles.miniList}
+                        ${type.slice(0, 4) === "mini" && styles.miniList}
                     `}
                     id="list"
                     ref={listRef}

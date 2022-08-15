@@ -7,7 +7,6 @@
 .wrapper {
     width: 100vw;
     height: calc(100vh - 5rem);
-    overflow: hidden;
 
     .title {
         @include typoStyle(500, 24px, 36px, -0.5px, $main);
@@ -32,6 +31,6 @@
     
     .map {
         width: 100vw;
-        height: toRem(780px);
+        height: calc(100vh - 11.25rem);
     }
 }

@@ -45,25 +45,28 @@ const Details = () => {
         }
     }
 
-    const handleScroll = () => {
-        if (window.scrollY > 680) {
-            setIsFixed(true);
-        } else {
-            setIsFixed(false);
+    const handleScroll = useCallback(() => {
+        if (images.length === 0) {
+            if (window.scrollY > 220) { setIsFixed(true); }
+            else { setIsFixed(false); }
         }
-    }
+        else {
+            if (window.scrollY > 680) { setIsFixed(true); }
+            else { setIsFixed(false); }
+        }
+    }, [images.length]);
 
     const displayBasics = (key, value) => {
         if (key === "입주 가능일") {
             if (value === "문의조정가능" || value === "즉시입주가능") { return value; }
             else { return value.slice(0, 10); }
         }
-        else if (key === "계약 형태" || key === "방 수" || key === "내부구조") { return basicsBEtoFE[value]; }
-        if (key === "보증금") { return value / 10000 + "만원"; }
-        else if (key === "월세" || key === "관리비") { return value / 10000 + "만원"; }
-        else if (key === "해당층") { return value + "층"; }
-        else if (key === "평 수") { return value + "평"; }
-        else { return value; }
+        else if (key === "계약 형태" || key === "방 수" || key === "내부구조") { return value ? basicsBEtoFE[value] : "-"; }
+        if (key === "보증금") { return value ? value / 10000 + "만원" : "-"; }
+        else if (key === "월세" || key === "관리비") { return value ? value / 10000 + "만원" : "-"; }
+        else if (key === "해당층") { return value ? value + "층" : "-"; }
+        else if (key === "평 수") { return value ? value + "평" : "-"; }
+        else { return value ? value : "-"; }
     }
 
     const getOneRoom = useCallback(async (room_id) => {
@@ -77,22 +80,22 @@ const Details = () => {
             res.data.images.forEach((image) => {
                 imagesInfo.push(`http://localhost:8000${image}`);
             });
+            if (imagesInfo.length > 0) {
+                while (imagesInfo.length < 5) {
+                    for (let i=0; i<res.data.images.length; i++) {
+                        imagesInfo.push(imagesInfo[i]);
+                    }
+                }
+            }
             setImages(imagesInfo);
 
             // 기본 정보
             const basicsInfo = {};
-            let geocoder = new kakao.maps.services.Geocoder();
-            let coord = new kakao.maps.LatLng(Number(roomInfo.basicInfo_location_x), Number(roomInfo.basicInfo_location_y));
-            let callback = function(result, status) {
-                if (status === kakao.maps.services.Status.OK) {
-                    basicsInfo[basicsKR[0]] = result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name;
-                    for (let i=1; i<12; i++) {
-                        basicsInfo[basicsKR[i]] = roomInfo[basicsEN[i+1]];
-                    }
-                    setBasics(basicsInfo);
-                }   
+            basicsInfo[basicsKR[0]] = roomInfo.basicInfo_address;
+            for (let i=1; i<12; i++) {
+                basicsInfo[basicsKR[i]] = roomInfo[basicsEN[i+1]];
             }
-            geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+            setBasics(basicsInfo);
 
             // 매너온도
             setManner(res.data.brokerAgency.brokerAgency_manner);
@@ -118,7 +121,7 @@ const Details = () => {
 
         const room_id = params.id;
         getOneRoom(room_id);
-    }, [params, getOneRoom])
+    }, [params, handleScroll, getOneRoom])
 
     return (
         <Layout>
@@ -127,7 +130,7 @@ const Details = () => {
                     <Slider
                         infinite={true}
                         swipeToSlide={true}
-                        slidesToShow={Math.min(5, images.length)}
+                        slidesToShow={4}
                         centerMode={true}
                     >
                         {images.map((url, i) =>

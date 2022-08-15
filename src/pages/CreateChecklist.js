@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect, useCallback, useRef } from 'react';
-import { useForm, Controller} from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useForm, Controller } from "react-hook-form";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import styles from "../styles/pages/createcl.module.scss";
 import Layout from "../components/common/Layout";
 import ImgUpload from '../components/ImgUpload';
@@ -8,22 +8,25 @@ import SearchBox from '../components/SearchBox';
 import CustomSelect from '../components/CustomSelect';
 import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 import { centerPosState, searchInputState } from "../_recoil/state";
 import axios from "axios";
 import { optionsKR, optionsEN } from '../attributes/options';
 import { detailsObj, detailsKR, detailsEN } from '../attributes/details';
 import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../attributes/converter';
 import moment from "moment";
+import { useSnackbar } from "notistack";
 
 const { kakao } = window;
 
 const CreateChecklist = ({ type }) => {
+    const { enqueueSnackbar } = useSnackbar();
+    const navigate = useNavigate();
     const params = useParams();
     const { register, watch, handleSubmit, getValues, setValue, control } = useForm();
     const { centerLat, centerLng } = useRecoilValue(centerPosState);
     const setCenterPos = useSetRecoilState(centerPosState);
-    const setSearchInput = useSetRecoilState(searchInputState);
+    const [searchInput, setSearchInput] = useRecoilState(searchInputState);
     const [defaultFileList, setDefaultFileList] = useState([]);
     const [images, setImages] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,7 +35,9 @@ const CreateChecklist = ({ type }) => {
     // 이미지 추가 POST
     const postImage = async (checklist_id, image) => {
         await axios.post("http://localhost:8000/api/v1/image/", { checklist_id, image }, { headers: { "Content-Type": "multipart/form-data" }})
-        .then((res) => console.log(res))
+        .then((res) => {
+            console.log(res);
+        })
         .catch((err) => console.log(err))
     }
     
@@ -43,7 +48,25 @@ const CreateChecklist = ({ type }) => {
             console.log(res);
 
             const { data: { data: { checklist_id }} } = res;
-            images.forEach((image) => postImage(checklist_id, image));
+            if (images.length !== 0) {
+                images.forEach((image) => postImage(checklist_id, image));
+            }
+            
+            enqueueSnackbar("체크리스트 생성이 완료되었습니다", {
+                variant: "info",
+                anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                },
+                autoHideDuration: 2000,
+                sx: {
+                    "& .SnackbarContent-root": {
+                        bgcolor: "#0040BD"
+                    }
+                }
+            });
+            navigate("/compare_list");
+            
         })
         .catch((err) => console.log(err))
     }
@@ -57,6 +80,21 @@ const CreateChecklist = ({ type }) => {
             if (images.length !== 0) {
                 images.forEach((image) => postImage(checklist_id, image));
             }
+            
+            enqueueSnackbar("체크리스트 수정이 완료되었습니다", {
+                variant: "info",
+                anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                },
+                autoHideDuration: 2000,
+                sx: {
+                    "& .SnackbarContent-root": {
+                        bgcolor: "#0040BD"
+                    }
+                }
+            });
+            navigate("/compare_list");
         })
         .catch((err) => console.log(err))
     }
@@ -64,14 +102,20 @@ const CreateChecklist = ({ type }) => {
     // 최종 제출
     const onSubmit = () => {
         // 기본 정보를 포함한 roomInfo
+        let depositStr = depositRef.current.value;
+        let depositNum = 0;
+        if (depositStr.indexOf("억") !== -1) { depositNum += parseInt(depositStr) * 100000000 }
+        depositNum += parseInt(depositStr.slice(depositStr.indexOf("억")+1)) * 10000;
+
         const roomInfo = {
             "basicInfo_location_x": Number(Number(centerLat).toFixed(7)) || null,
             "basicInfo_location_y": Number(Number(centerLng).toFixed(7)) || null,
+            "basicInfo_address": searchInput,
             "basicInfo_brokerAgency": watch("공인중개사") || null,
             "basicInfo_move_in_date": watch("입주 가능일 날짜") || watch("입주 가능일 옵션") || null,
             "basicInfo_brokerAgency_contact": watch("연락처") || null,
             "basicInfo_room_type": basicsFEtoBE[watch("계약 형태")] || null,
-            "basicInfo_deposit":  Number(watch("보증금")) * 10000,
+            "basicInfo_deposit": depositNum,
             "basicInfo_monthly_rent": watch("월세") ? Number(watch("월세").slice(0, -2)) * 10000 : null,
             "basicInfo_maintenance_fee": watch("관리비") ? Number(watch("관리비").slice(0, -2)) * 10000 : null,
             "basicInfo_floor": watch("해당층") ? Number(watch("해당층").slice(0, -1)) : null,
@@ -152,17 +196,11 @@ const CreateChecklist = ({ type }) => {
         setCenterPos({
             centerLat: roomInfo.basicInfo_location_x,
             centerLng: roomInfo.basicInfo_location_y,
-        })
-        let geocoder = new kakao.maps.services.Geocoder();
-        let coord = new kakao.maps.LatLng(Number(roomInfo.basicInfo_location_x), Number(roomInfo.basicInfo_location_y));
-        let callback = function(result, status) {
-            if (status === kakao.maps.services.Status.OK) {
-                setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
-            }
-        }
-        geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+        });
+        setSearchInput(roomInfo.basicInfo_address);
         setValue("공인중개사", roomInfo.basicInfo_brokerAgency);
         if (roomInfo.basicInfo_move_in_date === "문의조정가능" || roomInfo.basicInfo_move_in_date === "바로입주가능") {
+            console.log("here");
             setValue("입주 가능일 옵션", roomInfo.basicInfo_move_in_date);
         }
         else {
@@ -171,7 +209,7 @@ const CreateChecklist = ({ type }) => {
         }            
         setValue("연락처", roomInfo.basicInfo_brokerAgency_contact);
         setValue("계약 형태", basicsBEtoFE[roomInfo.basicInfo_room_type]);
-        setValue("보증금", handleDeposit(roomInfo.basicInfo_deposit));
+        depositRef.current.value = ((roomInfo.basicInfo_deposit >= 99999999 ? Math.floor(roomInfo.basicInfo_deposit / 100000000) + "억 " : "") + roomInfo.basicInfo_deposit % 100000000 / 10000);
         setValue("월세", roomInfo.basicInfo_monthly_rent ? roomInfo.basicInfo_monthly_rent / 10000 + "만원" : "0만원");
         setValue("관리비", roomInfo.basicInfo_maintenance_fee ? roomInfo.basicInfo_maintenance_fee / 10000 + "만원" : "0만원");
         setValue("해당층", roomInfo.basicInfo_floor ? roomInfo.basicInfo_floor + "층" : "0층");
@@ -210,7 +248,7 @@ const CreateChecklist = ({ type }) => {
         .catch((err) => console.log(err))
     }, [fillInfo]);
 
-    // 매물 조회 GET (for open mode) 
+    // 매물 조회 GET (for open mode)    
     const getOneRoom = useCallback(async (room_id) => {
         await axios.get(`http://localhost:8000/api/v1/rooms/${room_id}/`)
         .then((res) => {
@@ -228,8 +266,8 @@ const CreateChecklist = ({ type }) => {
             getOneChecklist(checklist_id);
         }
         else if (type === "open") {
-            const checklist_id = params.id;
-            getOneRoom(checklist_id);
+            const room_id = params.id;
+            getOneRoom(room_id);
         }
     }, [type, params.id, getOneChecklist, getOneRoom]);
 
@@ -247,7 +285,7 @@ const CreateChecklist = ({ type }) => {
                         <section className={styles.basics}>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>매물 위치</div>
-                                <SearchBox type="mini" withFilter={false} />  
+                                <SearchBox type={`mini ${type}`} withFilter={false} />  
                             </article>
                             <article className={styles.basicsItem}>
                                 <div className={styles.basicsLabel}>공인중개사</div>

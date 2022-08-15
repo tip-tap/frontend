@@ -3,8 +3,6 @@
 .wrapper {
     @include flexBox(column, center, center);
     width: 100vw;
-    height: calc(100vh - 5rem);
-    overflow: hidden;
 
     &.extraPad {
         padding-top: toRem(20px);
@@ -17,7 +15,7 @@
 
     .mapDiv {
         width: 100vw;
-        height: toRem(804px);
+        height: calc(100vh - 10.25rem);
         margin-top: toRem(20px);
     }
 }
