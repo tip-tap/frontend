@@ -5,7 +5,10 @@ import CreateListBtn from "../components/CreateListBtn";
 import styles from "../styles/pages/compare.module.scss";
 import Sortable from "../components/Sortable"
 import Toggle from "../components/common/Toggle";
-
+import ConfirmModal from '../components/ConfirmModal';
+import { useRecoilValue } from "recoil";
+import { deleteIdState } from "../_recoil/state";
+import axios from "axios";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -19,11 +22,14 @@ const checkdetails = ["곰팡이","누수","벌레","균열","방음","창문 �
 
 
 const CompareChecklist  = () => {
+    const deleteId = useRecoilValue(deleteIdState);
 
     const[isChecked, setIsChecked] = useState(Array(3).fill(false));
     const[whichChecked, setWhichChecked] = useState(Array(3).fill(0));
     const[isSwitch, setSwitch] = useState(false);
     const[position,setPosition] = useState(false);
+    const[toggle,setToggle] = useState(false);
+    const [isDelete, setIsDelete] = useState(false);
 
     const[isFixed, setIsFixed] = useState(false);
     
@@ -52,6 +58,16 @@ const CompareChecklist  = () => {
        }
     }
 
+    const deleteChecklist = async () => {
+        await axios.delete(`http://localhost:8000/api/v1/checklist/${deleteId}/`)
+        .then((res) => {
+            console.log(res);
+            setIsDelete(false);
+            setToggle(!toggle);
+        })
+        .catch((err) => console.log(err))
+    }
+
     useEffect(() =>{
         if(isSwitch===true){
             if(isChecked[0]===true && position===0){
@@ -75,65 +91,74 @@ const CompareChecklist  = () => {
 
 
     return (
-        <Layout active="check">
-            <div className={styles.toggle}>
-                <Toggle active="list" mapLink="/compare_map" listLink="/compare_list" />
-            </div>
-            <div className={`${styles.headwrapper} ${isFixed && styles.fixedHeader}`}>
-                <span className={styles.infotitle}>보고싶은 정보들</span>
-                <input type = "checkbox" id ={0} checked = {true} onClick ={(e)=> handleCheck(e,0) } ></input>
-                <label id ={0}>{'기본정보'}</label>
-                {headers.map((value,i) =>
-                    <>
-                        <input type = "checkbox" id ={i+1} onClick ={(e)=> handleCheck(e,i+1) } ></input>
-                        <label id ={i+1}>{value}</label>
-                    </>
-                )}
-                <Link to="/create_checklist">
-                    <CreateListBtn type = "secondary-m"/>
-                </Link>
-            </div>
+        <>
+            <Layout active="check">
+                <div className={styles.toggle}>
+                    <Toggle active="list" mapLink="/compare_map" listLink="/compare_list" />
+                </div>
+                <div className={`${styles.headwrapper} ${isFixed && styles.fixedHeader}`}>
+                    <span className={styles.infotitle}>보고싶은 정보들</span>
+                    <input type = "checkbox" id ={0} checked = {true} onClick ={(e)=> handleCheck(e,0) } ></input>
+                    <label id ={0}>{'기본정보'}</label>
+                    {headers.map((value,i) =>
+                        <>
+                            <input type = "checkbox" id ={i+1} onClick ={(e)=> handleCheck(e,i+1) } ></input>
+                            <label id ={i+1}>{value}</label>
+                        </>
+                    )}
+                    <Link to="/create_checklist">
+                        <CreateListBtn type = "secondary-m"/>
+                    </Link>
+                </div>
 
 
-            <div className={styles.listwrapper}>
-                <div className={styles.listtitle}>
-                    <div className={styles.wangbasics}>
-                        <div className={styles.basics} ref = {basicsRef}>
-                            {checkbasics.map((key, index) => (
-                                <div className={styles.basicsContent}>
-                                    {key}
-                                </div>
-                            ))}
-                        </div>
-                        <div className={styles.empty}></div>
-                    </div>
-            
-                    <div className={isChecked[1] && whichChecked[1] ?styles.wangoptions:styles.none}>
-                        <div className={styles.options} ref = {optionsRef}>
-                            {checkoptions.map((key, index) => (
-                                <div className={styles.optionsContent}>
-                                    {key}
-                                </div>
-                            ))}
-                        </div>
-                        <div className={styles.empty}></div>
-                    </div>
-                    
-                
-                    <div className={isChecked[2] && whichChecked[2] ?styles.details:styles.none} ref = {detailsRef}>
-                        {checkdetails.map((key, index) => (
-                            <div className={styles.detailsContent}>
-                                {key}
+                <div className={styles.listwrapper}>
+                    <div className={styles.listtitle}>
+                        <div className={styles.wangbasics}>
+                            <div className={styles.basics} ref = {basicsRef}>
+                                {checkbasics.map((key, index) => (
+                                    <div className={styles.basicsContent}>
+                                        {key}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                            <div className={styles.empty}></div>
+                        </div>
+                
+                        <div className={isChecked[1] && whichChecked[1] ?styles.wangoptions:styles.none}>
+                            <div className={styles.options} ref = {optionsRef}>
+                                {checkoptions.map((key, index) => (
+                                    <div className={styles.optionsContent}>
+                                        {key}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className={styles.empty}></div>
+                        </div>
+                        
+                    
+                        <div className={isChecked[2] && whichChecked[2] ?styles.details:styles.none} ref = {detailsRef}>
+                            {checkdetails.map((key, index) => (
+                                <div className={styles.detailsContent}>
+                                    {key}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.checklistwrapper}>
+                        <Sortable isChecked={isChecked} whichChecked={whichChecked} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete}></Sortable>
                     </div>
                 </div>
-
-                <div className={styles.checklistwrapper}>
-                    <Sortable isChecked={isChecked} whichChecked={whichChecked}></Sortable>
-                </div>
-            </div>
-        </Layout>
+            </Layout>
+            <ConfirmModal
+                title="체크리스트가 삭제됩니다"
+                content="그래도 삭제하시겠습니까?"
+                isModalVisible={isDelete}
+                setIsModalVisible={setIsDelete}
+                onSubmit={deleteChecklist}
+            />
+        </>
     );
 }
 

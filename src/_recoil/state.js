@@ -83,3 +83,9 @@ export const monthlyValueState = atom({
     key: "monthlyValue",
     default: [0, 0]
 });
+
+/* Delete Handler */
+export const deleteIdState = atom({
+    key: "deleteId",
+    default: -1,
+});

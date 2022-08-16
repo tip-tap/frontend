@@ -9,6 +9,7 @@ import Toggle from "../components/common/Toggle";
 const WishListView = () => {
 
     const [wishlist, setWishlist] = useState([]);
+    const [toggle, setToggle] = useState(false);
 
     const getWishlist = useCallback(async()=>{
         await axios.get(`http://localhost:8000/api/v1/interest/`)
@@ -25,7 +26,7 @@ const WishListView = () => {
 
     useEffect(()=>{
         getWishlist();
-    },[])
+    },[toggle])
 
     return(
         <Layout active="wish">
@@ -34,7 +35,7 @@ const WishListView = () => {
                 <section className = {styles.listDiv}>
                     {wishlist.map((value)=>{
                             return(
-                                <WishList id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail}/>
+                                <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} />
                             )
                     })}
                 </section>

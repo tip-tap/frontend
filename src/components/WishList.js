@@ -9,23 +9,23 @@ import HeartBtn from "../components/HeartBtn";
 
 const time = "2일전";
 
-const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
+const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, setToggle}) => {
     //console.log({id});
     
     const basics = {
-        "원룸": {area},
-        "보증금":{deposit},
-        "월세":{rent},
-        "관리비":{mtnfee}
+        "원룸": area,
+        "보증금":deposit,
+        "월세":rent,
+        "관리비":mtnfee
     };
 
     const displayBasics = (key, value) =>{
         //console.log(key);
         //console.log(value["deposit"]);
-        if (key === "원룸"){return value["area"] + "평";}
-        else if (key === "보증금"){return value["deposit"]/10000 + "만원" ;}
-        else if (key === "월세"){return value["rent"]/10000+"만원" ;}
-        else if (key === "관리비"){return value["mtnfee"]/10000+ "만원";}
+        if (key === "원룸"){return value + "평";}
+        else if (key === "보증금"){return value/10000 + "만원" ;}
+        else if (key === "월세"){return value/10000+"만원" ;}
+        else if (key === "관리비"){return value/10000+ "만원";}
     }
     return (
         <>
@@ -34,7 +34,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
                     <img className={styles.image} src = {RoomImage} alt = 'listimg'>
                     </img>
                     <div className = {styles.heartbtn}>
-                        <HeartBtn like = {true} id = {id}></HeartBtn>
+                        <HeartBtn like = {true} id = {id} toggle = {toggle} setToggle={setToggle} ></HeartBtn>
                     </div>
                 </div>
                 <div className = {styles.basicswrapper}>

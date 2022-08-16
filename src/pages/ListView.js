@@ -14,7 +14,7 @@ const ListView = () => {
     const { centerLat, centerLng } = useRecoilValue(centerPosState);
     const { lowerLeftLat, lowerLeftLng } = useRecoilValue(lowerLeftPosState);
     const { upperRightLat, upperRightLng } = useRecoilValue(upperRightPosState);
-
+    /*
     const depositNum = useRecoilValue(depositNumState);
     const monthlyNum = useRecoilValue(monthlyNumState);
     const checks = useRecoilValue(checksState);
@@ -33,6 +33,7 @@ const ListView = () => {
     const result = list.filter(()=>{
         
     })
+    */
 
 
     const [list, setList] = useState([]);
@@ -40,7 +41,7 @@ const ListView = () => {
     const getList = useCallback(async()=>{
         await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
         .then((res) => {
-            //console.log(res);
+            console.log(res);
             const listInfo = [];
             res.data.rooms.forEach((rooms, index) => {
                 listInfo[index] = rooms;

@@ -91,6 +91,18 @@ export const detailsFEtoBE = {
 };
 
 export const detailsBEtoFE = {
+    "detailInfo_is_moldy":{
+        "true": "있다", "false": "없다"
+    },
+    "detailInfo_is_leak":{
+        "true": "있다", "false": "없다"
+    },
+    "detailInfo_is_bug":{
+        "true": "있다", "false": "없다"
+    },
+    "detailInfo_is_crack":{
+        "true": "있다", "false": "없다"
+    },
     "detailInfo_soundproof": {
         "A": "상", "B": "중", "C": "하"
     },
@@ -119,3 +131,93 @@ export const detailsBEtoFE = {
         "S": "세다", "N": "보통이다", "W": "약하다"
     }
 };
+
+export const checkdetailsBEtoFE = {
+    "detailInfo_is_moldy":{
+        "true": "있음", "false": "없음"
+    },
+    "detailInfo_is_leak":{
+        "true": "있음", "false": "없음"
+    },
+    "detailInfo_is_bug":{
+        "true": "있음", "false": "없음"
+    },
+    "detailInfo_is_crack":{
+        "true": "있음", "false": "없음"
+    },
+    "detailInfo_soundproof": {
+        "A": "상", "B": "중", "C": "하"
+    },
+    "detailInfo_window_size": {
+        "L": "크다", "M": "보통이다", "S": "작다"
+    },
+    "detailInfo_main_direction": {
+        "E": "동향", "W": "서향", "S": "남향", "N": "북향"
+    },
+    "detailInfo_ventilator": {
+        "F": "빠르다", "N": "보통이다", "S": "느리다"
+    },
+    "detailInfo_ventilation": {
+        "A": "상", "B": "중", "C": "하"
+    },
+    "detailInfo_external_noise": {
+        "L":"크다", "M":" 보통이다", "S": "작다"
+    },
+    "detailInfo_water_pressure": {
+        "S": "세다", "N": "보통이다", "W": "약하다"
+    },
+    "detailInfo_drainage": {
+        "S": "세다", "N": "보통이다", "W": "약하다"
+    },
+    "detailInfo_hot_water": {
+        "S": "세다", "N": "보통이다", "W": "약하다"
+    }
+};
+
+export const optionsBEtoFE = {
+    "option_gas_stove": {
+        "true": "O", "false": "X"
+    },
+    "option_induction": {
+        "true": "O", "false": "X"
+    },
+    "option_microwave": {
+        "true": "O", "false": "X"
+    },
+    "option_refrigerator": {
+        "true": "O", "false": "X"
+    },
+    "option_washing_machine": {
+        "true": "O", "false": "X"
+    },
+    "option_air_conditioner": {
+        "true": "O", "false": "X"
+    },
+    "option_internet": {
+        "true": "O", "false": "X"
+    },
+    "option_tv": {
+        "true": "O", "false": "X"
+    },
+    "option_wifi": {
+        "true": "O", "false": "X"
+    },
+    "option_closet": {
+        "true": "O", "false": "X"
+    },
+    "option_cabinet": {
+        "true": "O", "false": "X"
+    },
+    "option_shoe_rack": {
+        "true": "O", "false": "X"
+    },
+    "option_bed": {
+        "true": "O", "false": "X"
+    },
+    "option_desk": {
+        "true": "O", "false": "X"
+    },
+    "option_chair": {
+        "true": "O", "false": "X"
+    },
+}

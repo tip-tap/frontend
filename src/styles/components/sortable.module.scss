@@ -1,7 +1,7 @@
 @import "../main.module.scss";
 
 .container {
-    @include flexBox(row, center);
+    @include flexBox (row, center,$justify-content:flex-start);
     width: toRem(1000px);
     padding-top: toRem(20px);
     
@@ -22,7 +22,7 @@
     background-color: #B7B7B7;
     border-radius: toRem(10px);
   }
-
+ 
 .item {
     list-style: none;
     margin-right: toRem(5px);
