@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import styles from "../styles/components/imgUpload.module.scss";
-import axios from "axios";
+import Api from '../_axios/Api';
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -45,9 +45,9 @@ const ImgUpload = ({ type, setImages, defaultFileList }) => {
   const handleRemove = async (file) => {
     // 이미지 삭제 DELETE (for edit mode)
     if (type === "edit" && !file.originFileObj) {
-      await axios({
+      await Api({
         method: "delete",
-        url: "http://localhost:8000/api/v1/image/",
+        url: "/api/v1/image/",
         data: {
             image: file.url.slice(21)
         }

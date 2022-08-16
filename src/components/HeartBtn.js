@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import HeartImg from "../assets/heart.svg";
 import EmptyHeart from "../assets/emptyheart.svg";
 import styles from "../styles/components/HeartBtn.module.scss";
-import axios from "axios";
+import Api from "../_axios/Api";
 
 const HeartBtn = ({like, id}) => {
     //console.log(id);
@@ -11,9 +11,9 @@ const HeartBtn = ({like, id}) => {
 
     const postWish = async (id) =>{
         //console.log("post");
-        await axios({
+        await Api({
             method: "post",
-            url: "http://localhost:8000/api/v1/interest/",
+            url: "/api/v1/interest/",
             data:{
                 room_id: id
             }
@@ -24,7 +24,7 @@ const HeartBtn = ({like, id}) => {
 
     const deleteWish = async(id) => {
         //console.log("delete");
-        await axios.delete(`http://localhost:8000/api/v1/interest/${id}/`)
+        await Api.delete(`/api/v1/interest/${id}/`)
         .then((res)=> console.log(res))
         .catch((err)=> console.log(err))
     }

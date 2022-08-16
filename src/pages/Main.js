@@ -4,7 +4,7 @@ import Layout from "../components/common/Layout";
 import CreateListBtn from "../components/CreateListBtn";
 import SearchBox from "../components/SearchBox";
 import styles from "../styles/pages/main.module.scss";
-import axios from "axios";
+import Api from "../_axios/Api";
 
 const Main = () => {
     return (

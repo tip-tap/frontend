@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import Api from "../../_axios/Api";
 import { Link } from "react-router-dom";
 import styles from "../../styles/components/common/header.module.scss";
 import { ReactComponent as Logo } from "../../assets/logo.svg";

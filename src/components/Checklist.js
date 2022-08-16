@@ -3,7 +3,7 @@ import styles from "../styles/components/checklist.module.scss";
 import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
 import ConfirmModal from '../components/ConfirmModal';
-import axios from "axios";
+import Api from "../_axios/Api";
 
 const checkbasics = {
     "매물 위치": "서울특별시 성동구 사근동 9가길 6",

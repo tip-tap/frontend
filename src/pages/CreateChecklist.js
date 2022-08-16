@@ -10,7 +10,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import { DatePicker } from 'antd';
 import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 import { centerPosState, searchInputState } from "../_recoil/state";
-import axios from "axios";
+import Api from '../_axios/Api';
 import { optionsKR, optionsEN } from '../attributes/options';
 import { detailsObj, detailsKR, detailsEN } from '../attributes/details';
 import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../attributes/converter';
@@ -38,7 +38,7 @@ const CreateChecklist = ({ type }) => {
 
     // 이미지 추가 POST
     const postImage = async (checklist_id, image) => {
-        await axios.post("http://localhost:8000/api/v1/image/", { checklist_id, image }, { headers: { "Content-Type": "multipart/form-data" }})
+        await Api.post("/api/v1/image/", { checklist_id, image }, { headers: { "Content-Type": "multipart/form-data" }})
         .then((res) => {
             console.log(res);
         })
@@ -47,7 +47,7 @@ const CreateChecklist = ({ type }) => {
     
     // 체크리스트 생성 POST
     const postChecklist = async (data) => {        
-        await axios.post("http://localhost:8000/api/v1/checklist/", data)
+        await Api.post("/api/v1/checklist/", data)
         .then((res) => {
             console.log(res);
 
@@ -77,7 +77,7 @@ const CreateChecklist = ({ type }) => {
 
     // 체크리스트 수정 PUT
     const putChecklist = async (checklist_id, data) => {
-        await axios.put(`http://localhost:8000/api/v1/checklist/${checklist_id}/`, data)
+        await Api.put(`/api/v1/checklist/${checklist_id}/`, data)
         .then((res) => {
             console.log(res);
 
@@ -242,7 +242,7 @@ const CreateChecklist = ({ type }) => {
 
     // 체크리스트 한 개 조회 GET (for edit mode)
     const getOneChecklist = useCallback (async (checklist_id) => {
-        await axios.get(`http://localhost:8000/api/v1/checklist/${checklist_id}/`)
+        await Api.get(`/api/v1/checklist/${checklist_id}/`)
         .then((res) => {
             console.log(res);
             const fileList = res.data.images;
@@ -254,7 +254,7 @@ const CreateChecklist = ({ type }) => {
 
     // 매물 조회 GET (for open mode)    
     const getOneRoom = useCallback(async (room_id) => {
-        await axios.get(`http://localhost:8000/api/v1/rooms/${room_id}/`)
+        await Api.get(`/api/v1/rooms/${room_id}/`)
         .then((res) => {
             console.log(res);
             const fileList = res.data.images;
@@ -266,7 +266,7 @@ const CreateChecklist = ({ type }) => {
 
     // 매물(체크리스트) 확정 POST
     const postConfirm = async () => {
-        await axios.post("http://localhost:8000/api/v1/confirm/", {
+        await Api.post("/api/v1/confirm/", {
             checklist_id: Number(params.id)
         })
         .then((res) => {

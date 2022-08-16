@@ -8,7 +8,7 @@ import { categoryCode } from "../attributes/categories";
 import { basicsEN } from "../attributes/basics";
 import { basicsBEtoFE } from "../attributes/converter";
 import heart from "../assets/heart.svg";
-import axios from "axios";
+import Api from "../_axios/Api";
 import { useSnackbar } from "notistack";
 import NoImage from "../assets/noImage.png";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
@@ -78,13 +78,14 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         let places = new kakao.maps.services.Places();
         let callback = function(status, result, pagination) {
             if (result === "OK") {
-                for (let i=0; i<10; i++) {
+                const len = Math.min(10, status.length);
+                for (let i=0; i<len; i++) {
                     displayFacilities(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
                 }
             }
         };
 
-        for (let i=0; i<9; i++) {
+        for (let i=0; i<8; i++) {
             if (i === 7) { continue; }
             if (markerFilter[i]) {
                 places.categorySearch(Object.keys(categoryCode)[i], callback, {
@@ -192,7 +193,6 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
         let optionsFiltered = [];
         checksFiltered.forEach((room) => {
-            console.log(room);
             let isValid = true;
             for (let i=0; i<16; i++) {
                 if (extraOptions[optionsKR[i]] && room.roomInfo[optionsEN[i]] === false) {
@@ -209,8 +209,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     // 매물 조회 GET
     const getRooms = useCallback(async () => {
-        console.log("getRooms");
-        await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
+        await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
         .then((res) => {
             filterRooms(res.data.rooms);
         })
@@ -219,9 +218,8 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     // 관심매물 조회 GET
     const getInterests = useCallback(async () => {
-        await axios.get("http://localhost:8000/api/v1/interest/")
+        await Api.get("/api/v1/interest/")
         .then((res) => {
-            console.log(res);
             displayObjs(res.data, "interest");
         })
         .catch((err) => console.log(err))
@@ -230,11 +228,11 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     // 체크리스트 조회 GET
     const getChecklists = useCallback(async () => {
         if (markerFilter[7]) {
-            console.log("getChecklists");
-            await axios.get("http://localhost:8000/api/v1/checklist/")
+            await Api.get("/api/v1/checklist/")
             .then((res) => {
-                console.log(res);
-                displayObjs(res.data.checklists, "checklist");
+                if (res.data.checklists.length !== 0) {
+                    displayObjs(res.data.checklists, "checklist");
+                }
             })
             .catch((err) => console.log(err))
         }
@@ -271,8 +269,6 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             upperRightLat: bounds.pa,
             upperRightLng: bounds.oa,
         });
-
-        console.log(bounds, map.getCenter());
     }, [setLowerLeftPos, setUpperRightPos]);
 
     // navigator.geolocation onValid callback
@@ -374,7 +370,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 }
             });
         }
-    }, [type, centerLat, centerLng, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
+    }, [type, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
 
     // 검색이벤트 발생 시 지도 중심 업데이트 및 범위 상태관리
     useEffect(() => {

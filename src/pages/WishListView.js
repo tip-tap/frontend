@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from "react";
 import styles from "../styles/pages/wishlistview.module.scss";
 import Layout from "../components/common/Layout";
 import WishList from "../components/WishList";
-import axios from "axios";
+import Api from "../_axios/Api";
 import SearchBox from "../components/SearchBox";
 import Toggle from "../components/common/Toggle";
 
@@ -11,7 +11,7 @@ const WishListView = () => {
     const [wishlist, setWishlist] = useState([]);
 
     const getWishlist = useCallback(async()=>{
-        await axios.get(`http://localhost:8000/api/v1/interest/`)
+        await Api.get(`/api/v1/interest/`)
         .then((res) => {
             //console.log(res);
             const wishlistInfo = [];

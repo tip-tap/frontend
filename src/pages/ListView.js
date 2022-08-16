@@ -3,7 +3,7 @@ import styles from "../styles/pages/listView.module.scss";
 import SearchBox  from "../components/SearchBox";
 import Layout from "../components/common/Layout";
 import List from "../components/List";
-import axios from "axios";
+import Api from "../_axios/Api";
 import { useRecoilValue } from "recoil";
 import { centerPosState, lowerLeftPosState, upperRightPosState } from "../_recoil/state";
 import Toggle from "../components/common/Toggle";
@@ -57,7 +57,7 @@ const ListView = () => {
     }, [depositNum, monthlyNum, checks, extraOptions]);
 
     const getList = useCallback(async()=>{
-        await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
+        await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
         .then((res) => {
             console.log(res);
             filterRooms(res.data.rooms);            
