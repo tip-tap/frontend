@@ -18,6 +18,7 @@ import { optionsKR, optionsEN } from "../attributes/options";
 
 const { kakao } = window;
 let map;
+let geocoder = new kakao.maps.services.Geocoder();
 
 const Map = ({ markerFilter, type, searchToggle }) => {
     // useNavigate
@@ -30,7 +31,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const [{ centerLat, centerLng }, setCenterPos] = useRecoilState(centerPosState);
     const [{ lowerLeftLat, lowerLeftLng }, setLowerLeftPos] = useRecoilState(lowerLeftPosState);
     const [{ upperRightLat, upperRightLng }, setUpperRightPos] = useRecoilState(upperRightPosState);
-    const setSearchInput = useSetRecoilState(searchInputState);
+    const [searchInput, setSearchInput] = useRecoilState(searchInputState);
     const checks = useRecoilValue(checksState);
     const depositNum = useRecoilValue(depositNumState);
     const monthlyNum = useRecoilValue(monthlyNumState);
@@ -206,7 +207,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         });
 
         displayObjs(optionsFiltered, "room");
-    }, [depositNum, monthlyNum, checks, extraOptions]);
+    }, [depositNum, monthlyNum, checks, extraOptions, displayObjs]);
 
 
     // 매물 조회 GET
@@ -222,7 +223,9 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const getInterests = useCallback(async () => {
         await Api.get("/api/v1/interest/")
         .then((res) => {
-            displayObjs(res.data, "interest");
+            if (res.data.length !== 0) {
+                displayObjs(res.data, "interest");
+            }
         })
         .catch((err) => console.log(err))
     }, [displayObjs]);
@@ -275,12 +278,22 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     // navigator.geolocation onValid callback
     const onValid = useCallback((pos) => {
-        setCenterPos({
-            centerLat: pos.coords.latitude,
-            centerLng: pos.coords.longitude,
-        });
+        if (searchInput) {
+            let callback = function(result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
+                } 
+            }
+            geocoder.addressSearch(searchInput, callback);
+        }
+        else {
+            setCenterPos({
+                centerLat: pos.coords.latitude,
+                centerLng: pos.coords.longitude,
+            });    
+        }
         updateBounds();
-    }, [setCenterPos, updateBounds]);
+    }, [setCenterPos, updateBounds, searchInput]);
 
     // navigator.getolocation onInvalid callback
     const onInvalid = useCallback(() => {
@@ -311,9 +324,6 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
         // 전체 매물 검색 지도일 경우 줌/드래그 이벤트 설정
         if (type === "normal") {
-            // geocoder
-            let geocoder = new kakao.maps.services.Geocoder();
-
             // 줌(확대/축소) 이벤트 등록
             kakao.maps.event.addListener(map, 'zoom_changed', function() {        			
                 let currentLevel = map.getLevel();
@@ -372,7 +382,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 }
             });
         }
-    }, [type, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
+    }, [type, centerLat, centerLng, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
 
     // 검색이벤트 발생 시 지도 중심 업데이트 및 범위 상태관리
     useEffect(() => {
