@@ -21,7 +21,7 @@ const Sortable = ({ isChecked, whichChecked, toggle, setToggle, setIsDelete }) =
         });
         setItems(checkInfo.map((value)=>{
           console.log(value.images);
-          return(<Checklist key = {value.checklist_id} isChecked={isChecked} whichChecked={whichChecked} value = {value.roomInfo} checklist_id = {value.checklist_id} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete} img = {value.images}/>)
+          return(<Checklist key = {value.checklist_id} isChecked={isChecked} whichChecked={whichChecked} value = {value.roomInfo} checklist_id = {value.checklist_id} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete} img = {value.images} />)
         }));
 
 
@@ -43,7 +43,7 @@ const Sortable = ({ isChecked, whichChecked, toggle, setToggle, setIsDelete }) =
   }, [isChecked, whichChecked, toggle]);
 
   return (
-    <SortableContainer onSortEnd={onSortEnd} axis="x" lockAxis="x"> 
+    <SortableContainer onSortEnd={onSortEnd} axis="x" lockAxis="x" distance={1}> 
       {items.map((value, index) => (
         <SortableItem key={`item-${index}`} index={index} value={value}/>
       ))}

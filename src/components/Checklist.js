@@ -6,8 +6,9 @@ import { basicsBEtoFE, checkdetailsBEtoFE, optionsBEtoFE } from "../attributes/c
 import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
 import NoImage from "../assets/noImage.png";
+import { Link } from "react-router-dom";
 
-const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete, img}) => {
+const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete, img, onClick}) => {
     //console.log(checklist_id);
     const setDeleteId = useSetRecoilState(deleteIdState);
 
@@ -105,48 +106,50 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
                 </button>
             </div>
 
-            <div className={styles.wangbasics}>
-                <div className = {styles.basicswrap}>
-                    <div className={styles.imagewrapper}>
-                        <img className={styles.image} src = {img.length === 0 ? NoImage : `${process.env.REACT_APP_BASE_URL}${img[0]}`} alt = 'listimg'/>
+            <Link to={`/edit_checklist/${checklist_id}`}>
+                <div className={styles.wangbasics}>
+                    <div className = {styles.basicswrap}>
+                        <div className={styles.imagewrapper}>
+                            <img className={styles.image} src = {img.length === 0 ? NoImage : `${process.env.REACT_APP_BASE_URL}${img[0]}`} alt = 'listimg'/>
+                        </div>
+                        <div className={styles.basicsContentWrap}>
+                            {Object.keys(checkbasics).map((key, index) => (
+                                <div key={`basic - ${key}`} className={styles.basicsContent}>
+                                    {displayBasics(key, checkbasics[key])}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.emptylist}></div>
                     </div>
-                    <div className={styles.basicsContentWrap}>
-                        {Object.keys(checkbasics).map((key, index) => (
-                            <div key={`basic - ${key}`} className={styles.basicsContent}>
-                                {displayBasics(key, checkbasics[key])}
-                            </div>
-                        ))}
-                    </div>
-                    <div className={styles.emptylist}></div>
                 </div>
-            </div>
 
-            <div className={isChecked[1] && whichChecked[1] ?styles.wangoptions :styles.none}>
-                <div className = {styles.optionswrap}>
-                    <div className={styles.optionsContentWrap}>
-                        {Object.keys(checkoptions).map((key, index) => (
-                            <div className={styles.optionsContent}>
-                                {displayOptions(key, checkoptions[key])}
-                            </div>
-                        ))}
+                <div className={isChecked[1] && whichChecked[1] ?styles.wangoptions :styles.none}>
+                    <div className = {styles.optionswrap}>
+                        <div className={styles.optionsContentWrap}>
+                            {Object.keys(checkoptions).map((key, index) => (
+                                <div className={styles.optionsContent}>
+                                    {displayOptions(key, checkoptions[key])}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.emptylist}></div>
                     </div>
-                    <div className={styles.emptylist}></div>
                 </div>
-            </div>
-            
                 
-            <div className = {isChecked[2] && whichChecked[2] ?styles.wangdetails :styles.none}>
-                <div className={styles.detailswrap}>
-                    <div className={styles.detailsContentWrap}>
-                        {Object.keys(checkdetails).map((key, index) => (
-                            <div className={styles.detailsContent}>
-                                {displayDetails(key, checkdetails[key])}
-                            </div>
-                        ))}
+                    
+                <div className = {isChecked[2] && whichChecked[2] ?styles.wangdetails :styles.none}>
+                    <div className={styles.detailswrap}>
+                        <div className={styles.detailsContentWrap}>
+                            {Object.keys(checkdetails).map((key, index) => (
+                                <div className={styles.detailsContent}>
+                                    {displayDetails(key, checkdetails[key])}
+                                </div>
+                            ))}
+                        </div>
+                        <div className={styles.emptylist}></div>
                     </div>
-                    <div className={styles.emptylist}></div>
                 </div>
-            </div>
+            </Link>
         
         </div>
     );
