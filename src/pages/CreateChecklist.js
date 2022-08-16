@@ -192,7 +192,7 @@ const CreateChecklist = ({ type }) => {
                 uid: idx.toString(),
                 name: url.slice(url.lastIndexOf('/') + 1),
                 status: "done",
-                url: `http://localhost:8000${url}`
+                url: `${process.env.REACT_APP_BASE_URL}${url}`
             };
         }));
 

@@ -8,7 +8,6 @@ import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
 
 const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete}) => {
-    console.log(checklist_id);
     const setDeleteId = useSetRecoilState(deleteIdState);
 
     const checkbasics = {

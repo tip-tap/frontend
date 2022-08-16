@@ -98,7 +98,8 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     // 매물 위치 불러오기
     const getOneRoom = useCallback(() => {
         let marker = new kakao.maps.Marker({
-            position: new kakao.maps.LatLng(centerLat, centerLng)
+            position: new kakao.maps.LatLng(centerLat, centerLng),
+            zIndex: 99,
         });
         marker.setMap(map);
     }, [centerLat, centerLng]);
@@ -119,6 +120,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             let marker = new kakao.maps.Marker({
                 position,
                 clickable: true,
+                zIndex: 99,
             });
 
             if (obj === "interest" || obj === "checklist") {
@@ -134,7 +136,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
             let iwContent = `
             <div style="display:flex; flex-direction:column; width: 200px; padding: 5px 5px 7px 5px; font-family: 'Noto Sans KR', sans-serif;">
-                <img style="margin-bottom: 5px;" src=${element.images.length === 0 ? NoImage : `http://localhost:8000${element.images[0]}`}>
+                <img style="margin-bottom: 5px;" src=${element.images.length === 0 ? NoImage : `${process.env.REACT_APP_BASE_URL}${element.images[0]}`}>
                 <div style="font-size: 12px; font-weight: 400;">
                     <div style="margin-bottom: 5px;">
                         <span style="color: #0040BD;">${basicsBEtoFE[element.roomInfo[basicsEN[11]]]}</span>

@@ -79,7 +79,7 @@ body {
                                 @include setBoxShadow();
 
                                 display: grid;
-                                grid-template-columns: toRem(100px) 1fr;
+                                grid-template-columns: toRem(85px) 1fr;
                                 align-items: center;
 
                                 width: toRem(200px);

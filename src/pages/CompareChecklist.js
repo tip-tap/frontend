@@ -59,7 +59,7 @@ const CompareChecklist  = () => {
     }
 
     const deleteChecklist = async () => {
-        await Api.delete(`http://localhost:8000/api/v1/checklist/${deleteId}/`)
+        await Api.delete(`/api/v1/checklist/${deleteId}/`)
         .then((res) => {
             console.log(res);
             setIsDelete(false);

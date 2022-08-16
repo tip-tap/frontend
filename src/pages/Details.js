@@ -78,7 +78,7 @@ const Details = () => {
             // 이미지
             const imagesInfo  = [];
             res.data.images.forEach((image) => {
-                imagesInfo.push(`/${image}`);
+                imagesInfo.push(`${process.env.REACT_APP_BASE_URL}${image}`);
             });
             if (imagesInfo.length > 0) {
                 while (imagesInfo.length < 5) {
