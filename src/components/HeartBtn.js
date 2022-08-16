@@ -5,44 +5,45 @@ import styles from "../styles/components/HeartBtn.module.scss";
 import axios from "axios";
 
 const HeartBtn = ({like, id}) => {
-    console.log({id});
-    const [wish, setWish] = useState(false);
+    //console.log(id);
+    //console.log(like);
+    const [wish, setWish] = useState(like);
 
-    const postWish = async ({id}) =>{
-        console.log("post");
+    const postWish = async (id) =>{
+        //console.log("post");
         await axios({
             method: "post",
             url: "http://localhost:8000/api/v1/interest/",
             data:{
-                room_id: {id}
+                room_id: id
             }
         })
         .then((res)=> console.log(res))
         .catch((err)=>console.log(err))
     }
 
-    const deleteWish = async({id}) => {
-        console.log("delete");
+    const deleteWish = async(id) => {
+        //console.log("delete");
         await axios.delete(`http://localhost:8000/api/v1/interest/${id}/`)
         .then((res)=> console.log(res))
         .catch((err)=> console.log(err))
     }
 
-    const handleWish = () => {
+    const handleWish = (id) => {
         if (wish === false){
-            console.log("등록");
-            postWish();
+            //console.log("등록");
+            postWish(id);
         }
         else if (wish === true){
-            console.log("삭제");
-            deleteWish();
+            //console.log("삭제");
+            deleteWish(id);
         }
         setWish(!wish);
     }
 
     return (
         <>
-            <button className={styles.input} id = {id} onClick={handleWish}>
+            <button className={styles.input} onClick={() => handleWish(id)}>
                 <img src = {wish ? HeartImg : EmptyHeart}/>
             </button>
         </>

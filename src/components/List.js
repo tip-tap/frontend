@@ -7,7 +7,7 @@ import HeartBtn from "../components/HeartBtn";
 const time = "2일전";
 
 
-const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
+const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, interest }) => {
 
     // object
 
@@ -27,7 +27,7 @@ const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
         else if (key === "월세"){return value["rent"]/10000+"만원" ;}
         else if (key === "관리비"){return value["mtnfee"]/10000+ "만원";}
     }
-    
+
     return (
         <>
             <div className={styles.wrapper}>
@@ -35,7 +35,7 @@ const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail }) => {
                     <img className={styles.image} src = {thumbnail} alt = 'listimg' >
                     </img>
                     <div className = {styles.heartbtn}>
-                        <HeartBtn index = {id}></HeartBtn>
+                        <HeartBtn like = {interest} id = {id}></HeartBtn> 
                     </div>
                 </div>
                 <div className = {styles.basicswrapper}>

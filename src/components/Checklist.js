@@ -27,6 +27,7 @@ const checkoptions = {
     "수납장":"있음","신발장":"있음",
     "침대":"있음","책상":"있음","의자":"있음"
 }
+
 const checkdetails = {
     "곰팡이":"없음","누수":"없음",
     "벌레":"있음","균열":"없음",
@@ -37,7 +38,7 @@ const checkdetails = {
 }
 
 const Checklist = ({isChecked, whichChecked}) => {
-    /* API TEST */
+    /*
     const deleteChecklist = async () => {
         const checklist_id = 3; // dummy
 
@@ -46,7 +47,7 @@ const Checklist = ({isChecked, whichChecked}) => {
         .then((res) => console.log(res))
         .catch((err) => console.log(err))
     }
-    /************/
+    */
 
     const [isDelete, setIsDelete] = useState(false);
     <ConfirmModal
@@ -56,7 +57,7 @@ const Checklist = ({isChecked, whichChecked}) => {
             setIsModalVisible={setIsDelete}
             />
     const handleDelete = () =>{
-        deleteChecklist(); // api test
+        // deleteChecklist(); // api test
         setIsDelete(true);
     };
 
