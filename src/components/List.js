@@ -2,10 +2,9 @@ import React from "react";
 import styles from "../styles/components/list.module.scss";
 import DetailsBtn from "../components/DetailsBtn";
 import HeartBtn from "../components/HeartBtn";
-
+import { Link } from "react-router-dom";
 
 const time = "2일전";
-
 
 const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, interest }) => {
 
@@ -51,7 +50,9 @@ const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, interest }) => 
                     ))}
                 </div>
                 <div className = {styles.detailsbtn}>
-                    <DetailsBtn type="primary-l" />
+                    <Link to={`/details/${id}`}>
+                        <DetailsBtn type="primary-l" />
+                    </Link>
                 </div>
                 <div className={styles.underwrapper}>
                     <div className={styles.tagswrapper}>
