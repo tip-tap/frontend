@@ -16,6 +16,7 @@ import { detailsObj, detailsKR, detailsEN } from '../attributes/details';
 import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../attributes/converter';
 import moment from "moment";
 import { useSnackbar } from "notistack";
+import { ReactComponent as Checklist } from "../assets/checklist.svg";
 
 const { kakao } = window;
 
@@ -30,6 +31,9 @@ const CreateChecklist = ({ type }) => {
     const [defaultFileList, setDefaultFileList] = useState([]);
     const [images, setImages] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
+    const [isHover, setIsHover] = useState(false);
     const depositRef = useRef();
 
     // 이미지 추가 POST
@@ -260,6 +264,48 @@ const CreateChecklist = ({ type }) => {
         .catch((err) => console.log(err))
     }, [fillInfo]);
 
+    // 매물(체크리스트) 확정 POST
+    const postConfirm = async () => {
+        await axios.post("http://localhost:8000/api/v1/confirm/", {
+            checklist_id: Number(params.id)
+        })
+        .then((res) => {
+            console.log(res);
+            setIsConfirmed(true);
+            enqueueSnackbar("매물 확정이 완료되었습니다", {
+                variant: "info",
+                anchorOrigin: {
+                    vertical: "top",
+                    horizontal: "center",
+                },
+                autoHideDuration: 2000,
+                sx: {
+                    "& .SnackbarContent-root": {
+                        bgcolor: "#0040BD"
+                    }
+                }
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+            if (err.response.status) {
+                enqueueSnackbar("이미 확정된 매물이 존재합니다", {
+                    variant: "info",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "center",
+                    },
+                    autoHideDuration: 2000,
+                    sx: {
+                        "& .SnackbarContent-root": {
+                            bgcolor: "#0040BD"
+                        }
+                    }
+                }); 
+            }
+        })
+    }
+
     useEffect(() => {
         if (type === "edit") {
             const checklist_id = params.id;
@@ -275,12 +321,26 @@ const CreateChecklist = ({ type }) => {
         <>
             <Layout>
                 <div className = {styles.wrapper}>
-                    <button className={styles.confirm}>매물 확정하기</button>
+                    {type === "edit" && !isConfirmed &&
+                        <button
+                            type="button"
+                            className={`${styles.confirm} ${isHover ? styles.hover : ""}`}
+                            onClick={() => setIsConfirmVisible(true)}
+                            onMouseOver={() => setIsHover(true)}
+                            onMouseOut={() => setIsHover(false)}
+                        >
+                            <Checklist fill="#0040BD"/>{isHover && "매물 확정하기"}
+                        </button>
+                    }
+                    {type === "edit" && isConfirmed &&
+                        <button type="button" className={`${styles.confirm} ${styles.confirmed} ${styles.hover}`}>
+                            <Checklist fill="#fff"/>매물 확정 완료
+                        </button>
+                    }
                     <form onSubmit={handleSubmit(onValidate)}>
                         <section className={styles.images}>
                             <ImgUpload type={type} setImages={setImages} defaultFileList={defaultFileList} />
                         </section>
-
                         <p className={styles.subtitle}>기본 정보</p>
                         <section className={styles.basics}>
                             <article className={styles.basicsItem}>
@@ -509,6 +569,15 @@ const CreateChecklist = ({ type }) => {
                 isModalVisible={isModalVisible}
                 setIsModalVisible={setIsModalVisible}
                 onSubmit={onSubmit}
+                btnText="저장하기"
+            />
+            <ConfirmModal
+                title="매물 확정하기"
+                content="해당 매물로 확정하시겠습니까?"
+                isModalVisible={isConfirmVisible}
+                setIsModalVisible={setIsConfirmVisible}
+                onSubmit={postConfirm}
+                btnText="확정하기"
             />
         </>
     );

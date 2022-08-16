@@ -10,20 +10,31 @@ body {
         position: relative;
 
         .confirm {
-            @include typoStyle(700, 16px, 24px, -0.5px, $white);
+            @include flexBox(row, center, space-evenly);
+            @include typoStyle(700, 24px, 36px, -0.5px, $main);
             @include setBoxShadow();
-            width: toRem(200px);
-            height: toRem(40px);
-            background-color: $main;
-            border-radius: toRem(4px);
+            width: toRem(72px);
+            height: toRem(72px);
+            background-color: $white;
+            border-radius: toRem(999px);
             border: none;
 
-            position: absolute;
-            top: toRem(247px);
-            left: toRem(642px);
+            position: fixed;
+            bottom: toRem(20px);
+            right: toRem(191px);
 
             &:hover {
                 cursor: pointer;
+            }
+
+            &.hover {
+                width: toRem(243px);
+                right: toRem(20px);
+            }
+
+            &.confirmed {
+                color: $white;
+                background-color: $main;
             }
         }
 
@@ -37,7 +48,7 @@ body {
         .images {
             @include flexBox(row, center, center);
             background: #FFFFFF;
-            margin-top: toRem(46px);
+            margin-top: toRem(40px);
             margin-bottom: toRem(40px);
         }
 

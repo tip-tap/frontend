@@ -55,6 +55,7 @@ const Checklist = ({isChecked, whichChecked}) => {
             content="그래도 삭제하시겠습니까?"
             isModalVisible={isDelete}
             setIsModalVisible={setIsDelete}
+            btnText="삭제하기"
             />
     const handleDelete = () =>{
         // deleteChecklist(); // api test
