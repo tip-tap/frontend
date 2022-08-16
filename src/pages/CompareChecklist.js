@@ -157,6 +157,7 @@ const CompareChecklist  = () => {
                 isModalVisible={isDelete}
                 setIsModalVisible={setIsDelete}
                 onSubmit={deleteChecklist}
+                btnText="삭제하기"
             />
         </>
     );
