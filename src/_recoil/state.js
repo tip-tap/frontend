@@ -28,7 +28,7 @@ export const upperRightPosState = atom({
 /* Map Level */
 export const mapLevelState = atom({
     key: "mapLevel",
-    default: 3,
+    default: 4,
 });
 
 /* SearchBox Input */

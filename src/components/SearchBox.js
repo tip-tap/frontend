@@ -184,7 +184,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         if (timer) { clearTimeout(timer); }
         setTimer(setTimeout(() => {
             setDepositNum(newDepositNum);
-        }, 1000));
+        }, 2000));
 
         setDepositStr(str);
     }
@@ -227,7 +227,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         if (timer) { clearTimeout(timer); }
         setTimer(setTimeout(() => {
             setMonthlyNum(newMonthlyNum);
-        }, 1000));
+        }, 2000));
         
         setMonthlyStr(str);
     }

@@ -14,13 +14,16 @@ import NoImage from "../assets/noImage.png";
 import { checksState, depositNumState, monthlyNumState, extraOptionsState, defaultRoomsState, filteredRoomsState, mapLevelState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
-
+import { TailSpin } from 'react-loader-spinner'
 
 const { kakao } = window;
 let map;
 let geocoder = new kakao.maps.services.Geocoder();
 
 const Map = ({ markerFilter, type, searchToggle }) => {
+    // loading spinner
+    const [isLoading, setIsLoading] = useState(true);
+
     // debounce timer
     const [timer, setTimer] = useState(null);
 
@@ -173,7 +176,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
             clusterer.addMarker(marker);
 
-            getFacilities(position);
+            if (obj === "checklist") { getFacilities(position); }
         })
 
         if (obj === "interest" || obj === "checklist") {
@@ -223,6 +226,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 console.log(res);
                 setDefaultRooms(res.data.rooms);
                 filterRooms(res.data.rooms);
+                setIsLoading(false);
             })
             .catch((err) => console.log(err))                
         }
@@ -256,7 +260,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     }, [markerFilter, displayObjs]);
 
     // getInfos (according to map type)
-    const getInfos = useCallback(() => {
+    const getInfos = useCallback(async () => {
         if (type === "normal") {
             getRooms(false);
         }
@@ -317,6 +321,12 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(onValid, onInvalid); }
         else { console.log("geolocation 사용 불가"); }
     }, [onValid, onInvalid]);
+
+    useEffect(() => {
+        if (type === "normal") {
+            getRooms(true);
+        }
+    }, [type, centerLat, centerLng, getRooms]);
     
     useEffect(() => {
         // 지도 생성
@@ -339,38 +349,39 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             // 줌(확대/축소) 이벤트 등록 + 디바운스 적용
             kakao.maps.event.addListener(map, 'zoom_changed', function() {
                 let currentLevel = map.getLevel();
+
+                if (currentLevel > mapLevel) {
+                    if (timer) { clearTimeout(timer); }
+                    setTimer(setTimeout(() => {
+                        setIsLoading(true);
+                        setCenterPos({
+                            centerLat: map.getCenter().getLat(),
+                            centerLng: map.getCenter().getLng(),
+                        });
+                        updateBounds();
+                        getRooms(true);
+                    }, 2000));
+                }
+                
                 setMapLevel(currentLevel);
 
-                if (timer) { clearTimeout(timer); }
-                setTimer(setTimeout(() => {
-                    console.log("변경된 지도 확대/축소 레벨 " + currentLevel);
-                    console.log("변경된 지도 범위", map.getBounds());
-
-                    setCenterPos({
-                        centerLat: map.getCenter().getLat(),
-                        centerLng: map.getCenter().getLng(),
-                    });
-                    updateBounds();
-                    getRooms(true);
-                    
-                    if (currentLevel >= 8) {
-                        enqueueSnackbar("보고 있는 지역이 너무 넓습니다 지도를 확대해주세요", {
-                            variant: "info",
-                            anchorOrigin: {
-                                vertical: "top",
-                                horizontal: "center",
-                            },
-                            sx: {
-                                "& .SnackbarContent-root": {
-                                    bgcolor: "#0040BD"
-                                }
+                if (currentLevel >= 8) {
+                    enqueueSnackbar("보고 있는 지역이 너무 넓습니다 지도를 확대해주세요", {
+                        variant: "info",
+                        anchorOrigin: {
+                            vertical: "top",
+                            horizontal: "center",
+                        },
+                        sx: {
+                            "& .SnackbarContent-root": {
+                                bgcolor: "#0040BD"
                             }
-                        });
-                    }
-                    else {
-                        closeSnackbar();
-                    }
-                }, 1000));        
+                        }
+                    });
+                }
+                else {
+                    closeSnackbar();
+                }
             });
 
             // 드래그(이동) 이벤트 등록 + 디바운스 적용
@@ -383,6 +394,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
                 if (timer) { clearTimeout(timer); }
                 setTimer(setTimeout(() => {
+                    setIsLoading(true);
                     let latlng = map.getCenter();
                     let currentBounds = map.getBounds();
                     console.log("이전 지도 중심좌표 ", centerLat, centerLng);
@@ -398,7 +410,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                         updateBounds();
                         getRooms(true);
                     }
-                }, 1000));
+                }, 2000));
             });
         }
     }, [timer, type, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
@@ -411,7 +423,19 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     return (
         <>  
-            <div id="map" className={styles.map}></div>
+            <div id="map" className={styles.map}>
+            {type === "normal" && isLoading &&
+            <div className={styles.spinner}>
+                <TailSpin color="#0040BD"></TailSpin>
+                <span>
+                    매물을 조회하는 중입니다
+                    <br/>
+                    <br/>
+                    잠시만 기다려주세요
+                </span>
+            </div>
+            }
+            </div>
         </>
     );
 }
