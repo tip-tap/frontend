@@ -5,7 +5,7 @@ import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
 import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
-import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
+import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState, defaultRoomsState } from "../_recoil/state";
 import { useSnackbar } from "notistack";
 import { types, rooms } from "../attributes/checks";
 
@@ -20,6 +20,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
     
     /* 검색창 자동완성 */
     const [searchInput, setSearchInput] = useRecoilState(searchInputState);
+    const setDefaultRooms = useSetRecoilState(defaultRoomsState);
 
     const [showList, setShowList] = useState(false);
     const [timer, setTimer] = useState(null);
@@ -51,6 +52,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
 
     const confirmSearch = (address) => {
         inputRef.current.value = address;
+        setDefaultRooms([]);
         setSearchInput(address);
         setRefIdx(-1);
         setShowList(false);
@@ -82,7 +84,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         geocoder.addressSearch(address, callback);
 
         if (type === "long" || type === "short") {
-            navigate("/map");
+            navigate("/map");   
         }
     }
 
@@ -113,6 +115,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
             if (refIdx >= 0 && refIdx <= 4) {
                 e.target.value = list[refIdx];
             } 
+            setShowList(false);
             confirmSearch(e.target.value);
         }
     }
@@ -151,7 +154,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                 num += value[i] * 1000000;
             } else if (value[i] <= 34) { // 2000만 ~ 2억5천 (1000만 단위 24스텝)
                 str += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) + "억" : "";
-                str += (value[i] - 9) % 10 * 1000 + "만 원";
+                str += (value[i] - 9) % 10 === 0 ? "" : (value[i] - 9) % 10 * 1000 + "만 원";
                 num += value[i] - 9 >= 10 ? Math.floor((value[i] - 9) / 10) * 100000000 : 0;
                 num += (value[i] - 9) % 10 * 10000000;
             } else if (value[i] <= 47) { // 3억 ~ 9억 (5000만 단위 13스텝)
@@ -177,7 +180,12 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                 newDepositNum.max = num;
             }
         }
-        setDepositNum(newDepositNum);
+        
+        if (timer) { clearTimeout(timer); }
+        setTimer(setTimeout(() => {
+            setDepositNum(newDepositNum);
+        }, 1000));
+
         setDepositStr(str);
     }
     
@@ -215,7 +223,12 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                 newMonthlyNum.max = num;
             }
         }
-        setMonthlyNum(newMonthlyNum);
+        
+        if (timer) { clearTimeout(timer); }
+        setTimer(setTimeout(() => {
+            setMonthlyNum(newMonthlyNum);
+        }, 1000));
+        
         setMonthlyStr(str);
     }
     

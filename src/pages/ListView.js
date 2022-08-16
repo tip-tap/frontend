@@ -4,8 +4,8 @@ import SearchBox  from "../components/SearchBox";
 import Layout from "../components/common/Layout";
 import List from "../components/List";
 import Api from "../_axios/Api";
-import { useRecoilValue } from "recoil";
-import { centerPosState, lowerLeftPosState, upperRightPosState } from "../_recoil/state";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
+import { centerPosState, lowerLeftPosState, upperRightPosState, defaultRoomsState, filteredRoomsState } from "../_recoil/state";
 import Toggle from "../components/common/Toggle";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
@@ -21,7 +21,9 @@ const ListView = () => {
     const depositNum = useRecoilValue(depositNumState);
     const monthlyNum = useRecoilValue(monthlyNumState);
     const extraOptions = useRecoilValue(extraOptionsState);
-    
+    const [defaultRooms, setDefaultRooms] = useRecoilState(defaultRoomsState);
+    const [filteredRooms, setFilteredRooms] = useRecoilState(filteredRoomsState);
+
     const [list, setList] = useState([]);
 
     // 필터링
@@ -42,7 +44,6 @@ const ListView = () => {
 
         let optionsFiltered = [];
         checksFiltered.forEach((room) => {
-            console.log(room);
             let isValid = true;
             for (let i=0; i<16; i++) {
                 if (extraOptions[optionsKR[i]] && room.roomInfo[optionsEN[i]] === false) {
@@ -52,22 +53,14 @@ const ListView = () => {
             }
             if (isValid) { optionsFiltered.push(room); }
         });
-
+        
+        setFilteredRooms(filteredRooms);
         setList(optionsFiltered);
     }, [depositNum, monthlyNum, checks, extraOptions]);
 
-    const getList = useCallback(async()=>{
-        await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
-        .then((res) => {
-            console.log(res);
-            filterRooms(res.data.rooms);            
-        })
-        .catch((err)=> console.log(err))
-    },[lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng, filterRooms]);
-
     useEffect(()=>{
-        getList();
-    },[getList])
+        filterRooms(defaultRooms);
+    },[defaultRooms, filterRooms])
     
     return(
         <Layout>

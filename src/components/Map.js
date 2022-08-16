@@ -11,7 +11,7 @@ import heart from "../assets/heart.svg";
 import Api from "../_axios/Api";
 import { useSnackbar } from "notistack";
 import NoImage from "../assets/noImage.png";
-import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
+import { checksState, depositNumState, monthlyNumState, extraOptionsState, defaultRoomsState, filteredRoomsState, mapLevelState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
 
@@ -21,6 +21,9 @@ let map;
 let geocoder = new kakao.maps.services.Geocoder();
 
 const Map = ({ markerFilter, type, searchToggle }) => {
+    // debounce timer
+    const [timer, setTimer] = useState(null);
+
     // useNavigate
     const navigate = useNavigate();
 
@@ -36,9 +39,9 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const depositNum = useRecoilValue(depositNumState);
     const monthlyNum = useRecoilValue(monthlyNumState);
     const extraOptions = useRecoilValue(extraOptionsState);
-
-    // 지도 레벨
-    const [mapLevel, setMapLevel] = useState(3);
+    const [defaultRooms, setDefaultRooms] = useRecoilState(defaultRoomsState);
+    const [filteredRooms, setFilteredRooms] = useRecoilState(filteredRoomsState);
+    const [mapLevel, setMapLevel] = useRecoilState(mapLevelState);
 
     // 주변 시설 마커 및 인포윈도우 표시
     const displayFacilities = (position, category, place) => {
@@ -206,17 +209,26 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             if (isValid) { optionsFiltered.push(room); }
         });
 
+        setFilteredRooms(filteredRooms);
         displayObjs(optionsFiltered, "room");
     }, [depositNum, monthlyNum, checks, extraOptions, displayObjs]);
 
 
     // 매물 조회 GET
-    const getRooms = useCallback(async () => {
-        await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
-        .then((res) => {
-            filterRooms(res.data.rooms);
-        })
-        .catch((err) => console.log(err))
+    const getRooms = useCallback(async (boundsChanged) => {
+        if (defaultRooms.length === 0 || boundsChanged) {
+            console.log(lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng);
+            await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
+            .then((res) => {
+                console.log(res);
+                setDefaultRooms(res.data.rooms);
+                filterRooms(res.data.rooms);
+            })
+            .catch((err) => console.log(err))                
+        }
+        else {
+            filterRooms(defaultRooms);
+        }
     }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng, filterRooms]);
 
     // 관심매물 조회 GET
@@ -246,7 +258,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     // getInfos (according to map type)
     const getInfos = useCallback(() => {
         if (type === "normal") {
-            getRooms();
+            getRooms(false);
         }
         else if (type === "wish") {
             getInterests();
@@ -305,7 +317,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         if (navigator.geolocation) { navigator.geolocation.getCurrentPosition(onValid, onInvalid); }
         else { console.log("geolocation 사용 불가"); }
     }, [onValid, onInvalid]);
-
+    
     useEffect(() => {
         // 지도 생성
         let mapContainer = document.getElementById("map");
@@ -317,72 +329,79 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
         // 지도 확대/축소 레벨 제한
         if (type === "details") { map.setMaxLevel(5); }
-        else { map.setMaxLevel(10); }
+        else { map.setMaxLevel(8); }
 
         // 지도 타입에 맞게 정보 업데이트
         getInfos();
 
         // 전체 매물 검색 지도일 경우 줌/드래그 이벤트 설정
         if (type === "normal") {
-            // 줌(확대/축소) 이벤트 등록
-            kakao.maps.event.addListener(map, 'zoom_changed', function() {        			
+            // 줌(확대/축소) 이벤트 등록 + 디바운스 적용
+            kakao.maps.event.addListener(map, 'zoom_changed', function() {
                 let currentLevel = map.getLevel();
                 setMapLevel(currentLevel);
-                console.log("변경된 지도 확대/축소 레벨 " + currentLevel);
-                console.log("변경된 지도 범위", map.getBounds());
-                
-                if (currentLevel >= 10) {
-                    enqueueSnackbar("보고 있는 지역이 너무 넓습니다 지도를 확대해주세요", {
-                        variant: "info",
-                        anchorOrigin: {
-                            vertical: "top",
-                            horizontal: "center",
-                        },
-                        sx: {
-                            "& .SnackbarContent-root": {
-                                bgcolor: "#0040BD"
-                            }
-                        }
-                    });
-                }
-                else {
-                    closeSnackbar();
+
+                if (timer) { clearTimeout(timer); }
+                setTimer(setTimeout(() => {
+                    console.log("변경된 지도 확대/축소 레벨 " + currentLevel);
+                    console.log("변경된 지도 범위", map.getBounds());
+
                     setCenterPos({
                         centerLat: map.getCenter().getLat(),
                         centerLng: map.getCenter().getLng(),
                     });
                     updateBounds();
-                    getRooms();
-                }
+                    getRooms(true);
+                    
+                    if (currentLevel >= 8) {
+                        enqueueSnackbar("보고 있는 지역이 너무 넓습니다 지도를 확대해주세요", {
+                            variant: "info",
+                            anchorOrigin: {
+                                vertical: "top",
+                                horizontal: "center",
+                            },
+                            sx: {
+                                "& .SnackbarContent-root": {
+                                    bgcolor: "#0040BD"
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        closeSnackbar();
+                    }
+                }, 1000));        
             });
 
-            // 드래그(이동) 이벤트 등록
+            // 드래그(이동) 이벤트 등록 + 디바운스 적용
             kakao.maps.event.addListener(map, "dragend", function() {
-                let latlng = map.getCenter();
-                let currentBounds = map.getBounds();
-                console.log("이전 지도 중심좌표 ", centerLat, centerLng);
-                console.log("변경된 지도 중심좌표 " + latlng );
-                console.log("변경된 영역 ", currentBounds);
-
                 geocoder.coord2Address(map.getCenter().getLng(), map.getCenter().getLat(), (result, status) => { 
                     if (status === kakao.maps.services.Status.OK) {
                         setSearchInput(result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name);
                     }
                 });
-                
 
-                if (centerLat > currentBounds.getNorthEast().getLat() || centerLat < currentBounds.getSouthWest().getLat()
-                || centerLng > currentBounds.getNorthEast().getLng() || centerLng < currentBounds.getSouthWest().getLng()) {
-                    setCenterPos({
-                        centerLat: map.getCenter().getLat(),
-                        centerLng: map.getCenter().getLng(),
-                    });
-                    updateBounds();
-                    getRooms();
-                }
+                if (timer) { clearTimeout(timer); }
+                setTimer(setTimeout(() => {
+                    let latlng = map.getCenter();
+                    let currentBounds = map.getBounds();
+                    console.log("이전 지도 중심좌표 ", centerLat, centerLng);
+                    console.log("변경된 지도 중심좌표 " + latlng );
+                    console.log("변경된 영역 ", currentBounds);
+
+                    if (centerLat > currentBounds.getNorthEast().getLat() || centerLat < currentBounds.getSouthWest().getLat()
+                    || centerLng > currentBounds.getNorthEast().getLng() || centerLng < currentBounds.getSouthWest().getLng()) {
+                        setCenterPos({
+                            centerLat: map.getCenter().getLat(),
+                            centerLng: map.getCenter().getLng(),
+                        });
+                        updateBounds();
+                        getRooms(true);
+                    }
+                }, 1000));
             });
         }
-    }, [type, centerLat, centerLng, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
+    }, [timer, type, mapLevel, updateBounds, getInfos, getRooms, setSearchInput, setCenterPos, enqueueSnackbar, closeSnackbar]);
 
     // 검색이벤트 발생 시 지도 중심 업데이트 및 범위 상태관리
     useEffect(() => {

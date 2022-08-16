@@ -25,6 +25,12 @@ export const upperRightPosState = atom({
     }
 });
 
+/* Map Level */
+export const mapLevelState = atom({
+    key: "mapLevel",
+    default: 3,
+});
+
 /* SearchBox Input */
 export const searchInputState = atom({
     key: "searchInput",
@@ -88,4 +94,15 @@ export const monthlyValueState = atom({
 export const deleteIdState = atom({
     key: "deleteId",
     default: -1,
+});
+
+/* Rooms Getter */
+export const defaultRoomsState = atom({
+    key: "defaultRooms",
+    default: [],
+});
+
+export const filteredRoomsState = atom({
+    key: "filteredRooms",
+    default: [],
 });
