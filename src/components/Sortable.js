@@ -3,13 +3,16 @@ import {sortableContainer, sortableElement} from 'react-sortable-hoc';
 import {arrayMoveImmutable} from 'array-move';
 import styles from "../styles/components/sortable.module.scss";
 import Checklist from "./Checklist";
-import axios from "axios";
+import Api from "../_axios/Api";
+import { basicsKR, basicsEN } from "../attributes/basics";
+import { optionsKR, optionsEN } from "../attributes/options";
+import { basicsBEtoFE } from "../attributes/converter";
 
 const Sortable = ({ isChecked, whichChecked, toggle, setToggle, setIsDelete }) => {
   const [items, setItems] = useState([]);
 
   const getAllChecklist = useCallback(async () => {
-    await axios.get("http://localhost:8000/api/v1/checklist/")
+    await Api.get("/api/v1/checklist/")
     .then((res) => {
         console.log(res);
         const checkInfo = [];

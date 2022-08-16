@@ -8,7 +8,7 @@ import Toggle from "../components/common/Toggle";
 import ConfirmModal from '../components/ConfirmModal';
 import { useRecoilValue } from "recoil";
 import { deleteIdState } from "../_recoil/state";
-import axios from "axios";
+import Api from "../_axios/Api";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -59,7 +59,7 @@ const CompareChecklist  = () => {
     }
 
     const deleteChecklist = async () => {
-        await axios.delete(`http://localhost:8000/api/v1/checklist/${deleteId}/`)
+        await Api.delete(`http://localhost:8000/api/v1/checklist/${deleteId}/`)
         .then((res) => {
             console.log(res);
             setIsDelete(false);

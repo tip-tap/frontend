@@ -50,10 +50,12 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
                     ))}
                 </div>
                 <div className = {styles.detailsbtn}>
-                    <Link to="/create_checklist">
+                    <Link to={`/open_checklist/${id}`}>
                         <CreateListBtn type = "secondary-m"/>
                     </Link>
-                    <DetailsBtn type="secondary-m" />
+                    <Link to={`/details/${id}`}>
+                        <DetailsBtn type="secondary-m" />
+                    </Link>
                 </div>
                 <div className={styles.underwrapper}>
                     <div className={styles.tagswrapper}>

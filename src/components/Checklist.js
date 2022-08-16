@@ -3,7 +3,6 @@ import styles from "../styles/components/checklist.module.scss";
 import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
 import ConfirmModal from '../components/ConfirmModal';
-import axios from "axios";
 import { basicsBEtoFE, checkdetailsBEtoFE, optionsBEtoFE } from "../attributes/converter";
 import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
@@ -90,7 +89,6 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
         else if (key === "배수"){return value ? checkdetailsBEtoFE["detailInfo_drainage"][value] : "-";}
         else if (key === "온수"){return value ? checkdetailsBEtoFE["detailInfo_hot_water"][value] : "-";}
     };
-
     
     const handleDelete = (checklist_id) =>{
         // deleteChecklist(checklist_id);

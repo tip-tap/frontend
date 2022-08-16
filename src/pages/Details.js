@@ -7,7 +7,7 @@ import Map from "../components/Map";
 import styles from "../styles/pages/details.module.scss";
 import { useSetRecoilState } from "recoil";
 import { centerPosState } from "../_recoil/state";
-import axios from "axios";
+import Api from "../_axios/Api";
 import { basicsKR, basicsEN } from "../attributes/basics";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { basicsBEtoFE } from "../attributes/converter";
@@ -70,7 +70,7 @@ const Details = () => {
     }
 
     const getOneRoom = useCallback(async (room_id) => {
-        await axios.get(`http://localhost:8000/api/v1/rooms/${room_id}/`)
+        await Api.get(`/api/v1/rooms/${room_id}/`)
         .then((res) => {
             // console.log(res);
             const roomInfo = res.data.roomInfo;
@@ -78,7 +78,7 @@ const Details = () => {
             // 이미지
             const imagesInfo  = [];
             res.data.images.forEach((image) => {
-                imagesInfo.push(`http://localhost:8000${image}`);
+                imagesInfo.push(`/${image}`);
             });
             if (imagesInfo.length > 0) {
                 while (imagesInfo.length < 5) {

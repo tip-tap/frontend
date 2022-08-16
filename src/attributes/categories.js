@@ -6,6 +6,7 @@ export const categoryCode = {
     "CE7": "카페",
     "HP8": "병원",
     "PM9": "약국",
+    "": "방문매물",
     "AG2": "중개업소"
 };
 
