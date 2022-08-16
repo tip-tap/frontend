@@ -17,7 +17,8 @@ const Sortable = ({ isChecked, whichChecked, toggle, setToggle, setIsDelete }) =
           checkInfo[index] = checklists;
         });
         setItems(checkInfo.map((value)=>{
-          return(<Checklist key = {value.checklist_id} isChecked={isChecked} whichChecked={whichChecked} value = {value.roomInfo} checklist_id = {value.checklist_id} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete}/>)
+          console.log(value.images);
+          return(<Checklist key = {value.checklist_id} isChecked={isChecked} whichChecked={whichChecked} value = {value.roomInfo} checklist_id = {value.checklist_id} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete} img = {value.images}/>)
         }));
 
 
@@ -25,7 +26,7 @@ const Sortable = ({ isChecked, whichChecked, toggle, setToggle, setIsDelete }) =
     .catch((err) => console.log(err))
 })
 
-  const SortableItem = sortableElement(({value}) => <li className={styles.item}>{value}</li>); 
+  const SortableItem = sortableElement(({value}) => <li className={styles.item}>{value}</li>);  
   const SortableContainer = sortableContainer(({children}) => {
     return <ul className={styles.container}>{children}</ul>; 
   });

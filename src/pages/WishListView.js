@@ -3,7 +3,6 @@ import styles from "../styles/pages/wishlistview.module.scss";
 import Layout from "../components/common/Layout";
 import WishList from "../components/WishList";
 import axios from "axios";
-import SearchBox from "../components/SearchBox";
 import Toggle from "../components/common/Toggle";
 
 const WishListView = () => {
@@ -35,7 +34,7 @@ const WishListView = () => {
                 <section className = {styles.listDiv}>
                     {wishlist.map((value)=>{
                             return(
-                                <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} />
+                                <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} time = {value.room_created_at}/>
                             )
                     })}
                 </section>
