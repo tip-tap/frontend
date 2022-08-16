@@ -7,9 +7,8 @@ import styles from "../styles/components/searchBox.module.scss";
 import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
 import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState } from "../_recoil/state";
 import { useSnackbar } from "notistack";
+import { types, rooms } from "../attributes/checks";
 
-const types = ["전세", "반전세", "월세"];
-const rooms = ["원룸", "1.5룸", "투룸", "쓰리룸"];
 const { kakao } = window;
 
 const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
@@ -138,7 +137,6 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         let newChecks = [...checks];
         newChecks[index] = e.target.checked;
         setChecks(newChecks);
-        console.log(e.target.checked);
     }
 
     const handleDeposit = (value) => {
@@ -289,8 +287,8 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                         <p className={styles.title}>계약 형태</p>
                         <div>
                             {types.map((v, i) => (
-                                <Fragment key={i}>
-                                    <input type="checkbox" id={v} onChange={(e) => handleCheckbox(e, i)} />
+                                <Fragment key={`type filter - ${i}`}>
+                                    <input type="checkbox" id={v} checked={checks[i]} onChange={(e) => handleCheckbox(e, i)} />
                                     <label className={checks[i] && styles.active} htmlFor={v}>{v}</label>
                                 </Fragment>
                             ))}
@@ -300,8 +298,8 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
                         <p className={styles.title}>방 수</p>
                         <div>
                             {rooms.map((v, i) => (
-                                <Fragment key={i}>
-                                    <input type="checkbox" id={v} onChange={(e) => handleCheckbox(e, i+3)} />
+                                <Fragment key={`room filter - ${i}`}>
+                                    <input type="checkbox" id={v} checked={checks[i+3]} onChange={(e) => handleCheckbox(e, i+3)} />
                                     <label className={checks[i+3] && styles.active} htmlFor={v}>{v}</label>
                                 </Fragment>
                             ))}

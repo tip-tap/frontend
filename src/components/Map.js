@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/components/map.module.scss";
 import { Markers } from "../icons/Markers";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import { centerPosState, lowerLeftPosState, upperRightPosState, searchInputState } from "../_recoil/state";
 import { categoryCode } from "../attributes/categories";
 import { basicsEN } from "../attributes/basics";
@@ -11,6 +11,10 @@ import heart from "../assets/heart.svg";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import NoImage from "../assets/noImage.png";
+import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
+import { checksFilter } from "../attributes/checks";
+import { optionsKR, optionsEN } from "../attributes/options";
+
 
 const { kakao } = window;
 let map;
@@ -27,6 +31,10 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const [{ lowerLeftLat, lowerLeftLng }, setLowerLeftPos] = useRecoilState(lowerLeftPosState);
     const [{ upperRightLat, upperRightLng }, setUpperRightPos] = useRecoilState(upperRightPosState);
     const setSearchInput = useSetRecoilState(searchInputState);
+    const checks = useRecoilValue(checksState);
+    const depositNum = useRecoilValue(depositNumState);
+    const monthlyNum = useRecoilValue(monthlyNumState);
+    const extraOptions = useRecoilValue(extraOptionsState);
 
     // 지도 레벨
     const [mapLevel, setMapLevel] = useState(3);
@@ -166,15 +174,48 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         }
     }, [navigate, getFacilities]);
 
+    // 필터링
+    const filterRooms = useCallback((rooms) => {
+        const sliderFiltered = rooms.filter((room) =>
+            room.roomInfo.basicInfo_deposit >= depositNum.min
+            && room.roomInfo.basicInfo_deposit <= depositNum.max
+            && room.roomInfo.basicInfo_monthly_rent >= monthlyNum.min
+            && room.roomInfo.basicInfo_monthly_rent <= monthlyNum.max
+        );
+        
+        let checksFiltered = [...sliderFiltered];
+        for (let i=0; i<7; i++) {
+            if (!checks[i]) {
+                checksFiltered = checksFiltered.filter((room) => room.roomInfo[checksFilter[i][0]] !== checksFilter[i][1]);
+            }
+        }
+
+        let optionsFiltered = [];
+        checksFiltered.forEach((room) => {
+            console.log(room);
+            let isValid = true;
+            for (let i=0; i<16; i++) {
+                if (extraOptions[optionsKR[i]] && room.roomInfo[optionsEN[i]] === false) {
+                    isValid = false;
+                    break;
+                }
+            }
+            if (isValid) { optionsFiltered.push(room); }
+        });
+
+        displayObjs(optionsFiltered, "room");
+    }, [depositNum, monthlyNum, checks, extraOptions]);
+
+
     // 매물 조회 GET
     const getRooms = useCallback(async () => {
         console.log("getRooms");
         await axios.get(`http://localhost:8000/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
         .then((res) => {
-            displayObjs(res.data.rooms, "room");
+            filterRooms(res.data.rooms);
         })
         .catch((err) => console.log(err))
-    }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng, displayObjs]);
+    }, [lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng, filterRooms]);
 
     // 관심매물 조회 GET
     const getInterests = useCallback(async () => {

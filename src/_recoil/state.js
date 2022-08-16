@@ -34,24 +34,24 @@ export const searchInputState = atom({
 /* SearchBox Filter */
 export const checksState = atom({
     key: "checks",
-    default: Array(7).fill(0)
+    default: Array(7).fill(1)
 });
 
 export const depositStrState = atom({
     key: "depositStr",
-    default: ""
+    default: "0원 ~ 무제한"
 });
 
 export const monthlyStrState = atom({
     key: "monthlyStr",
-    default: "",
+    default: "0원 ~ 무제한",
 });
 
 export const depositNumState = atom({
     key: "depositNum",
     default: {
         min: 0,
-        max: 0,
+        max: 1000000000,
     }
 });
 
@@ -59,7 +59,7 @@ export const monthlyNumState = atom({
     key: "monthlyNum",
     default: {
         min: 0,
-        max: 0,
+        max: 10000000,
     }
 });
 
@@ -76,10 +76,10 @@ export const extraOptionsState = atom({
 /* CustomSlider value */
 export const depositValueState = atom({
     key: "depositValue",
-    default: [0, 0]
+    default: [0, 48]
 });
 
 export const monthlyValueState = atom({
     key: "monthlyValue",
-    default: [0, 0]
+    default: [0, 20]
 });
