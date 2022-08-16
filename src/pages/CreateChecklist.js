@@ -18,8 +18,6 @@ import moment from "moment";
 import { useSnackbar } from "notistack";
 import { ReactComponent as Checklist } from "../assets/checklist.svg";
 
-const { kakao } = window;
-
 const CreateChecklist = ({ type }) => {
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
@@ -29,6 +27,7 @@ const CreateChecklist = ({ type }) => {
     const setCenterPos = useSetRecoilState(centerPosState);
     const [searchInput, setSearchInput] = useRecoilState(searchInputState);
     const [defaultFileList, setDefaultFileList] = useState([]);
+    const [openedImages, setOpenedImages] = useState([]);
     const [images, setImages] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isConfirmVisible, setIsConfirmVisible] = useState(false);
@@ -52,8 +51,19 @@ const CreateChecklist = ({ type }) => {
             console.log(res);
 
             const { data: { data: { checklist_id }} } = res;
+
+            if (openedImages.length !== 0) {
+                openedImages.forEach((image) => {
+                    console.log("opened image", image);
+                    postImage(checklist_id, image);
+                })
+            }
+
             if (images.length !== 0) {
-                images.forEach((image) => postImage(checklist_id, image));
+                images.forEach((image) => {
+                    console.log("image", image);
+                    postImage(checklist_id, image)
+                });
             }
             
             enqueueSnackbar("체크리스트 생성이 완료되었습니다", {
@@ -195,7 +205,17 @@ const CreateChecklist = ({ type }) => {
                 url: `${process.env.REACT_APP_BASE_URL}${url}`
             };
         }));
-
+        if (type === "open") {
+            let convertedImages = [];
+            fileList.forEach(async (url) => {
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}${url}`);
+                const data = await response.blob();
+                const filename = url.slice(url.lastIndexOf('/') + 1);                
+                convertedImages.push(new File([data], filename, { type: data.type }));
+            });
+            setOpenedImages(convertedImages);
+        }
+        
         // 기본 정보
         setCenterPos({
             centerLat: roomInfo.basicInfo_location_x,
@@ -204,7 +224,6 @@ const CreateChecklist = ({ type }) => {
         setSearchInput(roomInfo.basicInfo_address);
         setValue("공인중개사", roomInfo.basicInfo_brokerAgency);
         if (roomInfo.basicInfo_move_in_date === "문의조정가능" || roomInfo.basicInfo_move_in_date === "바로입주가능") {
-            console.log("here");
             setValue("입주 가능일 옵션", roomInfo.basicInfo_move_in_date);
         }
         else {

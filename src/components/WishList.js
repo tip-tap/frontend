@@ -47,7 +47,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
         <>
             <div className={styles.wrapper}>
                 <div className = {styles.imgposition}>
-                    <img className={styles.image} src = {thumbnail.length === 0 ? NoImage : `http://localhost:8000${thumbnail}`} alt = 'listimg'>
+                    <img className={styles.image} src = {thumbnail.length === 0 ? NoImage : `${process.env.REACT_APP_BASE_URL}${thumbnail}`} alt = 'listimg'>
                     </img>
                     <div className = {styles.heartbtn}>
                         <HeartBtn like = {true} id = {id} toggle = {toggle} setToggle={setToggle} ></HeartBtn>

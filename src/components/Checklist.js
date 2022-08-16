@@ -108,7 +108,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
             <div className={styles.wangbasics}>
                 <div className = {styles.basicswrap}>
                     <div className={styles.imagewrapper}>
-                        <img className={styles.image} src = {img.length === 0 ? NoImage : `http://localhost:8000/media${img[0]}`} alt = 'listimg'/>
+                        <img className={styles.image} src = {img.length === 0 ? NoImage : `${process.env.REACT_APP_BASE_URL}${img[0]}`} alt = 'listimg'/>
                     </div>
                     <div className={styles.basicsContentWrap}>
                         {Object.keys(checkbasics).map((key, index) => (
