@@ -1,16 +1,34 @@
 import React, { useState , useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "../styles/components/wishlist.module.scss";
-import RoomImage from "../dummy/room.png";
 import DetailsBtn from "../components/DetailsBtn";
 import CreateListBtn from "../components/CreateListBtn";
 import HeartBtn from "../components/HeartBtn";
+import NoImage from "../assets/noImage.png";
 
 
-const time = "2일전";
+const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, setToggle, time}) => {
 
-const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, setToggle}) => {
-    //console.log({id});
+
+
+    const createTime = (time) => {
+        const today = new Date();
+        const timeValue = new Date(time);
+        const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+        if (betweenTime < 1) return '방금전';
+        if (betweenTime < 60) {
+            return `${betweenTime}분전`;
+        }
+        const betweenTimeHour = Math.floor(betweenTime / 60);
+        if (betweenTimeHour < 24) {
+            return `${betweenTimeHour}시간전`;
+        }
+        const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+        if (betweenTimeDay < 365) {
+            return `${betweenTimeDay}일전`;
+        }
+        return `${Math.floor(betweenTimeDay / 365)}년전`;
+ }
     
     const basics = {
         "원룸": area,
@@ -20,8 +38,6 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
     };
 
     const displayBasics = (key, value) =>{
-        //console.log(key);
-        //console.log(value["deposit"]);
         if (key === "원룸"){return value + "평";}
         else if (key === "보증금"){return value/10000 + "만원" ;}
         else if (key === "월세"){return value/10000+"만원" ;}
@@ -31,7 +47,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
         <>
             <div className={styles.wrapper}>
                 <div className = {styles.imgposition}>
-                    <img className={styles.image} src = {RoomImage} alt = 'listimg'>
+                    <img className={styles.image} src = {thumbnail.length === 0 ? NoImage : `http://localhost:8000${thumbnail}`} alt = 'listimg'>
                     </img>
                     <div className = {styles.heartbtn}>
                         <HeartBtn like = {true} id = {id} toggle = {toggle} setToggle={setToggle} ></HeartBtn>
@@ -67,7 +83,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
                     </div>
                     <div className={styles.timewrapper}>
                         <div className={styles.time}>
-                            {time}
+                            {createTime(time)}
                         </div>
                     </div>
                 </div>

@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "../styles/components/checklist.module.scss";
-import RoomImage from "../dummy/room.png";
 import { ReactComponent as Delete } from "../assets/delete.svg";
 import ConfirmModal from '../components/ConfirmModal';
 import { basicsBEtoFE, checkdetailsBEtoFE, optionsBEtoFE } from "../attributes/converter";
 import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
+import NoImage from "../assets/noImage.png";
 
-const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete}) => {
+const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete, img}) => {
+    //console.log(checklist_id);
     const setDeleteId = useSetRecoilState(deleteIdState);
 
     const checkbasics = {
@@ -25,7 +26,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
 
     const displayBasics = (key, value) =>{
         if (key === "매물 위치"){return value ? value : "-"}
-        else if (key === "입주가능일"){return value === "바로입주가능"||value==="문의조정가능"?value :value.slice(0,10);}
+        else if (key === "입주가능일"){return value ? (value === "바로입주가능"||value==="문의조정가능"? value :value.slice(0,10)) : "-";}
         else if (key === "계약 형태"){return value ? basicsBEtoFE[value] : "-";}
         else if (key === "보증금"){return value ? value/10000 + "만원" : "-";}
         else if (key === "월세"){return value ? value/10000+"만원" : "-";}
@@ -107,7 +108,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
             <div className={styles.wangbasics}>
                 <div className = {styles.basicswrap}>
                     <div className={styles.imagewrapper}>
-                        <img className={styles.image} src = {RoomImage} alt = 'listimg'/>
+                        <img className={styles.image} src = {img.length === 0 ? NoImage : `http://localhost:8000/media${img[0]}`} alt = 'listimg'/>
                     </div>
                     <div className={styles.basicsContentWrap}>
                         {Object.keys(checkbasics).map((key, index) => (

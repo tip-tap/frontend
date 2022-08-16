@@ -1,3 +1,6 @@
+import maja from "../assets/maja.svg";
+import anya from "../assets/anya.svg"
+
 /*
 export const converter = {
     "전세": "J",
@@ -176,48 +179,48 @@ export const checkdetailsBEtoFE = {
 
 export const optionsBEtoFE = {
     "option_gas_stove": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_induction": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_microwave": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_refrigerator": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_washing_machine": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_air_conditioner": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_internet": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_tv": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_wifi": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_closet": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_cabinet": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_shoe_rack": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_bed": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_desk": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
     "option_chair": {
-        "true": "O", "false": "X"
+        "true": <img src = {maja}/>, "false": <img src = {anya}/>
     },
 }
