@@ -106,3 +106,24 @@ export const filteredRoomsState = atom({
     key: "filteredRooms",
     default: [],
 });
+
+/* Facilities Markers */
+export const SW8State = atom({
+    key: "SW8",
+    default: [],
+});
+
+export const facilitiesState = atom({
+    key: "facilities",
+    default: {
+        "SW8": [],
+        "MT1": [],
+        "CS2": [],
+        "FD6": [],
+        "CE7": [],
+        "HP8": [],
+        "PM9": [],
+        "": [],
+        "AG2": [],
+    },
+});
