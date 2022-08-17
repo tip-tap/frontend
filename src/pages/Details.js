@@ -11,6 +11,7 @@ import Api from "../_axios/Api";
 import { basicsKR, basicsEN } from "../attributes/basics";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { basicsBEtoFE } from "../attributes/converter";
+import { Helmet } from "react-helmet-async";
 
 const headers = ["기본정보", "옵션", "주변시설"];
 
@@ -125,75 +126,80 @@ const Details = () => {
     }, [params, handleScroll, getOneRoom])
 
     return (
-        <Layout>
-            <div className={styles.wrapper}>
-                <section className={styles.slider}>
-                    <Slider
-                        infinite={true}
-                        swipeToSlide={true}
-                        slidesToShow={4}
-                        centerMode={true}
-                    >
-                        {images.map((url, i) =>
-                            <div key={`img - ${i}`}>
-                                <img className={styles.slide} src={url} alt={url.slice(url.lastIndexOf('/') + 1)} />
-                            </div>
-                        )}
-                    </Slider>
-                </section>
-                <section className={styles.btn}>
-                    <Link to={`/open_checklist/${params.id}`}>
-                        <CreateListBtn type="primary-xl-white-bg" />
-                    </Link>
-                </section>
-                <section className={styles.info}>
-                    <article className={`${styles.header} ${isFixed && styles.fixedHeader}`}>
-                        {headers.map((value, i) => 
-                            <span key={`header - ${value}`} className={isActive === i && styles.active} onClick={() => handleMiniHeader(i)}>{value}</span>
-                        )}
-                    </article>
-                    <article className={styles.body}>
-                        <section className={styles.basics} ref={basicsRef}>
-                            <article className={styles.title}>기본 정보</article>
-                            <article className={styles.basicsGrid}>
-                                {Object.keys(basics).map((key) => (
-                                    <div key={`basic - ${key}`} className={styles.basicsItem}>
-                                        <div className={styles.itemTitle}>
+        <>
+            <Helmet>
+                <title>이집저집 | 매물 상세</title>
+            </Helmet>
+            <Layout>
+                <div className={styles.wrapper}>
+                    <section className={styles.slider}>
+                        <Slider
+                            infinite={true}
+                            swipeToSlide={true}
+                            slidesToShow={4}
+                            centerMode={true}
+                        >
+                            {images.map((url, i) =>
+                                <div key={`img - ${i}`}>
+                                    <img className={styles.slide} src={url} alt={url.slice(url.lastIndexOf('/') + 1)} />
+                                </div>
+                            )}
+                        </Slider>
+                    </section>
+                    <section className={styles.btn}>
+                        <Link to={`/open_checklist/${params.id}`}>
+                            <CreateListBtn type="primary-xl-white-bg" />
+                        </Link>
+                    </section>
+                    <section className={styles.info}>
+                        <article className={`${styles.header} ${isFixed && styles.fixedHeader}`}>
+                            {headers.map((value, i) => 
+                                <span key={`header - ${value}`} className={isActive === i && styles.active} onClick={() => handleMiniHeader(i)}>{value}</span>
+                            )}
+                        </article>
+                        <article className={styles.body}>
+                            <section className={styles.basics} ref={basicsRef}>
+                                <article className={styles.title}>기본 정보</article>
+                                <article className={styles.basicsGrid}>
+                                    {Object.keys(basics).map((key) => (
+                                        <div key={`basic - ${key}`} className={styles.basicsItem}>
+                                            <div className={styles.itemTitle}>
+                                                {key}
+                                            </div>
+                                            <div className={styles.itemContent}>
+                                                {displayBasics(key, basics[key])}
+                                            </div>
+                                            {key === "공인중개사" &&
+                                            <div className={styles.manner}>
+                                                <span>매너온도</span>
+                                                <span className={styles.number}>{manner}℃</span>
+                                            </div>
+                                            }
+                                        </div>
+                                    ))}
+                                </article>
+                            </section>
+                            <section className={styles.options} ref={optionsRef}>
+                                <article className={styles.title}>옵션</article>
+                                <article className={styles.optionsGrid}>
+                                    {Object.keys(options).map((key) => (
+                                        <div key={`option - ${key}`} className={`${styles.optionsItem} ${options[key] ? styles.positive : styles.negative}`}>
                                             {key}
                                         </div>
-                                        <div className={styles.itemContent}>
-                                            {displayBasics(key, basics[key])}
-                                        </div>
-                                        {key === "공인중개사" &&
-                                        <div className={styles.manner}>
-                                            <span>매너온도</span>
-                                            <span className={styles.number}>{manner}℃</span>
-                                        </div>
-                                        }
-                                    </div>
-                                ))}
-                            </article>
-                        </section>
-                        <section className={styles.options} ref={optionsRef}>
-                            <article className={styles.title}>옵션</article>
-                            <article className={styles.optionsGrid}>
-                                {Object.keys(options).map((key) => (
-                                    <div key={`option - ${key}`} className={`${styles.optionsItem} ${options[key] ? styles.positive : styles.negative}`}>
-                                        {key}
-                                    </div>
-                                ))}
-                            </article>
-                        </section>
-                        <section className={styles.facilities} ref={facilitiesRef}>
-                            <article className={styles.title}>주변 시설</article>
-                        </section>
-                        <section className={styles.facilitiesMap}>
-                            <Map type="details" markerFilter={Array(8).fill(1)}/>
-                        </section>
-                    </article>
-                </section>
-            </div>
-        </Layout>
+                                    ))}
+                                </article>
+                            </section>
+                            <section className={styles.facilities} ref={facilitiesRef}>
+                                <article className={styles.title}>주변 시설</article>
+                            </section>
+                            <section className={styles.facilitiesMap}>
+                                <Map type="details" markerFilter={Array(8).fill(1)}/>
+                            </section>
+                        </article>
+                    </section>
+                </div>
+            </Layout>
+        </>
     );
 }
 

@@ -9,6 +9,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import { useRecoilValue } from "recoil";
 import { deleteIdState } from "../_recoil/state";
 import Api from "../_axios/Api";
+import { Helmet } from "react-helmet-async";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -92,6 +93,9 @@ const CompareChecklist  = () => {
 
     return (
         <>
+            <Helmet>
+                <title>이집저집 | 체크리스트</title>
+            </Helmet>
             <Layout active="check">
                 <div className={styles.toggle}>
                     <Toggle active="list" mapLink="/compare_map" listLink="/compare_list" />

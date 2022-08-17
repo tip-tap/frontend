@@ -10,6 +10,7 @@ import Toggle from "../components/common/Toggle";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
+import { Helmet } from "react-helmet-async";
 
 const ListView = () => {
  
@@ -63,21 +64,26 @@ const ListView = () => {
     },[defaultRooms, filterRooms])
     
     return(
-        <Layout>
-            <div className = {styles.wrapper}>
-                <section className={styles.searchDiv}>
-                    <SearchBox type="long" withFilter={true}/>
-                </section>
-                <Toggle active="list" mapLink="/map" listLink="/list" />
-                <section className = {styles.listDiv}>
-                    {list.map((value)=>{
-                            return(
-                                <List id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} interest = {value.interest} time={value.room_created_at}/>
-                            )
-                    })}
-                </section>
-            </div>
-        </Layout>
+        <>
+            <Helmet>
+                <title>이집저집 | 매물 검색</title>
+            </Helmet>
+            <Layout>
+                <div className = {styles.wrapper}>
+                    <section className={styles.searchDiv}>
+                        <SearchBox type="long" withFilter={true}/>
+                    </section>
+                    <Toggle active="list" mapLink="/map" listLink="/list" />
+                    <section className = {styles.listDiv}>
+                        {list.map((value)=>{
+                                return(
+                                    <List id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} interest = {value.interest} time={value.room_created_at}/>
+                                )
+                        })}
+                    </section>
+                </div>
+            </Layout>
+        </>
     );
 }
 

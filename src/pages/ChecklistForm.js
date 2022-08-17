@@ -17,6 +17,7 @@ import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../att
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import { ReactComponent as Checklist } from "../assets/checklist.svg";
+import { Helmet } from "react-helmet-async";
 
 const CreateChecklist = ({ type }) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -339,6 +340,9 @@ const CreateChecklist = ({ type }) => {
 
     return(
         <>
+            <Helmet>
+                <title>{`이집저집 | 체크리스트 ${type === "create" || type === "open" ? "생성" : "수정"}`}</title>
+            </Helmet>
             <Layout>
                 <div className = {styles.wrapper}>
                     {type === "edit" && !isConfirmed &&

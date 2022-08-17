@@ -5,6 +5,7 @@ import WishList from "../components/WishList";
 import Api from "../_axios/Api";
 import SearchBox from "../components/SearchBox";
 import Toggle from "../components/common/Toggle";
+import { Helmet } from "react-helmet-async";
 
 const WishListView = () => {
 
@@ -29,18 +30,23 @@ const WishListView = () => {
     },[toggle])
 
     return(
-        <Layout active="wish">
-            <div className = {styles.wrapper}>
-                <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
-                <section className = {styles.listDiv}>
-                    {wishlist.map((value)=>{
-                            return(
-                                <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} time = {value.room_created_at}/>
-                            )
-                    })}
-                </section>
-            </div>
-        </Layout>
+        <>
+            <Helmet>
+                <title>이집저집 | 관심 매물</title>
+            </Helmet>
+            <Layout active="wish">
+                <div className = {styles.wrapper}>
+                    <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
+                    <section className = {styles.listDiv}>
+                        {wishlist.map((value)=>{
+                                return(
+                                    <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} time = {value.room_created_at}/>
+                                )
+                        })}
+                    </section>
+                </div>
+            </Layout>
+        </>
     );
 }
 
