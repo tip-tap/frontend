@@ -63,7 +63,7 @@ const Details = () => {
             else { return value.slice(0, 10); }
         }
         else if (key === "계약 형태" || key === "방 수" || key === "내부구조") { return value ? basicsBEtoFE[value] : "-"; }
-        if (key === "보증금") { return value ? value / 10000 + "만원" : "-"; }
+        if (key === "보증금") { return value ? (value >= 99999999 ? Math.floor(value / 100000000) + "억 " : "") + value % 100000000 / 10000 + "만원" : "-"; }
         else if (key === "월세" || key === "관리비") { return value ? value / 10000 + "만원" : "-"; }
         else if (key === "해당층") { return value ? value + "층" : "-"; }
         else if (key === "평 수") { return value ? value + "평" : "-"; }

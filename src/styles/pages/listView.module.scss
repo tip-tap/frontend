@@ -18,7 +18,11 @@ body {
             margin-top: toRem(20px);
             width: toRem(1200px);
             margin-bottom: toRem(30px);
+
+            &.translucent {
+                background-color: $white;
+                opacity: 0.2;
+            }
         }
-    
     }
 }

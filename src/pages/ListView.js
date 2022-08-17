@@ -5,7 +5,7 @@ import Layout from "../components/common/Layout";
 import List from "../components/List";
 import Api from "../_axios/Api";
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
-import { centerPosState, lowerLeftPosState, upperRightPosState, defaultRoomsState, filteredRoomsState } from "../_recoil/state";
+import { centerPosState, lowerLeftPosState, upperRightPosState, defaultRoomsState, filteredRoomsState, showExtraState } from "../_recoil/state";
 import Toggle from "../components/common/Toggle";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
@@ -24,6 +24,7 @@ const ListView = () => {
     const extraOptions = useRecoilValue(extraOptionsState);
     const [defaultRooms, setDefaultRooms] = useRecoilState(defaultRoomsState);
     const [filteredRooms, setFilteredRooms] = useRecoilState(filteredRoomsState);
+    const showExtra = useRecoilValue(showExtraState);
 
     const [list, setList] = useState([]);
 
@@ -62,6 +63,7 @@ const ListView = () => {
     useEffect(()=>{
         filterRooms(defaultRooms);
     },[defaultRooms, filterRooms])
+    console.log(showExtra);
     
     return(
         <>
@@ -74,7 +76,7 @@ const ListView = () => {
                         <SearchBox type="long" withFilter={true}/>
                     </section>
                     <Toggle active="list" mapLink="/map" listLink="/list" />
-                    <section className = {styles.listDiv}>
+                    <section className = {`${styles.listDiv} ${showExtra ? styles.translucent : ""}`}>
                         {list.map((value)=>{
                                 return(
                                     <List id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} interest = {value.interest} time={value.room_created_at}/>

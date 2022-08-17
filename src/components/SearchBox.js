@@ -5,7 +5,7 @@ import { ReactComponent as Search } from "../assets/search.svg";
 import { ReactComponent as Filter } from "../assets/filter.svg";
 import styles from "../styles/components/searchBox.module.scss";
 import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
-import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState, defaultRoomsState } from "../_recoil/state";
+import { centerPosState, searchInputState, checksState, depositStrState, monthlyStrState, depositNumState, monthlyNumState, depositValueState, monthlyValueState, extraOptionsState, defaultRoomsState, showExtraState } from "../_recoil/state";
 import { useSnackbar } from "notistack";
 import { types, rooms } from "../attributes/checks";
 
@@ -235,7 +235,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
     /************/
 
     /* 추가 필터 */
-    const [showExtra, setShowExtra] = useState(false);
+    const [showExtra, setShowExtra] = useRecoilState(showExtraState);
     const [extraOptions, setExtraOptions] = useRecoilState(extraOptionsState);
 
     const handleExtra = (v) => {

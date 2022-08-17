@@ -11,7 +11,7 @@ import heart from "../assets/heart.svg";
 import Api from "../_axios/Api";
 import { useSnackbar } from "notistack";
 import NoImage from "../assets/noImage.png";
-import { checksState, depositNumState, monthlyNumState, extraOptionsState, defaultRoomsState, filteredRoomsState, mapLevelState } from "../_recoil/state";
+import { checksState, depositNumState, monthlyNumState, extraOptionsState, defaultRoomsState, filteredRoomsState, mapLevelState, showExtraState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { TailSpin } from 'react-loader-spinner'
@@ -45,6 +45,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const [defaultRooms, setDefaultRooms] = useRecoilState(defaultRoomsState);
     const [filteredRooms, setFilteredRooms] = useRecoilState(filteredRoomsState);
     const [mapLevel, setMapLevel] = useRecoilState(mapLevelState);
+    const showExtra = useRecoilValue(showExtraState);
 
     // 주변 시설 마커 및 인포윈도우 표시
     const displayFacilities = (position, category, place) => {
@@ -439,17 +440,21 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     return (
         <>  
             <div id="map" className={styles.map}>
-            {type === "normal" && isLoading &&
-            <div className={styles.spinner}>
-                <TailSpin color="#0040BD"></TailSpin>
-                <span>
-                    매물을 조회하는 중입니다
-                    <br/>
-                    <br/>
-                    잠시만 기다려주세요
-                </span>
-            </div>
-            }
+                {type === "normal" && isLoading &&
+                <div className={styles.spinner}>
+                    <TailSpin color="#0040BD"></TailSpin>
+                    <span>
+                        매물을 조회하는 중입니다
+                        <br/>
+                        <br/>
+                        잠시만 기다려주세요
+                    </span>
+                </div>
+                }
+                {type === "normal" && showExtra && 
+                <div className={styles.translucent}>
+                </div>
+                }
             </div>
         </>
     );

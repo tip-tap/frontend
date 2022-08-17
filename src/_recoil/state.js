@@ -79,6 +79,11 @@ export const extraOptionsState = atom({
     }
 });
 
+export const showExtraState = atom({
+    key: "showExtra",
+    default: false,
+});
+
 /* CustomSlider value */
 export const depositValueState = atom({
     key: "depositValue",

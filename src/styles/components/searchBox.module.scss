@@ -70,7 +70,7 @@
     .list {
         position: absolute;
         top: toRem(80px);
-        z-index: 99;
+        z-index: 9999;
 
         height: toRem(280px);
         padding: toRem(20px) toRem(50px);
@@ -238,7 +238,7 @@
 
     .extraList {
         position: absolute;
-        z-index: 9;
+        z-index: 999;
 
         @include flexBox(column, flex-start);
         @include setBoxShadow();
