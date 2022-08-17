@@ -266,7 +266,8 @@ const CreateChecklist = ({ type }) => {
             console.log(res);
             const fileList = res.data.images;
             const roomInfo = res.data.roomInfo;
-            fillInfo(fileList, roomInfo);            
+            fillInfo(fileList, roomInfo);
+            setIsConfirmed(res.data.is_confirmed);            
         })
         .catch((err) => console.log(err))
     }, [fillInfo]);

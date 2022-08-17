@@ -9,7 +9,7 @@ import MapView from "./pages/MapView";
 import Details from "./pages/Details";
 import ListView from "./pages/ListView";
 import WishListView from "./pages/WishListView";
-import CreateChecklist from "./pages/CreateChecklist";
+import ChecklistForm from "./pages/ChecklistForm";
 import CompareChecklist from "./pages/CompareChecklist";
 import CompareMapView from "./pages/CompareMapView";
 
@@ -22,9 +22,9 @@ function App() {
       <Route path="/details/:id" element={<Details />} />
       <Route path="/wishmap" element={<MapView type="wish" />} />
       <Route path="/wishlist" element={<WishListView />} />
-      <Route path="/create_checklist" element={<CreateChecklist type="create" />} />
-      <Route path="/edit_checklist/:id" element={<CreateChecklist type="edit" />} />
-      <Route path="/open_checklist/:id" element={<CreateChecklist type="open" />} />
+      <Route path="/create_checklist" element={<ChecklistForm type="create" />} />
+      <Route path="/edit_checklist/:id" element={<ChecklistForm type="edit" />} />
+      <Route path="/open_checklist/:id" element={<ChecklistForm type="open" />} />
       <Route path="/compare_list" element={<CompareChecklist />} />
       <Route path="/compare_map" element={<CompareMapView />} />
     </Routes>
