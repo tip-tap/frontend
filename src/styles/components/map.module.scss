@@ -1,5 +1,16 @@
 @import "../main.module.scss";
 
+.markers {
+    @include flexBox(row, center);
+    width: toRem(646px);
+    height: toRem(54px);
+    margin: 0 auto toRem(36px) auto;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .map {
     width: 100%;
     height: 100%;

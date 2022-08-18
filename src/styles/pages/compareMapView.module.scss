@@ -18,17 +18,6 @@
         background-color: $white;
     }
     
-    .markers {
-        @include flexBox(row, center);
-        width: toRem(646px);
-        height: toRem(54px);
-        margin: 0 auto toRem(36px) auto;
-
-        &:hover {
-            cursor: pointer;
-        }
-    }
-    
     .map {
         width: 100vw;
         height: calc(100vh - 11.25rem);

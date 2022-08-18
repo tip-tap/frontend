@@ -4,7 +4,7 @@ import styles from "../styles/components/map.module.scss";
 import { Markers } from "../icons/Markers";
 import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
 import { centerPosState, lowerLeftPosState, upperRightPosState, searchInputState } from "../_recoil/state";
-import { categoryCode } from "../attributes/categories";
+import { categoryCode, idxToCategory } from "../attributes/categories";
 import { basicsEN } from "../attributes/basics";
 import { basicsBEtoFE } from "../attributes/converter";
 import heart from "../assets/heart.svg";
@@ -15,6 +15,10 @@ import { checksState, depositNumState, monthlyNumState, extraOptionsState, defau
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { TailSpin } from 'react-loader-spinner'
+
+import { MarkersOn } from "../icons/MarkersOn";
+import { MarkersOff } from "../icons/MarkersOff"
+import { labels } from "../attributes/categories";
 
 const { kakao } = window;
 let map;
@@ -46,6 +50,90 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     const [filteredRooms, setFilteredRooms] = useRecoilState(filteredRoomsState);
     const [mapLevel, setMapLevel] = useRecoilState(mapLevelState);
     const showExtra = useRecoilValue(showExtraState);
+    
+    const [subway, setSubway] = useState([]);
+    const [mart, setMart] = useState([]);
+    const [store, setStore] = useState([]);
+    const [restaurant, setRestaurant] = useState([]);
+    const [cafe, setCafe] = useState([]);
+    const [hospital, setHospital] = useState([]);
+    const [pharmacy, setPharmacy] = useState([]);
+    const [agent, setAgent] = useState([]);
+    const [markers, setMarkers] = useState(Array(9).fill(1));
+
+    const handleMarkers = (i, mode) => {
+        let newMarkers = [...markers];
+        if (i !== 7 && newMarkers[i]) { newMarkers[i] = 0; }
+        else { newMarkers[i] = 1; }
+        setMarkers(newMarkers);
+
+        switch (idxToCategory[i]) {
+            case "SW8": 
+                for (let i=0; i<subway.length; i++) {
+                    if (mode === "show") { subway[i].setMap(map); }
+                    else { subway[i].setMap(null); }
+                }
+                break;
+            case "MT1":
+                for (let i=0; i<mart.length; i++) {
+                    if (mode === "show") { mart[i].setMap(map); }
+                    else { mart[i].setMap(null); }
+                }
+                break;
+            case "CS2":
+                for (let i=0; i<store.length; i++) {
+                    if (mode === "show") { store[i].setMap(map); }
+                    else { store[i].setMap(null); }
+                }
+                break;
+            case "FD6":
+                for (let i=0; i<restaurant.length; i++) {
+                    if (mode === "show") { restaurant[i].setMap(map); }
+                    else { restaurant[i].setMap(null); }
+                }
+                break;
+            case "CE7":
+                for (let i=0; i<cafe.length; i++) {
+                    if (mode === "show") { cafe[i].setMap(map); }
+                    else { cafe[i].setMap(null); }
+                }
+                break;
+            case "HP8":
+                for (let i=0; i<hospital.length; i++) {
+                    if (mode === "show") { hospital[i].setMap(map); }
+                    else { hospital[i].setMap(null); }
+                }
+                break;
+            case "PM9":
+                for (let i=0; i<pharmacy.length; i++) {
+                    if (mode === "show") { pharmacy[i].setMap(map); }
+                    else { pharmacy[i].setMap(null); }
+                }
+                break;
+            case "":
+                enqueueSnackbar("방문매물은 필수 표시 항목입니다", {
+                    variant: "info",
+                    anchorOrigin: {
+                        vertical: "top",
+                        horizontal: "center",
+                    },
+                    autoHideDuration: 2000,
+                    sx: {
+                        "& .SnackbarContent-root": {
+                            bgcolor: "#0040BD"
+                        }
+                    }
+                });
+            case "AG2":
+                for (let i=0; i<agent.length; i++) {
+                    if (mode === "show") { agent[i].setMap(map); }
+                    else { agent[i].setMap(null); }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     // 주변 시설 마커 및 인포윈도우 표시
     const displayFacilities = (position, category, place) => {
@@ -79,29 +167,101 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         kakao.maps.event.addListener(marker, "mouseout", function() {
             infoWindow.close();
         });
+
+        return marker;
     }
 
     // 주변 시설 불러오기
-    const getFacilities = useCallback((position) => {
-        let places = new kakao.maps.services.Places();
-        let callback = function(status, result, pagination) {
-            if (result === "OK") {
-                const len = Math.min(10, status.length);
-                for (let i=0; i<len; i++) {
-                    displayFacilities(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
+    const getFacilities = useCallback(async () => {
+        if (type === "compare") {
+            let ar;
+            if (markers[7]) {
+                await Api.get("/api/v1/checklist/")
+                .then((res) => {
+                    ar = res.data.checklists;
+                })
+                .catch((err) => console.log(err))
+            }
+
+            
+            for (let i=0; i<ar.length; i++) {
+                const element = ar[i];
+                const position = new kakao.maps.LatLng(element.roomInfo.basicInfo_location_x, element.roomInfo.basicInfo_location_y);
+
+                let places = new kakao.maps.services.Places();
+                let callback = async (status, result, pagination) => {
+                    if (result === "OK") {
+                        const newArr = [];
+                        const len = Math.min(10, status.length);
+                        for (let i=0; i<len; i++) {
+                            const marker = displayFacilities(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
+                            newArr.push(marker);
+                        }
+
+                        const code = status[0].category_group_code;
+                        switch (code) {
+                            case "SW8": 
+                                setSubway((prev) => [...prev, ...newArr]);
+                                break;
+                            case "MT1":
+                                setMart((prev) => [...prev, ...newArr]);
+                                break;
+                            case "CS2":
+                                setStore((prev) => [...prev, ...newArr]);
+                                break;
+                            case "FD6":
+                                setRestaurant((prev) => [...prev, ...newArr]);
+                                break;
+                            case "CE7":
+                                setCafe((prev) => [...prev, ...newArr]);
+                                break;
+                            case "HP8":
+                                setHospital((prev) => [...prev, ...newArr]);
+                                break;
+                            case "PM9":
+                                setPharmacy((prev) => [...prev, ...newArr]);
+                                break;
+                            case "AG2":
+                                setAgent((prev) => [...prev, ...newArr]);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                };
+
+                
+                for (let i=0; i<8; i++) {
+                    if (i === 7) { continue; }
+                    if (markers[i]) {
+                        places.categorySearch(Object.keys(categoryCode)[i], callback, {
+                            location: position ? position : new kakao.maps.LatLng(centerLat, centerLng)
+                        });
+                    }
                 }
             }
-        };
+        }
 
-        for (let i=0; i<8; i++) {
-            if (i === 7) { continue; }
-            if (markerFilter[i]) {
+        else {
+            let places = new kakao.maps.services.Places();
+            let callback = function(status, result, pagination) {
+                if (result === "OK") {
+                    const len = Math.min(10, status.length);
+                    for (let i=0; i<len; i++) {
+                        displayFacilities(new kakao.maps.LatLng(status[i].y, status[i].x), status[0].category_group_code, status[i]);
+                    }
+                }
+            };
+
+            for (let i=0; i<8; i++) {
+                if (i === 7) { continue; }
                 places.categorySearch(Object.keys(categoryCode)[i], callback, {
-                    location: position ? position : new kakao.maps.LatLng(centerLat, centerLng)
+                    location: new kakao.maps.LatLng(centerLat, centerLng)
                 });
             }
         }
-    }, [centerLat, centerLng, markerFilter]);
+        
+    }, [centerLat, centerLng]);
 
     // 매물 위치 불러오기
     const getOneRoom = useCallback(() => {
@@ -131,7 +291,8 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
         let bounds = new kakao.maps.LatLngBounds();
 
-        arr.forEach((element) => {
+        for (let i=0; i<arr.length; i++) {
+            const element = arr[i];
             let position = new kakao.maps.LatLng(element.roomInfo.basicInfo_location_x, element.roomInfo.basicInfo_location_y);
             let marker = new kakao.maps.Marker({
                 position,
@@ -185,13 +346,13 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
             clusterer.addMarker(marker);
 
-            if (obj === "checklist") { getFacilities(position); }
-        })
+            //if (obj === "checklist") { getFacilities(arr); }
+        }
 
         if (obj === "interest" || obj === "checklist") {
             map.setBounds(bounds);
         }
-    }, [getFacilities]);
+    }, [/*getFacilities*/]);
 
     // 필터링
     const filterRooms = useCallback((rooms) => {
@@ -257,16 +418,17 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     // 체크리스트 조회 GET
     const getChecklists = useCallback(async () => {
-        if (markerFilter[7]) {
+        if (markers[7]) {
             await Api.get("/api/v1/checklist/")
             .then((res) => {
+                
                 if (res.data.checklists.length !== 0) {
                     displayObjs(res.data.checklists, "checklist");
                 }
             })
             .catch((err) => console.log(err))
         }
-    }, [markerFilter, displayObjs]);
+    }, [/*markers,*/ displayObjs]);
 
     // getInfos (according to map type)
     const getInfos = useCallback(async () => {
@@ -284,7 +446,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             getOneRoom();
             getFacilities();
         }
-    }, [type, getRooms, getInterests, getChecklists, getOneRoom, getFacilities]);
+    }, [type, getRooms, getInterests, getChecklists, getOneRoom, /*getFacilities*/]);
     
     // 지도 범위 좌표 업데이트
     const updateBounds = useCallback(() => {
@@ -437,8 +599,25 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         updateBounds();
     }, [centerLat, centerLng, searchToggle, updateBounds])
 
+    useEffect(() => {
+        if (type === "compare") {
+            getFacilities();
+        }
+    }, [])
+
     return (
         <>  
+            {type === "compare" &&
+            <div className={styles.markers}>
+                {markers.map((value, i) => {
+                    if (value) {
+                        return <div key={"markerOn" + i} onClick={() => { handleMarkers(i, "hide"); }}>{MarkersOn[labels[i]]()}</div> 
+                    } else {
+                        return <div key={"markerOff" + i} onClick={() => { handleMarkers(i, "show"); }}>{MarkersOff[labels[i]]()}</div>
+                    }
+                })}
+            </div>
+            }
             <div id="map" className={styles.map}>
                 {type === "normal" && isLoading &&
                 <div className={styles.spinner}>
