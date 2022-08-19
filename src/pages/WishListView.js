@@ -5,7 +5,7 @@ import WishList from "../components/WishList";
 import Api from "../_axios/Api";
 import SearchBox from "../components/SearchBox";
 import Toggle from "../components/common/Toggle";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const WishListView = () => {
 
@@ -31,9 +31,10 @@ const WishListView = () => {
 
     return(
         <>
-            <Helmet>
-                <title>이집저집 | 관심 매물</title>
-            </Helmet>
+            <SEO
+                pageTitle="이집저집 | 관심 매물"
+                pageSEO={{desc: "관심 매물만 모아서 따로 확인해보세요 💙", url: "/wishlist"}}
+            />
             <Layout active="wish">
                 <div className = {styles.wrapper}>
                     <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />

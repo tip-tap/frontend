@@ -5,14 +5,14 @@ import CreateListBtn from "../components/CreateListBtn";
 import SearchBox from "../components/SearchBox";
 import styles from "../styles/pages/main.module.scss";
 import Api from "../_axios/Api";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const Main = () => {
     return (
         <>
-            <Helmet>
-                <title>이집저집</title>
-            </Helmet>
+            <SEO
+                pageTitle="이집저집"
+            />
             <Layout>
                 <div className={styles.wrapper}>
                     <section className={styles.greeting}>

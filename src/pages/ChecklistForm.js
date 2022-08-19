@@ -17,7 +17,7 @@ import { basicsFEtoBE, basicsBEtoFE, detailsFEtoBE, detailsBEtoFE } from '../att
 import moment from "moment";
 import { useSnackbar } from "notistack";
 import { ReactComponent as Checklist } from "../assets/checklist.svg";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const CreateChecklist = ({ type }) => {
     const { enqueueSnackbar } = useSnackbar();
@@ -340,9 +340,10 @@ const CreateChecklist = ({ type }) => {
 
     return(
         <>
-            <Helmet>
-                <title>{`이집저집 | 체크리스트 ${type === "create" || type === "open" ? "생성" : "수정"}`}</title>
-            </Helmet>
+            <SEO
+                pageTitle={`이집저집 | 체크리스트 ${type === "create" || type === "open" ? "생성" : "수정"}`}
+                pageSEO={{desc: "방문한 매물을 보다 자세하게 체크해볼 수 있는 체크리스트를 제공합니다 📝", url: "/create_checklist"}}
+            />
             <Layout>
                 <div className = {styles.wrapper}>
                     {type === "edit" && !isConfirmed &&

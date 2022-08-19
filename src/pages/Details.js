@@ -11,7 +11,7 @@ import Api from "../_axios/Api";
 import { basicsKR, basicsEN } from "../attributes/basics";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { basicsBEtoFE } from "../attributes/converter";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const headers = ["기본정보", "옵션", "주변시설"];
 
@@ -127,9 +127,10 @@ const Details = () => {
 
     return (
         <>
-            <Helmet>
-                <title>이집저집 | 매물 상세</title>
-            </Helmet>
+            <SEO
+                pageTitle="이집저집 | 매물 상세"
+                pageSEO={{desc: "공인중개사가 제공하는 매물의 자세한 정보를 확인해보세요 💡", url: `/details/${params.id}`}}
+            />
             <Layout>
                 <div className={styles.wrapper}>
                     <section className={styles.slider}>

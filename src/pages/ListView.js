@@ -10,7 +10,7 @@ import Toggle from "../components/common/Toggle";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const ListView = () => {
  
@@ -67,9 +67,11 @@ const ListView = () => {
     
     return(
         <>
-            <Helmet>
-                <title>이집저집 | 매물 검색</title>
-            </Helmet>
+            <SEO
+                pageTitle="이집저집 | 매물 검색"
+                pageSEO={{desc: "원하는 조건에 맞게 공인중개사가 등록해놓은 매물을 검색해보세요 🔍", url: "/list"}}
+            />
+
             <Layout>
                 <div className = {styles.wrapper}>
                     <section className={styles.searchDiv}>

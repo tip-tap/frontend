@@ -12,14 +12,10 @@ import WishListView from "./pages/WishListView";
 import ChecklistForm from "./pages/ChecklistForm";
 import CompareChecklist from "./pages/CompareChecklist";
 import CompareMapView from "./pages/CompareMapView";
-import { Helmet } from "react-helmet-async";
 
 function App() {
   return (
     <>
-      <Helmet>
-          <link rel="icon" type="image/svg" href="tiptap-favicon.svg" sizes="16x16" />
-        </Helmet>
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/map" element={<MapView type="normal" />} />

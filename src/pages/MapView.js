@@ -4,16 +4,21 @@ import SearchBox from "../components/SearchBox";
 import Map from "../components/Map";
 import styles from "../styles/pages/mapView.module.scss";
 import Toggle from "../components/common/Toggle";
-import { Helmet } from "react-helmet-async";
+import SEO from '../components/common/SEO';
 
 const MapView = ({ type }) => {
     const [searchToggle, setSearchToggle] = useState(true);
 
     return (
         <>
-            <Helmet>
-                <title>{`이집저집 | ${type === "wish" ? "관심 매물" : "매물 검색"}`}</title>
-            </Helmet>
+            <SEO
+                pageTitle={`이집저집 | ${type === "wish" ? "관심 매물" : "매물 검색"}`}
+                pageSEO={
+                    type === "wish" ?
+                    {desc: "원하는 조건에 맞게 공인중개사가 등록해놓은 매물을 검색해보세요 🔍", url: "/map"}
+                    : {desc: "관심 매물만 모아서 따로 확인해보세요 💙", url: "/wishlist"}
+                }
+            />
             <Layout active={type === "wish" ? "wish" : ""}>
                 <div className={`${styles.wrapper} ${type === "wish" ? styles.extraPad : null}`}>
                     {type === "wish" ? 
