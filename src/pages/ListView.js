@@ -3,20 +3,16 @@ import styles from "../styles/pages/listView.module.scss";
 import SearchBox  from "../components/SearchBox";
 import Layout from "../components/common/Layout";
 import List from "../components/List";
-import Api from "../_axios/Api";
-import { useRecoilValue, useRecoilState, useSetRecoilState } from "recoil";
-import { centerPosState, lowerLeftPosState, upperRightPosState, defaultRoomsState, filteredRoomsState, showExtraState } from "../_recoil/state";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { defaultRoomsState, filteredRoomsState, showExtraState } from "../_recoil/state";
 import Toggle from "../components/common/Toggle";
 import {checksState, depositNumState, monthlyNumState, extraOptionsState } from "../_recoil/state";
 import { checksFilter } from "../attributes/checks";
 import { optionsKR, optionsEN } from "../attributes/options";
 import { Helmet } from "react-helmet-async";
+import { ReactComponent as NoResult } from "../assets/noresult.svg";
 
 const ListView = () => {
- 
-    const { centerLat, centerLng } = useRecoilValue(centerPosState);
-    const { lowerLeftLat, lowerLeftLng } = useRecoilValue(lowerLeftPosState);
-    const { upperRightLat, upperRightLng } = useRecoilValue(upperRightPosState);
 
     const checks = useRecoilValue(checksState);
     const depositNum = useRecoilValue(depositNumState);
@@ -64,6 +60,7 @@ const ListView = () => {
         filterRooms(defaultRooms);
     },[defaultRooms, filterRooms])
     console.log(showExtra);
+
     
     return(
         <>
@@ -77,9 +74,12 @@ const ListView = () => {
                     </section>
                     <Toggle active="list" mapLink="/map" listLink="/list" />
                     <section className = {`${styles.listDiv} ${showExtra ? styles.translucent : ""}`}>
+                        {list.length === 0 &&
+                            <div className={styles.noresult}><NoResult/></div>
+                        }
                         {list.map((value)=>{
                                 return(
-                                    <List id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} interest = {value.interest} time={value.room_created_at}/>
+                                    <List id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} interest = {value.interest} time={value.room_created_at} roomtype = {value.roomInfo.basicInfo_room_type} roomnum = {value.roomInfo.basicInfo_number_of_rooms} />
                                 )
                         })}
                     </section>

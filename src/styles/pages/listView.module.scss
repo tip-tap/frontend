@@ -23,6 +23,12 @@ body {
                 background-color: $white;
                 opacity: 0.2;
             }
+
+            .noresult{
+                padding-top: toRem(130px);
+                text-align: center;
+                width: 100%;
+            }
         }
     }
 }

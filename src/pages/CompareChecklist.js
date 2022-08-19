@@ -10,6 +10,7 @@ import { useRecoilValue } from "recoil";
 import { deleteIdState } from "../_recoil/state";
 import Api from "../_axios/Api";
 import { Helmet } from "react-helmet-async";
+import { ReactComponent as NoResult } from "../assets/noresult.svg";
 
 const headers = ["옵션","세부정보"]
 const checkbasics = ["매물 위치","입주가능일","계약 형태",
@@ -31,6 +32,8 @@ const CompareChecklist  = () => {
     const[position,setPosition] = useState(false);
     const[toggle,setToggle] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
+
+    const [nolist, setNolist] = useState(false);
 
     const[isFixed, setIsFixed] = useState(false);
     
@@ -71,11 +74,7 @@ const CompareChecklist  = () => {
 
     useEffect(() =>{
         if(isSwitch===true){
-            if(isChecked[0]===true && position===0){
-                if(whichChecked[0]===0){
-                    basicsRef.current?.scrollIntoView({behavior: "smooth", block:"center"});
-                }
-            }else if(isChecked[1]===true && position===1){
+            if(isChecked[1]===true && position===1){
                 if(whichChecked[1]===1){
                     optionsRef.current?.scrollIntoView({behavior: "smooth", block:"center"});
                 }
@@ -88,8 +87,8 @@ const CompareChecklist  = () => {
 
         window.addEventListener("scroll",handleScroll);
         // getOneChecklist(); // api test
-    },[isChecked, whichChecked, isSwitch, position])
-
+    },[isChecked, whichChecked, isSwitch, position, nolist])
+    console.log(nolist);
 
     return (
         <>
@@ -115,7 +114,10 @@ const CompareChecklist  = () => {
                     </Link>
                 </div>
 
-
+                {nolist 
+                ?
+                <div className={styles.noresult}><NoResult/></div>
+                :
                 <div className={styles.listwrapper}>
                     <div className={styles.listtitle}>
                         <div className={styles.wangbasics}>
@@ -151,9 +153,10 @@ const CompareChecklist  = () => {
                     </div>
 
                     <div className={styles.checklistwrapper}>
-                        <Sortable isChecked={isChecked} whichChecked={whichChecked} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete}></Sortable>
+                        <Sortable isChecked={isChecked} whichChecked={whichChecked} toggle={toggle} setToggle={setToggle} setIsDelete={setIsDelete} nolist={nolist} setNolist={setNolist}></Sortable>
                     </div>
                 </div>
+                }
             </Layout>
             <ConfirmModal
                 title="체크리스트가 삭제됩니다"

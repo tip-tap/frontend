@@ -19,6 +19,12 @@ body {
             margin-top: toRem(20px);
             width: toRem(1200px);
             margin-bottom: toRem(30px);
+
+            .noresult{
+                padding-top: toRem(130px);
+                text-align: center;
+                width: 100%;
+            }
         }
     
     }

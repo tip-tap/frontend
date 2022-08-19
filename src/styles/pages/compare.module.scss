@@ -34,6 +34,12 @@ body {
         }
         }
 
+    .noresult{
+        padding-top: toRem(130px);
+        text-align: center;
+        width: 100%;
+    }
+
 
     .listwrapper{
         @include flexBox(row, flex-start, flex-start);

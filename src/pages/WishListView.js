@@ -3,7 +3,7 @@ import styles from "../styles/pages/wishlistview.module.scss";
 import Layout from "../components/common/Layout";
 import WishList from "../components/WishList";
 import Api from "../_axios/Api";
-import SearchBox from "../components/SearchBox";
+import { ReactComponent as NoResult } from "../assets/noresult.svg";
 import Toggle from "../components/common/Toggle";
 import { Helmet } from "react-helmet-async";
 
@@ -38,9 +38,12 @@ const WishListView = () => {
                 <div className = {styles.wrapper}>
                     <Toggle active="list" mapLink="/wishmap" listLink="/wishlist" />
                     <section className = {styles.listDiv}>
+                        {wishlist.length === 0 &&
+                            <div className={styles.noresult}><NoResult/></div>
+                        }
                         {wishlist.map((value)=>{
                                 return(
-                                    <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} time = {value.room_created_at}/>
+                                    <WishList key = {value.room_id} id={value.room_id} tag={value.tag} area={value.roomInfo.basicInfo_area} deposit = {value.roomInfo.basicInfo_deposit} rent = {value.roomInfo.basicInfo_monthly_rent} mtnfee = {value.roomInfo.basicInfo_maintenance_fee} thumbnail = {value.thumbnail} toggle = {toggle} setToggle = {setToggle} time = {value.room_created_at} roomtype = {value.roomInfo.basicInfo_room_type} roomnum = {value.roomInfo.basicInfo_number_of_rooms}/>
                                 )
                         })}
                     </section>
