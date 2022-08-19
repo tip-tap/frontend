@@ -102,11 +102,11 @@ const CompareChecklist  = () => {
                 <div className={`${styles.headwrapper} ${isFixed && styles.fixedHeader}`}>
                     <span className={styles.infotitle}>보고싶은 정보들</span>
                     <input type = "checkbox" id ={0} checked = {true} onClick ={(e)=> handleCheck(e,0) } ></input>
-                    <label id ={0}>{'기본정보'}</label>
+                    <label id ={0} htmlFor={0}>{'기본정보'}</label>
                     {headers.map((value,i) =>
                         <>
-                            <input type = "checkbox" id ={i+1} onClick ={(e)=> handleCheck(e,i+1) } ></input>
-                            <label id ={i+1}>{value}</label>
+                            <input className={styles.pointer} type = "checkbox" id ={i+1} onClick ={(e)=> handleCheck(e,i+1) } ></input>
+                            <label className={styles.pointer} id ={i+1} htmlFor={i+1}>{value}</label>
                         </>
                     )}
                     <Link to="/create_checklist">

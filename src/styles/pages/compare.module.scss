@@ -22,10 +22,17 @@ body {
         }
         input{
             margin-right: toRem(8px);
+
         }
         label{
             margin-right: toRem(43px);
             @include typoStyle(500, 16px, 16px, -0.5px);
+
+        }
+        .pointer {
+            &:hover {
+                cursor: pointer;
+            }
         }
         &.fixedHeader {
             box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
