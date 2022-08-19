@@ -8,7 +8,6 @@ import NoImage from "../assets/noImage.png";
 import { Link } from "react-router-dom";
 
 const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete, img, onClick}) => {
-    //console.log(checklist_id);
     const setDeleteId = useSetRecoilState(deleteIdState);
 
     const checkbasics = {
@@ -94,12 +93,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
         // deleteChecklist(checklist_id);
         setDeleteId(checklist_id);
         setIsDelete(true);
-        console.log("DELETE");
     };
-
-    const handleDetail = (checklist_id) =>{
-        console.log("눌리나");
-    }
 
     return(
         <div className={styles.checklistwrapper}>

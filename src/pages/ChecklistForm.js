@@ -55,14 +55,12 @@ const CreateChecklist = ({ type }) => {
 
             if (openedImages.length !== 0) {
                 openedImages.forEach((image) => {
-                    console.log("opened image", image);
                     postImage(checklist_id, image);
                 })
             }
 
             if (images.length !== 0) {
                 images.forEach((image) => {
-                    console.log("image", image);
                     postImage(checklist_id, image)
                 });
             }

@@ -282,9 +282,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
         });
 
         kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
-            console.log(map.getLevel());
             var level = map.getLevel()-1;
-            console.log(level);
             setMapLevel(level);
             map.setLevel(level, {anchor: cluster.getCenter()});
         });
@@ -390,7 +388,6 @@ const Map = ({ markerFilter, type, searchToggle }) => {
     // 매물 조회 GET
     const getRooms = useCallback(async (boundsChanged) => {
         if (defaultRooms.length === 0 || boundsChanged) {
-            console.log(lowerLeftLat, lowerLeftLng, centerLat, centerLng, upperRightLat, upperRightLng);
             await Api.get(`/api/v1/rooms/?location=[[${lowerLeftLat},${lowerLeftLng}],[${centerLat},${centerLng}],[${upperRightLat},${upperRightLng}]]`)
             .then((res) => {
                 console.log(res);
@@ -520,7 +517,6 @@ const Map = ({ markerFilter, type, searchToggle }) => {
             // 줌(확대/축소) 이벤트 등록 + 디바운스 적용
             kakao.maps.event.addListener(map, 'zoom_changed', function() {
                 let currentLevel = map.getLevel();
-                console.log(currentLevel);
                 if (currentLevel > mapLevel) {
                     if (timer) { clearTimeout(timer); }
                     setTimer(setTimeout(() => {
@@ -571,12 +567,11 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                     if (map.getLevel() >= 6) { setIsLoading(true); }
 
                     setTimeout(() => {
-                        console.log("B");
                         let latlng = map.getCenter();
                         let currentBounds = map.getBounds();
-                        console.log("이전 지도 중심좌표 ", centerLat, centerLng);
-                        console.log("변경된 지도 중심좌표 " + latlng );
-                        console.log("변경된 영역 ", currentBounds);
+                        //console.log("이전 지도 중심좌표 ", centerLat, centerLng);
+                        //console.log("변경된 지도 중심좌표 " + latlng );
+                        //console.log("변경된 영역 ", currentBounds);
     
                         if (centerLat > currentBounds.getNorthEast().getLat() || centerLat < currentBounds.getSouthWest().getLat()
                         || centerLng > currentBounds.getNorthEast().getLng() || centerLng < currentBounds.getSouthWest().getLng()) {

@@ -41,7 +41,6 @@ const List = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, interest, time,
     };
 
     const displayKey = (key) => {
-        console.log(roomnum);
         if (key === "원룸" && roomnum ==="1"){ return key}
         else if (key === "원룸" && roomnum ==="1.5"){ return "1.5룸"}
         else if (key === "원룸" && roomnum ==="2"){ return "투룸"}

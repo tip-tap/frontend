@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "../components/common/Layout";
 import Map from "../components/Map";
 import styles from "../styles/pages/compareMapView.module.scss";

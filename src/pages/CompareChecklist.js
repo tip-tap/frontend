@@ -86,9 +86,7 @@ const CompareChecklist  = () => {
         }     
 
         window.addEventListener("scroll",handleScroll);
-        // getOneChecklist(); // api test
     },[isChecked, whichChecked, isSwitch, position, nolist])
-    console.log(nolist);
 
     return (
         <>

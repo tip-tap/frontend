@@ -5,12 +5,9 @@ import styles from "../styles/components/HeartBtn.module.scss";
 import Api from "../_axios/Api";
 
 const HeartBtn = ({like, id, toggle, setToggle}) => {
-    //console.log(id);
-    //console.log(like);
     const [wish, setWish] = useState(like);
 
     const postWish = async (id) =>{
-        //console.log("post");
         await Api({
             method: "post",
             url: "/api/v1/interest/",
@@ -23,7 +20,6 @@ const HeartBtn = ({like, id, toggle, setToggle}) => {
     }
 
     const deleteWish = async(id) => {
-        //console.log("delete");
         await Api.delete(`/api/v1/interest/${id}/`)
         .then((res)=> {
             console.log(res);
@@ -37,11 +33,9 @@ const HeartBtn = ({like, id, toggle, setToggle}) => {
 
     const handleWish = (id) => {
         if (wish === false){
-            //console.log("등록");
             postWish(id);
         }
         else if (wish === true){
-            //console.log("삭제");
             deleteWish(id);
         }
         setWish(!wish);

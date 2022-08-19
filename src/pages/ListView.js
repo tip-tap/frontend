@@ -59,7 +59,6 @@ const ListView = () => {
     useEffect(()=>{
         filterRooms(defaultRooms);
     },[defaultRooms, filterRooms])
-    console.log(showExtra);
 
     
     return(

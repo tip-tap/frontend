@@ -15,7 +15,6 @@ const WishListView = () => {
     const getWishlist = useCallback(async()=>{
         await Api.get(`/api/v1/interest/`)
         .then((res) => {
-            //console.log(res);
             const wishlistInfo = [];
             res.data.forEach((rooms, index) => {
                 wishlistInfo[index] = rooms;

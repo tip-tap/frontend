@@ -73,7 +73,6 @@ const Details = () => {
     const getOneRoom = useCallback(async (room_id) => {
         await Api.get(`/api/v1/rooms/${room_id}/`)
         .then((res) => {
-            // console.log(res);
             const roomInfo = res.data.roomInfo;
 
             // 이미지
@@ -97,7 +96,6 @@ const Details = () => {
                 basicsInfo[basicsKR[i]] = roomInfo[basicsEN[i+1]];
             }
             setBasics(basicsInfo);
-            console.log(basicsInfo);
 
             // 매너온도
             setManner(res.data.brokerAgency.brokerAgency_manner);
