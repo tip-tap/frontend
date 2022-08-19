@@ -7,7 +7,7 @@ import HeartBtn from "../components/HeartBtn";
 import NoImage from "../assets/noImage.png";
 
 
-const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, setToggle, time}) => {
+const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, setToggle, time, roomtype, roomnum}) => {
 
 
 
@@ -39,10 +39,22 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
 
     const displayBasics = (key, value) =>{
         if (key === "원룸"){return value + "평";}
-        else if (key === "보증금"){return value/10000 + "만원" ;}
+        else if (key === "보증금"){ return value ? (value >= 99999999 ? Math.floor(value / 100000000) + "억 " : "") + value % 100000000 / 10000 + "만원" : "-"; }
         else if (key === "월세"){return value/10000+"만원" ;}
         else if (key === "관리비"){return value/10000+ "만원";}
     }
+
+    const displayKey = (key) => {
+        console.log(roomnum);
+        if (key === "원룸" && roomnum ==="1"){ return key}
+        else if (key === "원룸" && roomnum ==="1.5"){ return "1.5룸"}
+        else if (key === "원룸" && roomnum ==="2"){ return "투룸"}
+        else if (key === "원룸" && roomnum ==="3"){ return "쓰리룸"}
+        else if (key === "보증금"){return key}
+        else if (key === "월세"){ return key}
+        else if (key === "관리비"){return key}
+    };
+
     return (
         <>
             <div className={styles.wrapper}>
@@ -57,7 +69,7 @@ const WishList = ({ id, tag, area, deposit, rent, mtnfee, thumbnail, toggle, set
                     {Object.keys(basics).map((key,index)=>(
                         <div key={`basic - ${key}`} className={styles.basicsItem}>
                             <div className={styles.itemTitle}>
-                                {key}
+                                {displayKey(key)}
                             </div>
                             <div className={styles.itemContent}>
                                 {displayBasics(key, basics[key])}

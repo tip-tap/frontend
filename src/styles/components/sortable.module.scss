@@ -2,7 +2,7 @@
 
 .container {
     @include flexBox (row, center,$justify-content:flex-start);
-    width: toRem(1000px);
+    width: toVw(1000px);
     padding-top: toRem(20px);
     
     overflow: auto;

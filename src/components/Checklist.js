@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "../styles/components/checklist.module.scss";
 import { ReactComponent as Delete } from "../assets/delete.svg";
-import ConfirmModal from '../components/ConfirmModal';
 import { basicsBEtoFE, checkdetailsBEtoFE, optionsBEtoFE } from "../attributes/converter";
 import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
@@ -29,7 +28,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
         if (key === "매물 위치"){return value ? value : "-"}
         else if (key === "입주가능일"){return value ? (value === "바로입주가능"||value==="문의조정가능"? value :value.slice(0,10)) : "-";}
         else if (key === "계약 형태"){return value ? basicsBEtoFE[value] : "-";}
-        else if (key === "보증금"){return value ? value/10000 + "만원" : "-";}
+        else if (key === "보증금"){ return value ? (value >= 99999999 ? Math.floor(value / 100000000) + "억 " : "") + value % 100000000 / 10000 + "만원" : "-"; }
         else if (key === "월세"){return value ? value/10000+"만원" : "-";}
         else if (key === "관리비"){return value ? value/10000+ "만원" : "-";}
         else if (key === "해당층"){return value ? value + "층" : "-";}
@@ -76,10 +75,10 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
     };
 
     const displayDetails = (key, value) =>{
-        if (key === "곰팡이"){return value ? checkdetailsBEtoFE["detailInfo_is_moldy"][value] : "-";}
-        else if (key === "누수"){return value ? checkdetailsBEtoFE["detailInfo_is_leak"][value] : "-";}
-        else if (key === "벌레"){return value ? checkdetailsBEtoFE["detailInfo_is_bug"][value] : "-";}
-        else if (key === "균열"){return value ? checkdetailsBEtoFE["detailInfo_is_crack"][value] : "-";}
+        if (key === "곰팡이"){return value!=null? checkdetailsBEtoFE["detailInfo_is_moldy"][value] : "-";}
+        else if (key === "누수"){return value!=null ? checkdetailsBEtoFE["detailInfo_is_leak"][value] : "-";}
+        else if (key === "벌레"){return value!=null ? checkdetailsBEtoFE["detailInfo_is_bug"][value] : "-";}
+        else if (key === "균열"){return value!=null ? checkdetailsBEtoFE["detailInfo_is_crack"][value] : "-";}
         else if (key === "방음"){return value ? checkdetailsBEtoFE["detailInfo_soundproof"][value] : "-";}
         else if (key === "창문 크기"){return value ? checkdetailsBEtoFE["detailInfo_window_size"][value] : "-";}
         else if (key === "주실 방향"){return value ? checkdetailsBEtoFE["detailInfo_main_direction"][value] : "-";}
@@ -98,6 +97,10 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
         console.log("DELETE");
     };
 
+    const handleDetail = (checklist_id) =>{
+        console.log("눌리나");
+    }
+
     return(
         <div className={styles.checklistwrapper}>
             <div className = {styles.delete}>
@@ -107,6 +110,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
             </div>
 
             <Link to={`/edit_checklist/${checklist_id}`}>
+
                 <div className={styles.wangbasics}>
                     <div className = {styles.basicswrap}>
                         <div className={styles.imagewrapper}>
@@ -150,6 +154,7 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
                     </div>
                 </div>
             </Link>
+
         
         </div>
     );

@@ -37,8 +37,8 @@ body {
             @include flexBox (row, center,$justify-content:space-around);
             width: toRem(380px);
             height: toRem(63px);
-            padding-left: toRem(35px);
-            padding-right: toRem(35px);
+            padding-left: toRem(20px);
+            padding-right: toRem(20px);
 
             .basicsItem{
                 .itemTitle{
