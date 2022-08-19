@@ -42,14 +42,14 @@ const ImgUpload = ({ type, setImages, defaultFileList }) => {
     setImages(newImages);
   }
 
-  const handleRemove = async (file) => {
+  const handleRemove = async (file) => {    
     // 이미지 삭제 DELETE (for edit mode)
     if (type === "edit" && !file.originFileObj) {
       await Api({
         method: "delete",
         url: "/api/v1/image/",
         data: {
-            image: file.url.slice(21)
+            image: file.url.slice(file.url.indexOf("/media"))
         }
      })
     .then((res) => console.log(res))
