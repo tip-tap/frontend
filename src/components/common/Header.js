@@ -7,6 +7,7 @@ import { ReactComponent as Map } from "../../assets/map.svg";
 import { ReactComponent as List } from "../../assets/list.svg";
 
 const Header = ({ active }) => {
+    console.log(active);
     return (
         <div className={styles.wrapper}>
             <section className={styles.left}>
@@ -17,6 +18,9 @@ const Header = ({ active }) => {
             <section>
             </section>
             <section className={styles.right}>
+                <Link to ="/map">
+                    <span className={active === "search" ? styles.active : styles.inactive}>매물 검색</span>
+                </Link>
                 <Link to="/wishlist">
                     <span className={active === "wish" ? styles.active : styles.inactive}>관심 매물</span>
                 </Link>
@@ -24,7 +28,6 @@ const Header = ({ active }) => {
                     <span className={active === "check" ? styles.active : styles.inactive}>체크리스트</span>
                 </Link>
                 <span className={styles.inactive}>확정 매물</span>
-                <span className={styles.inactive}>마이페이지</span>
                 <span className={styles.inactive}>로그아웃</span>
             </section>
         </div>

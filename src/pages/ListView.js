@@ -68,7 +68,7 @@ const ListView = () => {
                 pageSEO={{desc: "원하는 조건에 맞게 공인중개사가 등록해놓은 매물을 검색해보세요 🔍", url: "/list"}}
             />
 
-            <Layout>
+            <Layout active="search">
                 <div className = {styles.wrapper}>
                     <section className={styles.searchDiv}>
                         <SearchBox type="long" withFilter={true}/>

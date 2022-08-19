@@ -19,7 +19,7 @@ const MapView = ({ type }) => {
                     : {desc: "관심 매물만 모아서 따로 확인해보세요 💙", url: "/wishlist"}
                 }
             />
-            <Layout active={type === "wish" ? "wish" : ""}>
+            <Layout active={type === "wish" ? "wish" : (type === "normal" ? "search" : "none")}>
                 <div className={`${styles.wrapper} ${type === "wish" ? styles.extraPad : null}`}>
                     {type === "wish" ? 
                     null
