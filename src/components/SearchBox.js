@@ -95,6 +95,8 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
 
     const debouncedChange = (e) => {
         if (timer) { clearTimeout(timer); }
+        else { onSearch(e.target.value); }
+
         setTimer(setTimeout(() => {
             if (e.target.value === "") {
                 setShowList(false);
@@ -184,7 +186,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         if (timer) { clearTimeout(timer); }
         setTimer(setTimeout(() => {
             setDepositNum(newDepositNum);
-        }, 2000));
+        }, 1000));
 
         setDepositStr(str);
     }
@@ -227,7 +229,7 @@ const SearchBox = ({ type, withFilter, searchToggle, setSearchToggle }) => {
         if (timer) { clearTimeout(timer); }
         setTimer(setTimeout(() => {
             setMonthlyNum(newMonthlyNum);
-        }, 2000));
+        }, 1000));
         
         setMonthlyStr(str);
     }

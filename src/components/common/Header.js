@@ -7,7 +7,6 @@ import { ReactComponent as Map } from "../../assets/map.svg";
 import { ReactComponent as List } from "../../assets/list.svg";
 
 const Header = ({ active }) => {
-    console.log(active);
     return (
         <div className={styles.wrapper}>
             <section className={styles.left}>
