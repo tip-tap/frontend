@@ -16,7 +16,7 @@
             outline: none;
             background-color: $white;
 
-            &:hover{
+            &:hover{ 
                 cursor: pointer;
             }
             svg{
@@ -93,7 +93,7 @@
                 padding-top: toRem(28px);
                 padding-left: toRem(8px);
                 padding-right: toRem(8px);
-        
+                
                 .optionsContent{
                     margin-bottom: toRem(15px);
                     text-align: center;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import HeartImg from "../assets/heart.svg";
 import EmptyHeart from "../assets/emptyheart.svg";
 import styles from "../styles/components/HeartBtn.module.scss";

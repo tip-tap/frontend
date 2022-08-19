@@ -6,6 +6,7 @@ import { useSetRecoilState } from "recoil";
 import { deleteIdState } from "../_recoil/state";
 import NoImage from "../assets/noImage.png";
 import { Link } from "react-router-dom";
+import { Tooltip } from 'antd';
 
 const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setToggle, setIsDelete, img, onClick}) => {
     const setDeleteId = useSetRecoilState(deleteIdState);
@@ -125,9 +126,11 @@ const Checklist = ({isChecked, whichChecked, value, checklist_id, toggle, setTog
                     <div className = {styles.optionswrap}>
                         <div className={styles.optionsContentWrap}>
                             {Object.keys(checkoptions).map((key, index) => (
-                                <div className={styles.optionsContent}>
-                                    {displayOptions(key, checkoptions[key])}
-                                </div>
+                                <Tooltip placement="right" title={key} color = '#0040BD' font-family = "Noto Sans KR">
+                                    <div className={styles.optionsContent}>
+                                        {displayOptions(key, checkoptions[key])}
+                                    </div>
+                                </Tooltip>
                             ))}
                         </div>
                         <div className={styles.emptylist}></div>
