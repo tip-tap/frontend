@@ -231,7 +231,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 };
 
                 
-                for (let i=0; i<8; i++) {
+                for (let i=0; i<9; i++) {
                     if (i === 7) { continue; }
                     if (markers[i]) {
                         places.categorySearch(Object.keys(categoryCode)[i], callback, {
@@ -241,7 +241,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 }
             }
         }
-
+        
         else {
             let places = new kakao.maps.services.Places();
             let callback = function(status, result, pagination) {
@@ -253,7 +253,7 @@ const Map = ({ markerFilter, type, searchToggle }) => {
                 }
             };
 
-            for (let i=0; i<8; i++) {
+            for (let i=0; i<9; i++) {
                 if (i === 7) { continue; }
                 places.categorySearch(Object.keys(categoryCode)[i], callback, {
                     location: new kakao.maps.LatLng(centerLat, centerLng)
