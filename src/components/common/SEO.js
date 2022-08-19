@@ -12,6 +12,9 @@ const SEO = ({ pageTitle, pageSEO }) => {
             <title>{pageTitle}</title>
             <link rel="icon" type="image/svg" href="tiptap-favicon.svg" sizes="16x16" />
 
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <meta name="theme-color" content="#000000" />
             <meta name="description" content={desc} />
             <meta name="url" content={url} />
             <meta name="img" content={img} />
