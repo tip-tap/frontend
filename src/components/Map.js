@@ -481,8 +481,18 @@ const Map = ({ markerFilter, type, searchToggle }) => {
 
     // navigator.getolocation onInvalid callback
     const onInvalid = useCallback(() => {
+        if (searchInput) {
+            let callback = function(result, status) {
+                if (status === kakao.maps.services.Status.OK) {
+                    setCenterPos({centerLat: result[0].y, centerLng: result[0].x});
+                } 
+            }
+            geocoder.addressSearch(searchInput, callback);
+        }
+        updateBounds();
+
         console.log("위치 액세스 차단 상태");
-    }, []);
+    }, [setCenterPos, updateBounds, searchInput]);
 
     useEffect(() => {
         // 현재 위치 정보 가져오기
