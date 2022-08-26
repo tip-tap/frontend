@@ -16,13 +16,13 @@
 <br/>
 
 ## 🛠 프론트엔드 적용 기술
-- HTML5
-- SCSS
-- JavaScript
-- React
-- Recoil
-- Axios
-- Kakao Maps API
+HTML5 / SCSS / JavaScript / React / Recoil / Axios / Kakao Maps API
+
+<br/>
+
+## 🔗 링크
+https://web-frontend-13082024l70fh50f.gksl1.cloudtype.app/
+
 <br/>
 
 ## 🎞 영상
